@@ -49,6 +49,13 @@ namespace FruitBot.Modules
             await Context.Channel.SendMessageAsync(null, false, embed);
 
             _logger.LogInformation($"{Context.User.Username} executed the todo command!");
+
+            // dev todo: 
+            // boss lookup based on drop
+            // fruit integration
+            // fruit association with person
+            // person association with RSN
+            // sanitize drop names
         }
         private async Task LastDrop(int numDrops = 1, SocketGuildUser user = null)
         {
@@ -61,7 +68,7 @@ namespace FruitBot.Modules
 
             //DropLogEntry lastEntry = thePantry._masterList.Last().Value;
 
-            if (user == null)
+            if (user == null) 
             {
                 int idx = 0;
                 foreach (KeyValuePair<string, DropLogEntry> entryPair in thePantry._masterList)
