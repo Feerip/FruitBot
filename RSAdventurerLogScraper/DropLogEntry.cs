@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,7 +39,7 @@ namespace RSAdventurerLogScraper
             // Required
             _playerName = playerName.ToString();
             _fruit = fruit.ToString();
-            _dropName = dropName.ToString();
+            _dropName = SanitizeDropName(dropName.ToString());
             _timestamp = timestamp.ToString();
 
             // Image links
@@ -98,7 +99,7 @@ namespace RSAdventurerLogScraper
              _playerAvatarPNG = playerAvatarPNGHyperlinkElement.GetAttribute("src");
              _dropIconWEBP = dropItemWEBPHyperlinkElement.GetAttribute("src");
              _playerName = playerNameElement.Text;
-             _dropName = dropNameElement.Text;
+             _dropName = SanitizeDropName(dropNameElement.Text);
              _timestamp = timestampElement.Text;
 
             // Calculate unique ID to ensure no duplicates
@@ -142,7 +143,12 @@ namespace RSAdventurerLogScraper
         {
             List<DropLogEntry> output;
 
-            var driver = new ChromeDriver();
+            // Add option to use chrome in headless mode because the constant browsers crowding my screen while working was getting real annoying
+            ChromeOptions chromeOptions = new();
+            chromeOptions.AddArguments(new List<string>() { "headless", "disable-gpu", "--window-size=1920,1080" });
+
+
+            var driver = new ChromeDriver(chromeOptions);
             // Set to clan Vought, change url if different
             driver.Url = "https://runepixels.com/clans/vought/about";
             // Open the main page
@@ -189,6 +195,14 @@ namespace RSAdventurerLogScraper
             {
                 return !String.Equals((_timestamp + " " + _playerName), _entryKey);
             } 
+        }
+
+        // sanitization taken care of internally, pass DropLogEntry the drop name as is. 
+        private string SanitizeDropName(string dropName)
+        {
+            TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
+
+            return ti.ToTitleCase(dropName.Replace("some ", "").Replace("pair of ", ""));
         }
     }
 }

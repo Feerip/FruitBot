@@ -21,7 +21,6 @@ namespace FruitBot.Modules
         [Command("last")]
         public async Task Last(int numDrops = 1, SocketGuildUser user = null)
         {
-            _logger.LogDebug($"{Context.User.Username} started the lastdrop command.");
             using (Context.Channel.EnterTypingState())
             {
                 await LastDrop(numDrops, user);
@@ -29,42 +28,11 @@ namespace FruitBot.Modules
             _logger.LogInformation($"{Context.User.Username} executed the lastdrop command!");
         }
 
-        [Command("todo")]
-        public async Task ToDo(SocketGuildUser user = null)
-        {
-
-            var builder = new EmbedBuilder()
-                .WithDescription("Todo list for Admins")
-                .WithColor(new Color(255, 00, 0))
-                .AddField("Priority 1: ", "Threshold Formula (with variable placeholders)" , true)
-                .AddField("Priority 2: ", "Embed Design for Drops: [link](https://robyul.chat/embed-creator)", true)
-                .AddField("Low Priority: ", "Finalize Threshold Formula Variables", true)
-                //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
-                //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
-                //.WithCurrentTimestamp()
-                ;
-
-            var embed = builder.Build();
-
-            await Context.Channel.SendMessageAsync(null, false, embed);
-
-            _logger.LogInformation($"{Context.User.Username} executed the todo command!");
-
-            // dev todo: 
-            // boss lookup based on drop
-            // fruit integration
-            // fruit association with person
-            // person association with RSN
-            // sanitize drop names
-        }
+       
         private async Task LastDrop(int numDrops = 1, SocketGuildUser user = null)
         {
-
             FruitPantry.FruitPantry thePantry = new("FruitBot", "1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s", "Drop Log", "credentials.json");
-            //List<DropLogEntry> scraped = await DropLogEntry.CreateListFullAuto();
 
-
-            //await thePantry.Add(scraped);
 
             //DropLogEntry lastEntry = thePantry._masterList.Last().Value;
 
@@ -78,13 +46,15 @@ namespace FruitBot.Modules
                     DropLogEntry entry = entryPair.Value;
 
                     var builder = new EmbedBuilder()
-                        .WithImageUrl(entry._playerAvatarPNG ?? "null")
-                        .WithThumbnailUrl(entry._dropIconWEBP ?? "null")
+                        .WithImageUrl("https://cdn.discordapp.com/attachments/856679881547186196/859871618436562944/bandoshelmet_50.webp")
+                        //.WithImageUrl(entry._dropIconWEBP ?? "null")
+                        //.WithThumbnailUrl(entry._dropIconWEBP ?? "null")
+                        .WithThumbnailUrl("https://cdn.discordapp.com/attachments/856679881547186196/859869023607717898/GrapeThing.png")
                         .WithDescription("Last Drop: ")
                         .WithColor(new Color(00, 00, 255))
                         .AddField("Player Name", entry._playerName ?? "null", true)
                         .AddField("Drop", entry._dropName ?? "null", true)
-                        .AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
+                        //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
                         //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
                         //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
                         //.WithCurrentTimestamp()
@@ -97,6 +67,72 @@ namespace FruitBot.Modules
                 }
             }
         }
+        [Command("todo")]
+        public async Task ToDo(SocketGuildUser user = null)
+        {
+
+            var builder = new EmbedBuilder()
+                .WithDescription("Todo list for Admins")
+                .WithColor(new Color(255, 00, 0))
+                .AddField("Priority 1: ", "Threshold Formula (with variable placeholders)", true)
+                .AddField("Priority 2: ", "Embed Design for Drops: [link](https://robyul.chat/embed-creator)", true)
+                .AddField("Low Priority: ", "Finalize Threshold Formula Variables", true)
+                //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
+                //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
+                //.WithCurrentTimestamp()
+                ;
+
+            var embed = builder.Build();
+
+            await Context.Channel.SendMessageAsync(null, false, embed);
+
+
+
+            // dev todo: 
+            // boss lookup based on drop
+            // fruit integration
+            // fruit association with person
+            // person association with RSN
+            // sanitize drop names
+        }
+
+        [Command("force refresh")]
+        public async Task ForceRefresh(SocketGuildUser user = null)
+        {
+
+            _logger.LogDebug($"{Context.User.Username} invoked the force refresh command. This may take a while...");
+
+            using (Context.Channel.EnterTypingState())
+            {
+
+                FruitPantry.FruitPantry thePantry = new("FruitBot", "1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s", "Drop Log", "credentials.json");
+                List<DropLogEntry> scraped = await DropLogEntry.CreateListFullAuto();
+
+
+
+
+                int numEntries = thePantry.Add(scraped).Result.Count;
+
+                await ReplyAsync($"Database updated. There are now `{numEntries}` drops stored.");
+
+            }
+
+
+        }
+
+        [Command("purge")]
+        public async Task Purge(SocketGuildUser user = null)
+        {
+
+            FruitPantry.FruitPantry thePantry = new("FruitBot", "1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s", "Drop Log", "credentials.json");
+            int numEntries = thePantry.PurgeThePantry().Count;
+
+
+            await ReplyAsync($"Database purged. There are now `{numEntries}` drops stored.");
+
+            _logger.LogInformation($"{Context.User.Username} executed the purge command!");
+        }
+
     }
 
 

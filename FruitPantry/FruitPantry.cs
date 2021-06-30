@@ -102,6 +102,16 @@ namespace FruitPantry
             return _masterList;
         }
 
+        public SortedDictionary<string, DropLogEntry> PurgeThePantry()
+        {
+            Data.ClearValuesRequest requestBody = new Data.ClearValuesRequest();
+            SpreadsheetsResource.ValuesResource.ClearRequest request = _service.Spreadsheets.Values.Clear(requestBody, _spreadsheetId, _range);
+            Data.ClearValuesResponse response = request.Execute();
+
+            return ForceRefresh();
+        }
+
+
         // Theoretically should be a very fast way to check uniqueness
         public bool AlreadyExists(DropLogEntry entry)
         {
