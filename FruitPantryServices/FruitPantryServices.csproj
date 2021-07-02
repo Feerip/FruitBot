@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>dotnet-FruitPantryServices-CF465D7E-BE0F-4D4D-B07D-6D1638174A8B</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Discord.Net" Version="2.4.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FruitPantry\FruitPantry.csproj" />
+    <ProjectReference Include="..\RSAdventurerLogScraper\RSAdventurerLogScraper.csproj" />
+  </ItemGroup>
+</Project>

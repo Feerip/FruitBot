@@ -8,6 +8,7 @@ using Discord.Addons.Hosting;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
+using FruitPantry;
 
 namespace FruitBot.Services
 {
@@ -32,8 +33,16 @@ namespace FruitBot.Services
             
 
             _service.CommandExecuted += OnCommandExecuted;
+            _client.Ready += _client_Ready;
+            
 
             await _service.AddModulesAsync(Assembly.GetEntryAssembly(), _provider);
+        }
+
+        private async Task _client_Ready()
+        {
+            TimedHostedService service = new(_client);
+            service.StartAsync(new CancellationToken());
         }
 
         private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> arg1, ISocketMessageChannel arg2, SocketReaction arg3)
@@ -64,6 +73,7 @@ namespace FruitBot.Services
 
         private async Task OnMessageReceived(SocketMessage arg)
         {
+
             if (!(arg is SocketUserMessage message)) return;
             if (message.Source != MessageSource.User) return;
 

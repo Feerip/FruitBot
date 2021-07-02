@@ -53,13 +53,13 @@ namespace RSAdventurerLogScraper
 
 
 
-            List<DropLogEntry> scraped = await DropLogEntry.CreateListFullAuto();
+            //List<DropLogEntry> scraped = await DropLogEntry.CreateListFullAuto();
             
 
-            foreach(DropLogEntry entry in scraped)
-            {
+            //foreach(DropLogEntry entry in scraped)
+            //{
            
-            }
+            //}
 
 
             //{Element (id = ab88da5a-8fee-41c7-9482-354fd167084d)}

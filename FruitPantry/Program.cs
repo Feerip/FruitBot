@@ -16,7 +16,7 @@ namespace FruitPantry
 
         static void Main(string[] args)
         {
-            FruitPantry thePantry = new("FruitBot", "1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s", "Drop Log", "credentials.json");
+            //FruitPantry thePantry = new("FruitBot", "1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s", "Drop Log", "credentials.json");
 
             //thePantry.AddEntry(new("i", "like", "big", "phat", "doggies", "juicy", "plump", "when", "theyare"));
 

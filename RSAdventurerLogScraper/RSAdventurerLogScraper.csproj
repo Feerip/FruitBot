@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Discord.Net" Version="2.4.0" />
     <PackageReference Include="NReco.PhantomJS" Version="1.0.4" />
     <PackageReference Include="PhantomJS" Version="2.1.1" />
     <PackageReference Include="Selenium.Support" Version="3.141.0" />
@@ -13,6 +14,10 @@
     <PackageReference Include="Selenium.WebDriver.PhantomJS" Version="1.0.0" />
     <PackageReference Include="System.ServiceModel.Syndication" Version="5.0.0" />
     <PackageReference Include="WebDriverChromeDriver" Version="2.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataTypes\DataTypes.csproj" />
   </ItemGroup>
 
   <ItemGroup>

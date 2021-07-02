@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace RSAdventurerLogScraper
 {
+    [Obsolete]
     public class ClanScraper
     {
         private Dictionary<string, List<DropLogEntry>> _clan_log = new();

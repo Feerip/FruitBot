@@ -13,6 +13,7 @@ using System.Xml;
 
 namespace RSAdventurerLogScraper
 {
+    [Obsolete]
     static public class JagexScraper
     {
         static private readonly string _url = "https://secure.runescape.com/m=adventurers-log/a=13/rssfeed?searchName=";

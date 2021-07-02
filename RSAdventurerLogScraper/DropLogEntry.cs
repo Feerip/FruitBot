@@ -9,13 +9,37 @@ using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using DataTypes;
+using Discord;
 
 namespace RSAdventurerLogScraper
 {
     public class DropLogEntry
     {
+
+        public static class FruitLogos
+        {
+            public static string GrapeLogo { get; }
+                = "https://cdn.discordapp.com/attachments/856679881547186196/859869023607717898/GrapeThing.png";
+            public static string GrapeText { get; }
+                = "Grape";
+            public static string BananaLogo { get; }
+                = "https://cdn.discordapp.com/attachments/856679881547186196/859869014507257896/BananaThing.png";
+            public static string BananaText { get; }
+                = "Banana";
+            public static string AppleLogo { get; }
+                = "https://cdn.discordapp.com/attachments/856679881547186196/859869003572838420/AppleThing.png";
+            public static string AppleText { get; }
+                = "Apple";
+            public static string PeachLogo { get; }
+                = "https://cdn.discordapp.com/attachments/856679881547186196/859868992339968050/PeachThing.png";
+            public static string PeachText { get; }
+                = "Peach";
+        }
+
+
         public string _playerName { get; }
-        public string _fruit { get; }
+        public string _fruit { get; set; }
         public string _dropName { get; }
         public string _timestamp { get; }
         public string _playerAvatarPNG { get; set; }
@@ -23,8 +47,24 @@ namespace RSAdventurerLogScraper
         public string _bossName { get; set; }
         public string _runemetricsDropID { get; set; }
         public string _pointValue { get; set; }
-        
 
+        public string _fruitLogo
+        {
+            get
+            {
+                if (_fruit.Equals(FruitLogos.GrapeText))
+                    return FruitLogos.GrapeLogo;
+                if (_fruit.Equals(FruitLogos.BananaText))
+                    return FruitLogos.BananaLogo;
+                if (_fruit.Equals(FruitLogos.AppleText))
+                    return FruitLogos.AppleLogo;
+                if (_fruit.Equals(FruitLogos.PeachText))
+                    return FruitLogos.PeachLogo;
+                else
+                    return "https://runescape.wiki/images/b/b8/Ugthanki_dung_detail.png";
+                //placeholder for "fruitless heathen"
+            }
+        }
 
 
         public string _entryKey { get; }
@@ -71,7 +111,7 @@ namespace RSAdventurerLogScraper
             // playerName + timestamp is an easy way to get a unique ID for each drop
             _entryKey = _timestamp + " " + _playerName;
 
-           
+
             if (entryKey != null)
             {
                 if (!String.Equals((_timestamp + " " + _playerName), _entryKey))
@@ -96,11 +136,12 @@ namespace RSAdventurerLogScraper
             IWebElement dropItemWEBPHyperlinkElement = activity.FindElement(By.ClassName("icon"));
 
             // Pull strings from those elements
-             _playerAvatarPNG = playerAvatarPNGHyperlinkElement.GetAttribute("src");
-             _dropIconWEBP = dropItemWEBPHyperlinkElement.GetAttribute("src");
-             _playerName = playerNameElement.Text;
-             _dropName = SanitizeDropName(dropNameElement.Text);
-             _timestamp = timestampElement.Text;
+            _playerAvatarPNG = playerAvatarPNGHyperlinkElement.GetAttribute("src");
+            _dropIconWEBP = dropItemWEBPHyperlinkElement.GetAttribute("src");
+            _playerName = playerNameElement.Text;
+            _dropName = SanitizeDropName(dropNameElement.Text);
+            _timestamp = timestampElement.Text;
+
 
             // Calculate unique ID to ensure no duplicates
             // playerName + timestamp is an easy way to get a unique ID for each drop
@@ -134,6 +175,7 @@ namespace RSAdventurerLogScraper
                 output.Add(new(activity));
             }
 
+            output.Reverse();
             return output;
         }
 
@@ -143,6 +185,8 @@ namespace RSAdventurerLogScraper
         {
             List<DropLogEntry> output;
 
+            //========================REMOVE THIS LOL==================
+            //return new();
             // Add option to use chrome in headless mode because the constant browsers crowding my screen while working was getting real annoying
             ChromeOptions chromeOptions = new();
             chromeOptions.AddArguments(new List<string>() { "headless", "disable-gpu", "--window-size=1920,1080" });
@@ -167,8 +211,56 @@ namespace RSAdventurerLogScraper
             new WebDriverWait(driver, TimeSpan.FromMinutes(5)).Until(ExpectedConditions.ElementExists(By.ClassName("activity")));
             // Table loaded and pulled into memory, send it to CreateListFromWebElements for processing
             output = CreateListFromWebElements(driver.FindElementsByClassName("activity"));
+            driver.Quit();
+            //driver.Close();
             // Once processed, we have a populated list of drop entries!
             return output;
+        }
+
+        public static Dictionary<string, ItemDatabaseEntry> PullWikiImages(Dictionary<string, ItemDatabaseEntry> itemDBEntries)
+        {
+
+
+            // Add option to use chrome in headless mode because the constant browsers crowding my screen while working was getting real annoying
+            ChromeOptions chromeOptions = new();
+            chromeOptions.AddArguments(new List<string>() { "headless", "disable-gpu", "--window-size=1920,1080" });
+
+
+            var driver = new ChromeDriver(chromeOptions);
+            foreach (KeyValuePair<string, ItemDatabaseEntry> entry in itemDBEntries)
+            {
+
+                driver.Url = entry.Value._wikiLink;
+                // Open the main page
+                driver.Navigate();
+                try
+                {
+                    // Wait until table loads
+                    new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(ExpectedConditions.ElementExists(By.ClassName("floatleft")));
+                    // Find the activities table
+                    IWebElement activitiesTable = driver.FindElementByClassName("floatleft");
+                    // Find the activity selector interface
+                    IWebElement switchElement = activitiesTable.FindElement(By.ClassName("image"));
+                    // Find the drops button within the selector interface
+                    IWebElement dropsButton = switchElement.FindElement(By.TagName("img"));
+                    // Click the drops button once found
+                    switchElement.Click();
+
+                    new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(ExpectedConditions.ElementExists(By.CssSelector("img[crossorigin='anonymous']")));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"==============================================Image URL Pull failed for {entry.Key}. Continuing onto next item.");
+                    continue;
+                }                //IWebElement button = driver.findElement(By.cssSelector("input[value='Submit']"));
+                IWebElement imageLargeContainer = driver.FindElementByCssSelector("img[crossorigin='anonymous']");
+
+                //IWebElement imageLarge = imageLargeContainer.FindElement(By.TagName("img"));
+                string imageSrc = imageLargeContainer.GetAttribute("src");
+
+                itemDBEntries[entry.Key]._imageURL = imageSrc;
+            }
+            return itemDBEntries;
         }
 
         // Pull missing data if needed (boss name and runemetrics dropID)
@@ -181,7 +273,7 @@ namespace RSAdventurerLogScraper
             {
                 List<DropLogEntry> playerLog = JagexScraper.Scrape(input._playerName);
 
-                
+
 
             }
 
@@ -189,12 +281,12 @@ namespace RSAdventurerLogScraper
 
             return input;
         }
-        public bool EntryKeyCorrupted 
-        { 
-            get 
+        public bool EntryKeyCorrupted
+        {
+            get
             {
                 return !String.Equals((_timestamp + " " + _playerName), _entryKey);
-            } 
+            }
         }
 
         // sanitization taken care of internally, pass DropLogEntry the drop name as is. 

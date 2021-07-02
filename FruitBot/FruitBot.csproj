@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DataTypes\DataTypes.csproj" />
     <ProjectReference Include="..\FruitPantry\FruitPantry.csproj" />
   </ItemGroup>
 
