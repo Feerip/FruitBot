@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTypes", "DataTypes\Data
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FruitPantryServices", "FruitPantryServices\FruitPantryServices.csproj", "{877055B8-B925-4A77-AC14-F0298E5C2645}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunescapeAPITest", "RunescapeAPITest\RunescapeAPITest.csproj", "{DDB15DD5-B9FC-457E-AD04-431FA3455B4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RS3APIDropLog", "RunescapeAPITest\RS3APIDropLog.csproj", "{DDB15DD5-B9FC-457E-AD04-431FA3455B4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

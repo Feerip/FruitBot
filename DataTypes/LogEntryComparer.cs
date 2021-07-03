@@ -16,8 +16,8 @@ namespace DataTypes
             string[] rhsbuffer = y.Split(' ');
 
             // Build datetime values on the date and the time
-            DateTime dateValueLHS = DateTime.Parse(lhsbuffer[0] + ' ' + lhsbuffer[1], new CultureInfo("fr-FR", false));
-            DateTime dateValueRHS = DateTime.Parse(rhsbuffer[0] + ' ' + rhsbuffer[1], new CultureInfo("fr-FR", false));
+            DateTime dateValueLHS = DateTime.Parse(lhsbuffer[0] + ' ' + lhsbuffer[1]/*, new CultureInfo("fr-FR", false)*/);
+            DateTime dateValueRHS = DateTime.Parse(rhsbuffer[0] + ' ' + rhsbuffer[1]/*, new CultureInfo("fr-FR", false)*/);
 
             // Compare the date and time, most of the time (haha get it?) datetimes will be unique.
             int result = DateTime.Compare(dateValueRHS, dateValueLHS);

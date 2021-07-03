@@ -42,7 +42,8 @@ namespace FruitBot.Services
         private async Task _client_Ready()
         {
             TimedHostedService service = new(_client);
-            service.StartAsync(new CancellationToken());
+            Task backgroundScraper = service.StartAsync(new CancellationToken());
+            await service.LeaderboardAtResetStartAsync(new CancellationToken());
         }
 
         private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> arg1, ISocketMessageChannel arg2, SocketReaction arg3)
