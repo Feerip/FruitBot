@@ -12,31 +12,14 @@ using OpenQA.Selenium.Support.UI;
 using DataTypes;
 using Discord;
 using RunescapeAPITest;
+using DataTypes;
 
 namespace RSAdventurerLogScraper
 {
     public class DropLogEntry
     {
 
-        public static class FruitLogos
-        {
-            public static string GrapeLogo { get; }
-                = "https://cdn.discordapp.com/attachments/856679881547186196/859869023607717898/GrapeThing.png";
-            public static string GrapeText { get; }
-                = "Grape";
-            public static string BananaLogo { get; }
-                = "https://cdn.discordapp.com/attachments/856679881547186196/859869014507257896/BananaThing.png";
-            public static string BananaText { get; }
-                = "Banana";
-            public static string AppleLogo { get; }
-                = "https://cdn.discordapp.com/attachments/856679881547186196/859869003572838420/AppleThing.png";
-            public static string AppleText { get; }
-                = "Apple";
-            public static string PeachLogo { get; }
-                = "https://cdn.discordapp.com/attachments/856679881547186196/859868992339968050/PeachThing.png";
-            public static string PeachText { get; }
-                = "Peach";
-        }
+        
 
 
         public string _playerName { get; }
@@ -53,16 +36,16 @@ namespace RSAdventurerLogScraper
         {
             get
             {
-                if (_fruit.Equals(FruitLogos.GrapeText))
-                    return FruitLogos.GrapeLogo;
-                if (_fruit.Equals(FruitLogos.BananaText))
-                    return FruitLogos.BananaLogo;
-                if (_fruit.Equals(FruitLogos.AppleText))
-                    return FruitLogos.AppleLogo;
-                if (_fruit.Equals(FruitLogos.PeachText))
-                    return FruitLogos.PeachLogo;
+                if (_fruit.Equals(FruitResources.Text.grape))
+                    return FruitResources.Logos.grape;
+                if (_fruit.Equals(FruitResources.Text.banana))
+                    return FruitResources.Logos.banana;
+                if (_fruit.Equals(FruitResources.Text.apple))
+                    return FruitResources.Logos.apple;
+                if (_fruit.Equals(FruitResources.Text.peach))
+                    return FruitResources.Logos.peach;
                 else
-                    return "https://runescape.wiki/images/b/b8/Ugthanki_dung_detail.png";
+                    return FruitResources.Logos.fruitlessHeathen;
                 //placeholder for "fruitless heathen"
             }
         }

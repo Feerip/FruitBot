@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Runescape.Api.Model;
 using Runescape.Api;
+using Microsoft.VisualBasic.FileIO;
+using System.IO;
 
 namespace RunescapeAPITest
 {
@@ -49,12 +51,26 @@ namespace RunescapeAPITest
         }
         public static async Task<List<string>> GetAllVoughtPlayerNames()
         {
-            IHiscores scores = ApiFactory.CreateHiscores();
-            IReadOnlyList<IClanMember> clan = await scores.GetClanMembersAsync("vought");
             List<string> playerNames = new();
-            foreach (IClanMember clannie in clan)
-                playerNames.Add(clannie.Name);
+
+            string url = "http://services.runescape.com/m=clan-hiscores/members_lite.ws?clanName=Vought";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.AutomaticDecompression = DecompressionMethods.GZip;
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            Stream stream = response.GetResponseStream();
+            TextFieldParser parser = new (stream, Encoding.UTF7);
+            parser.TextFieldType = FieldType.Delimited;
+            parser.SetDelimiters(",");
+            if (!parser.EndOfData)
+                parser.ReadFields();
+            while (!parser.EndOfData)
+            {
+                string[] fields = parser.ReadFields();
+                playerNames.Add(fields[0]);
+            }
             return playerNames;
+
+
         }
         public string _name { get; set; }
         public string _timestamp { get; set; }

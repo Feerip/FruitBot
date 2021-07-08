@@ -57,7 +57,7 @@ namespace FruitPantry
 
                 var embed = builder.Build();
 
-                await discordClient.GetGuild(769476224363397140).GetTextChannel(856679881547186196).SendMessageAsync(null, false, embed);
+                await discordClient.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(null, false, embed);
                 idx++;
             }
 

@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# API/Bot Secrets
+FruitBot/appsettings.json
+FruitPantry/credentials.json

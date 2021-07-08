@@ -14,6 +14,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using System.Text;
+using static System.Net.WebRequestMethods;
+using Microsoft.VisualBasic.FileIO;
 
 namespace RunescapeAPITest
 {
@@ -31,33 +33,33 @@ namespace RunescapeAPITest
 
     class Program
     {
-       // public TResponse CreateHttpRequestAsync<TRequest, TResponse>(Uri uri, TRequest request)
-       //where TRequest : class
-       //where TResponse : class, new()
-       // {
-       //     using (var client = new HttpClient())
-       //     {
-       //         client.DefaultRequestHeaders.Accept.Clear();
-       //         client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
-       //         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-       //         //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
-       //         var response = client.PostAsJsonAsync(uri, request);
-       //         if (response.Result.StatusCode == HttpStatusCode.OK)
-       //         {
-       //             var json = response.Result.Content.ReadAsStringAsync();
-       //             return JsonConvert.DeserializeObject<TResponse>(json.Result);
-       //         }
-       //         else if (response.Result.StatusCode == HttpStatusCode.Unauthorized)
-       //         {
-       //             throw new Exception();
-       //         }
-       //         else
-       //         {
-       //             throw new InvalidOperationException();
-       //         }
-       //     }
+        // public TResponse CreateHttpRequestAsync<TRequest, TResponse>(Uri uri, TRequest request)
+        //where TRequest : class
+        //where TResponse : class, new()
+        // {
+        //     using (var client = new HttpClient())
+        //     {
+        //         client.DefaultRequestHeaders.Accept.Clear();
+        //         client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
+        //         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        //         //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
+        //         var response = client.PostAsJsonAsync(uri, request);
+        //         if (response.Result.StatusCode == HttpStatusCode.OK)
+        //         {
+        //             var json = response.Result.Content.ReadAsStringAsync();
+        //             return JsonConvert.DeserializeObject<TResponse>(json.Result);
+        //         }
+        //         else if (response.Result.StatusCode == HttpStatusCode.Unauthorized)
+        //         {
+        //             throw new Exception();
+        //         }
+        //         else
+        //         {
+        //             throw new InvalidOperationException();
+        //         }
+        //     }
 
-       // }
+        // }
         //static HttpClient client = new HttpClient();
         //static async Task<Uri> CreateProductAsync(Product product)
         //{
@@ -75,45 +77,62 @@ namespace RunescapeAPITest
             stopwatch.Start();
 
 
-            string url = "https://secure.runescape.com";
+            //string url = "http://services.runescape.com/m=clan-hiscores/members_lite.ws?clanName=Vought";
 
-            // create a request
-            HttpWebRequest request = (HttpWebRequest)
-            WebRequest.Create(url); request.KeepAlive = false;
-            request.ProtocolVersion = HttpVersion.Version10;
-            request.Method = "POST";
+            //// create a request
+            //HttpWebRequest request = (HttpWebRequest)
+            //WebRequest.Create(url); request.KeepAlive = false;
+            //request.ProtocolVersion = HttpVersion.Version10;
+            //request.Method = "POST";
 
 
-            // turn our request string into a byte stream
-            byte[] postBytes = Encoding.UTF8.GetBytes("{url: \"https://secure.runescape.com/m=website-data/playerDetails.ws?names=[%22Name%22]\",  dataType: \"jsonp\"}");
+            //// turn our request string into a byte stream
+            ////byte[] postBytes = Encoding.UTF8.GetBytes("{url: \"https://secure.runescape.com/m=website-data/playerDetails.ws?names=[%22Name%22]\",  dataType: \"jsonp\"}");
+            //byte[] clanBytes = Encoding.Default.GetBytes("http://services.runescape.com/m=clan-hiscores/members_lite.ws?clanName=Vought");
+            //string test = Convert.ToBase64String(clanBytes);
+            //// this is important - make sure you specify type this way
+            //request.ContentType = "application/json; charset=UTF-8";
+            //request.Accept = "application/json";
+            //request.ContentLength = clanBytes.Length;
+            ////request.CookieContainer = Cookies;
+            ////request.UserAgent = currentUserAgent;
+            //Stream requestStream = request.GetRequestStream();
 
-            // this is important - make sure you specify type this way
-            request.ContentType = "application/json; charset=UTF-8";
-            request.Accept = "application/json";
-            request.ContentLength = postBytes.Length;
-            //request.CookieContainer = Cookies;
-            //request.UserAgent = currentUserAgent;
-            Stream requestStream = request.GetRequestStream();
+            //// now send it
+            ////requestStream.Write(postBytes, 0, postBytes.Length);
+            //requestStream.Close();
 
-            // now send it
-            requestStream.Write(postBytes, 0, postBytes.Length);
-            requestStream.Close();
+            //// grab te response and print it out to the console along with the status code
+            //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            //string result;
+            //using (StreamReader rdr = new StreamReader(response.GetResponseStream()))
+            //{
+            //    result = rdr.ReadToEnd();
+            //}
 
-            // grab te response and print it out to the console along with the status code
+
+
+
+            ////HttpResponseMessage response = await client.PostAsJsonAsync("https://secure.runescape.com/m=website-data/playerDetails.ws?names=[%22feerip%22]", "feerip");
+
+            ////https://secure.runescape.com/m=website-data/playerDetails.ws?names=[%22Name%22]
+
+            string html = "";
+
+            string url = "http://services.runescape.com/m=clan-hiscores/members_lite.ws?clanName=Vought";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.AutomaticDecompression = DecompressionMethods.GZip;
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            string result;
-            using (StreamReader rdr = new StreamReader(response.GetResponseStream()))
+            Stream stream = response.GetResponseStream();
+            TextFieldParser parser = new TextFieldParser(stream, Encoding.UTF7);
+            parser.TextFieldType = FieldType.Delimited;
+            parser.SetDelimiters(",");
+            List<string> clannies = new();
+            while (!parser.EndOfData)
             {
-                result = rdr.ReadToEnd();
+                string[] fields = parser.ReadFields();
+                clannies.Add(fields[0]);
             }
-
-
-
-
-            //HttpResponseMessage response = await client.PostAsJsonAsync("https://secure.runescape.com/m=website-data/playerDetails.ws?names=[%22feerip%22]", "feerip");
-
-            //https://secure.runescape.com/m=website-data/playerDetails.ws?names=[%22Name%22]
-
 
             stopwatch.Stop();
             TimeSpan ts1 = stopwatch.Elapsed;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -17,8 +18,8 @@ namespace FruitPantry
     {
         //private int executionCount = 0;
         private readonly ILogger<TimedHostedService> _logger;
-        private Timer _timer;
-        private Timer _timer2;
+        //private Timer _timer;
+        private System.Timers.Timer _timer2;
         private DiscordSocketClient _client;
 
         public TimedHostedService(/*ILogger<TimedHostedService> logger,*/ DiscordSocketClient client)
@@ -31,32 +32,47 @@ namespace FruitPantry
         {
             //_logger.LogInformation("FruitPantry Background Tasks Service running.");
 
-            _timer = new Timer(DoWork, _client, TimeSpan.Zero,
-                TimeSpan.FromMinutes(5));
+            //_timer = new Timer(DoWork, _client, TimeSpan.Zero,
+            //    TimeSpan.FromMinutes(5));
+
+            _timer2 = new(300000);
+            _timer2.Elapsed += DoWork;
+            _timer2.AutoReset = true;
+            _timer2.Enabled = true;
 
             return Task.CompletedTask;
         }
 
-        public Task LeaderboardAtResetStartAsync(CancellationToken stoppingToken)
+        public Task LeaderboardAtResetStartAsync(CancellationToken stoppingToken, int dailyHourToBroadcast, int hourlyMinuteToBroadcast = 00)
         {
             //_timer2 = new Timer(SomeMethod, _client, TimeSpan.Zero, TimeSpan.FromMinutes(1));
 
-            SomeMethod(_client);
+            BroadcastLeaderboardAtDesignatedTimesOfDay(_client, dailyHourToBroadcast, hourlyMinuteToBroadcast);
 
             return Task.CompletedTask;
         }
 
-        void SomeMethod(object state)
+        void BroadcastLeaderboardAtDesignatedTimesOfDay(object state, int dailyHourToBroadcast, int hourlyMinuteToBroadcast)
         {
             //var currentTime = DateTime.Now;
-            var targetTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 17, 00, 00);
+            var targetTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, dailyHourToBroadcast, hourlyMinuteToBroadcast, 00);
             var oneMinute = new TimeSpan(0, 1, 0);
+            var zero = new TimeSpan(0, 0, 0);
 
             while (true)
             {
                 //Console.WriteLine("========================Oneminute (REMOVE ME)");
                 Thread.Sleep(45000);
+                //Thread.Sleep(5000);
+                //_client.StopAsync();  //Shot in the dark debug testing for Discord.Net disconnecting bug=========================================
 
+                // This means we've already passed that time today at startup, so we need to compensate for it
+                if (targetTime - DateTime.Now < zero)
+                {
+                    targetTime = targetTime.AddDays(1);
+                }
+
+                // This means we're at this time now.
                 if (targetTime - DateTime.Now < oneMinute)
                 {
                     //Console.WriteLine("===========================Task Fired (REMOVE ME)");
@@ -72,7 +88,7 @@ namespace FruitPantry
 
         void ShowLeaderboard(object state)
         {
-            using (_client.GetGuild(769476224363397140).GetTextChannel(856679881547186196).EnterTypingState())
+            using (_client.GetGuild(769476224363397140).GetTextChannel(862385904719364096).EnterTypingState())
             {
 
 
@@ -115,31 +131,31 @@ namespace FruitPantry
                 {
                     largestNumber = grapePoints;
                     leadingColor = grape;
-                    leadingTeamPictureURL = DropLogEntry.FruitLogos.GrapeLogo;
+                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.grape;
                 }
                 if (bananaPoints > largestNumber)
                 {
                     largestNumber = bananaPoints;
                     leadingColor = banana;
-                    leadingTeamPictureURL = DropLogEntry.FruitLogos.BananaLogo;
+                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.banana;
                 }
                 if (applePoints > largestNumber)
                 {
                     largestNumber = applePoints;
                     leadingColor = apple;
-                    leadingTeamPictureURL = DropLogEntry.FruitLogos.AppleLogo;
+                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.apple;
                 }
                 if (peachPoints > largestNumber)
                 {
                     largestNumber = peachPoints;
                     leadingColor = peach;
-                    leadingTeamPictureURL = DropLogEntry.FruitLogos.PeachLogo;
+                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.peach;
                 }
                 if (fruitlessHeathenPoints > largestNumber)
                 {
                     largestNumber = fruitlessHeathenPoints;
                     leadingColor = fruitlessHeathen;
-                    leadingTeamPictureURL = "https://runescape.wiki/images/b/b8/Ugthanki_dung_detail.png";
+                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.fruitlessHeathen;
                 }
 
 
@@ -150,7 +166,8 @@ namespace FruitPantry
                 var builder = new EmbedBuilder()
                             //.WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
                             //.WithThumbnailUrl(entry._fruitLogo)
-                            .WithDescription("Fruit Wars Leaderboard")
+                            .WithTitle("Fruit Wars Leaderboard")
+                            .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                             .WithColor(leadingColor)
                             .WithThumbnailUrl(leadingTeamPictureURL)
                             .AddField("🍇Grapes🍇", $"`{Math.Round(grapePoints)}`", true)
@@ -170,7 +187,7 @@ namespace FruitPantry
 
                 var embed = builder.Build();
 
-                 _client.GetGuild(769476224363397140).GetTextChannel(856679881547186196).SendMessageAsync(null, false, embed);
+                 _client.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(null, false, embed);
 
                 //🍇🍌🍎🍑💩
 
@@ -178,7 +195,7 @@ namespace FruitPantry
             return;
         }
 
-        private void DoWork(object state)
+        private void DoWork(object state, ElapsedEventArgs e)
         {
             //var count = Interlocked.Increment(ref executionCount);
 
@@ -188,11 +205,10 @@ namespace FruitPantry
 
 
 
-            using (_client.GetGuild(769476224363397140).GetTextChannel(856679881547186196).EnterTypingState())
+            using (_client.GetGuild(769476224363397140).GetTextChannel(862385904719364096).EnterTypingState())
             {
                 FruitPantry thePantry = FruitPantry.GetFruitPantry();
 
-                //_client.GetGuild(769476224363397140).GetTextChannel(856679881547186196).SendMessageAsync($"Starting automatic scrape on Runepixels for drop log data. This may take a few minutes.");
 
                 int numTotalEntries = thePantry.ScrapeGameData(_client).Result;
 
@@ -200,26 +216,29 @@ namespace FruitPantry
 
                 FruitPantry.NumNewEntries = 0;
 
-                //_client.GetGuild(769476224363397140).GetTextChannel(856679881547186196).SendMessageAsync($"Scrape was successful. There are now `{numEntries}` entries in the drop log.");
             }
 
-            //_client.GetGuild(769476224363397140).GetTextChannel(856679881547186196).SendMessageAsync($"Hello from DoWork()!!!");
 
             //_logger.LogInformation("Background scrape fired. Now scraping Runepixels and updating both internal and google sheets databases.");
+           
         }
 
         public Task StopAsync(CancellationToken stoppingToken)
         {
             //_logger.LogInformation("FruitPantry Background Tasks Service is stopping.");
 
-            _timer?.Change(Timeout.Infinite, 0);
+            //_timer?.Change(Timeout.Infinite, 0);
+            _timer2.Stop();
+            _timer2.Dispose();
 
             return Task.CompletedTask;
         }
 
         public void Dispose()
         {
-            _timer?.Dispose();
+            _timer2.Stop();
+            _timer2.Dispose();
+            //_timer?.Dispose();
         }
     }
 }

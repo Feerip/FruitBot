@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define DEBUG_LIMITS
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Discord;
@@ -10,12 +11,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using FruitBot.Services;
+using System.Timers;
+using System.Runtime.CompilerServices;
 
 namespace FruitBot
 {
-    class Program
+    public class Program
     {
-        static async Task Main()
+         static async Task<int> Main(string[] args)
         {
             var builder = new HostBuilder()
                 .ConfigureAppConfiguration(x =>
@@ -27,10 +30,10 @@ namespace FruitBot
 
                     x.AddConfiguration(configuration);
                 })
-                .ConfigureLogging(x =>
+                .ConfigureLogging(logging =>
                 {
-                    x.AddConsole();
-                    x.SetMinimumLevel(LogLevel.Debug); // Defines what kind of information should be logged (e.g. Debug, Information, Warning, Critical) adjust this to your liking
+                    logging.AddConsole();
+                    logging.SetMinimumLevel(LogLevel.Trace); // Defines what kind of information should be logged (e.g. Debug, Information, Warning, Critical) adjust this to your liking
                 })
                 .ConfigureDiscordHost<DiscordSocketClient>((context, config) =>
                 {
@@ -39,27 +42,35 @@ namespace FruitBot
                         LogLevel = LogSeverity.Verbose, // Defines what kind of information should be logged from the API (e.g. Verbose, Info, Warning, Critical) adjust this to your liking
                         AlwaysDownloadUsers = true,
                         MessageCacheSize = 200,
-                    };
+                    };  
 
                     config.Token = context.Configuration["token"];
+
+                    
                 })
                 .UseCommandService((context, config) =>
                 {
                     config.CaseSensitiveCommands = false;
-                    config.LogLevel = LogSeverity.Verbose;
+                    config.LogLevel = LogSeverity.Debug;
                     config.DefaultRunMode = RunMode.Sync;
                 })
                 .ConfigureServices((context, services) =>
                 {
                     services.AddHostedService<CommandHandler>();
+                    //services.AddHostedService<ReliabilityService>();
                 })
                 .UseConsoleLifetime();
 
             var host = builder.Build();
             using (host)
             {
+                
                 await host.RunAsync();
+
             }
+            Environment.ExitCode = 1;
+            return 1;  
         }
+
     }
 }

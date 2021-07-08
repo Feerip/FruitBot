@@ -17,11 +17,15 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using Discord;
 using Discord.WebSocket;
+using System.Security.Cryptography;
+using static FruitPantry.FruitPantry;
 
 namespace FruitPantry
 {
     public sealed class FruitPantry
     {
+        public static string _version = "1.0";
+
         private static readonly FruitPantry _instance = new();
 
         private string[] _scopes = { SheetsService.Scope.Spreadsheets };
@@ -34,6 +38,10 @@ namespace FruitPantry
         private string _playerDatabaseRange;
         private string _itemDatabaseRange;
         private string _thresholdValuesRange;
+        private string _botVoteTrackerRange;
+        private string _gobVoteTrackerRange;
+        private string _bugReportRange;
+        private string _suggestionRange;
 
         private SheetsService _service;
         private GoogleCredential _credentials;
@@ -43,8 +51,8 @@ namespace FruitPantry
         private SortedDictionary<string, DropLogEntry> _dropLog;
         public Dictionary<string, ItemDatabaseEntry> _itemDatabase { get; private set; }
         public Dictionary<string, float> _classificationList { get; set; }
-        private Dictionary<string, List<string>> _discordUsers { get; set; }
-        private Dictionary<string, List<string>> _runescapePlayers { get; set; }
+        public Dictionary<string, List<string>> _discordUsers { get; set; }
+        public Dictionary<string, List<string>> _runescapePlayers { get; set; }
 
         public int _thresholdValue { get; set; }
         public float _thresholdMultiplier { get; set; }
@@ -77,12 +85,22 @@ namespace FruitPantry
         public readonly int ItemDBImageURL = 5;
         public readonly int ItemDBActiveFlag = 6;
 
+        public readonly int Version = 0;
+        public readonly int GoodBotVotes = 1;
+        public readonly int BadBotVotes = 2;
+        public readonly int GoodGobVotes = 3;
+        public readonly int BadGobVotes = 4;
+
+
         public static int NumNewEntries = 0;
+
+        Random _rand;
 
         public static class PointsCalculator
         {
             private static FruitPantry thePantry = GetFruitPantry();
 
+            // Calculates the point value of a single drop entry with all variables considered
             public static float CalculatePoints(DropLogEntry drop)
             {
 
@@ -138,8 +156,33 @@ namespace FruitPantry
                 return playerLog;
             }
 
+            // Calculates and returns the point value contributions of a given player
+            public static float PointsByRSN(string runescapeName)
+            {
+                return PointsForListOfEntries(FilterByPlayer(runescapeName));
+            }
+
+            // Calculates and returns the point value contributions of a given player - by Discord tag
+            public static float PointsByDiscordTag(string discordTag)
+            {
+                return PointsByRSN(GetFruitPantry()._discordUsers[discordTag][1]);
+            }
+
+            // Totals up and returns the point value for all drops in a given list.
+            public static float PointsForListOfEntries(List<DropLogEntry> entries)
+            {
+                float result = 0;
+                foreach (DropLogEntry entry in entries)
+                {
+                    result += float.Parse(entry._pointValue);
+                }
+                return result;
+            }
+
 
         }
+
+
 
 
 
@@ -174,6 +217,10 @@ namespace FruitPantry
             _thresholdValuesRange = $"Classifications!D2:E2";
             _itemDatabaseRange = $"Item Database!A2:G316";
             _playerDatabaseRange = $"Players!A2:C";
+            _botVoteTrackerRange = $"Vote Tracker!A2:C";
+            _gobVoteTrackerRange = $"Vote Tracker!A2:E";
+            _bugReportRange = $"Bug Reports!A2:D";
+            _suggestionRange = $"Suggestions!A2:D;";
 
             _dropLog = new(comparer: new LogEntryKeyComparer());
 
@@ -186,6 +233,13 @@ namespace FruitPantry
                 ApplicationName = _applicationName
             });
 
+            _rand = new();
+
+            RefreshEverything();
+        }
+
+        public void RefreshEverything()
+        {
             RefreshDropLog();
             RefreshClassifications();
             RefreshPlayerDatabase();
@@ -195,6 +249,13 @@ namespace FruitPantry
 
         public async Task<int> ScrapeGameData(IDiscordClient discordClient)
         {
+        //    List<DropLogEntry> scraped = DropLogEntry.CreateListFullAuto().Result;
+
+        //    foreach (DropLogEntry entry in scraped)
+        //    {
+        //        entry._fruit = FruitResources.Text.Get(_runescapePlayers[entry._playerName][0]);
+        //    }
+
             await Add(DropLogEntry.CreateListFullAuto().Result, (DiscordSocketClient)discordClient);
 
 
@@ -277,8 +338,8 @@ namespace FruitPantry
             {
                 foreach (var row in values)
                 {
-                    discordUsersOutput.Add(row[PlayerDB_DiscordTag].ToString(), new() { row[PlayerDB_Fruit].ToString(), row[PlayerDB_RSN].ToString() });
-                    runescapePlayersOutput.Add(row[PlayerDB_RSN].ToString(), new() { row[PlayerDB_Fruit].ToString(), row[PlayerDB_DiscordTag].ToString() });
+                    discordUsersOutput.Add(row[PlayerDB_DiscordTag].ToString(), new() { row[PlayerDB_Fruit].ToString(), row[PlayerDB_RSN].ToString().ToLower()});
+                    runescapePlayersOutput.Add(row[PlayerDB_RSN].ToString().ToLower(), new() { row[PlayerDB_Fruit].ToString(), row[PlayerDB_DiscordTag].ToString() });
                 }
             }
             _discordUsers = discordUsersOutput;
@@ -385,6 +446,33 @@ namespace FruitPantry
             return _dropLog;
         }
 
+        public void RegisterPlayer(string runescapeName, string fruit, string discordTag)
+        {
+            List<IList<object>> newEntries = new();
+
+
+            List<object> rowToAppend = new();
+            rowToAppend.Add(runescapeName);
+            rowToAppend.Add(fruit);
+            rowToAppend.Add(discordTag);
+
+            newEntries.Add(rowToAppend);
+
+            ValueRange requestBody = new();
+            requestBody.Values = newEntries;
+            SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum VIO = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
+            SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum IDO = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
+
+            SpreadsheetsResource.ValuesResource.AppendRequest request = _service.Spreadsheets.Values.Append(requestBody, _spreadsheetId, _playerDatabaseRange);
+            request.ValueInputOption = VIO;
+            request.InsertDataOption = IDO;
+
+            Data.AppendValuesResponse response = request.Execute();
+
+            RefreshEverything();
+            return;
+        }
+
         public async Task<SortedDictionary<string, DropLogEntry>> Add(List<DropLogEntry> entries, DiscordSocketClient discordClient)
         {
             //List<DropLogEntry> uniqueEntries = new();
@@ -397,18 +485,18 @@ namespace FruitPantry
                     // _runescapePlayers list index is <KEY>(PlayerName){Fruit, DiscordTag}
                     try
                     {
-                        entry._fruit = _runescapePlayers[entry._playerName][0];
+                        entry._fruit = _runescapePlayers[entry._playerName.ToLower()][0];
                     }
-                    catch(KeyNotFoundException e)
+                    catch (KeyNotFoundException e)
                     {
-                        //await discordClient.GetGuild(769476224363397140).GetTextChannel(856679881547186196).SendMessageAsync(
+                        //await discordClient.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(
                         //    $"Warning: Found a fruitless heathen ({entry._playerName}) in scraped Runepixels data. This drop will not be added to the drop log.");
                         //continue;
                     }
-                        entry._bossName = _itemDatabase[entry._dropName.ToLower()]._classification;
-                        entry._pointValue = PointsCalculator.CalculatePoints(entry).ToString();
-                        await Add(entry);
-                    
+                    entry._bossName = _itemDatabase[entry._dropName.ToLower()]._classification;
+                    entry._pointValue = PointsCalculator.CalculatePoints(entry).ToString();
+                    await Add(entry);
+
                 }
             }
 
@@ -492,5 +580,197 @@ namespace FruitPantry
         {
             return _dropLog;
         }
+
+        public class VoteResponse
+        {
+            public string version = "";
+            public int goodBot = 0;
+            public int badBot = 0;
+            public string message;
+        }
+
+        public VoteResponse QueryGoodBot()
+        {
+            // 1 vote for good bot
+            VoteResponse voteResponse = QueryBotVotes(1, 0);
+            voteResponse.message = FruitBotResponses.goodBotResponses[_rand.Next(FruitBotResponses.goodBotResponses.Count())];
+
+            return voteResponse;
+        }
+        public VoteResponse QueryBadBot()
+        {
+            // 2 votes for bad bot
+            VoteResponse voteResponse = QueryBotVotes(0, 2);
+            voteResponse.message = FruitBotResponses.badBotResponses[_rand.Next(FruitBotResponses.badBotResponses.Count())];
+
+            return voteResponse;
+        }
+
+        private VoteResponse QueryBotVotes(int upvoteInput = 0, int downvoteInput = 0)
+        {
+            VoteResponse voteResponse = new();
+
+            // Download part
+            SpreadsheetsResource.ValuesResource.GetRequest request = _service.Spreadsheets.Values.Get(_spreadsheetId, _botVoteTrackerRange);
+            ValueRange response = request.Execute();
+            IList<IList<object>> values = response.Values;
+
+            if (values != null && values.Count > 0)
+            {
+                foreach (var row in values)
+                {
+                    voteResponse.version = row[Version].ToString();
+                    voteResponse.goodBot = int.Parse(row[GoodBotVotes].ToString());
+                    voteResponse.badBot = int.Parse(row[BadBotVotes].ToString());
+                }
+            }
+            else
+                return null;
+
+            // Apply the new vote(s)
+            voteResponse.goodBot += upvoteInput;
+            voteResponse.badBot += downvoteInput;
+
+            // Upload part
+            List<IList<object>> newEntries = new();
+            List<object> rowToAppend = new();
+            rowToAppend.Add(voteResponse.version.ToString());
+            rowToAppend.Add(voteResponse.goodBot);
+            rowToAppend.Add(voteResponse.badBot);
+
+            newEntries.Add(rowToAppend);
+
+            ValueRange requestBody = new();
+            requestBody.Values = newEntries;
+
+            SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum VIO = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
+            
+            SpreadsheetsResource.ValuesResource.UpdateRequest request2 = _service.Spreadsheets.Values.Update(requestBody, _spreadsheetId, _botVoteTrackerRange);
+            request2.ValueInputOption = VIO;
+
+            Data.UpdateValuesResponse response2 = request2.Execute();
+
+
+
+            return voteResponse;
+        }
+        public VoteResponse QueryGoodGob()
+        {
+            // 1 vote for good gob
+            VoteResponse voteResponse = QueryGobVotes(1, 0);
+            //voteResponse.message = FruitBotResponses.goodBotResponses[_rand.Next(FruitBotResponses.goodBotResponses.Count())];
+
+            return voteResponse;
+        }
+        public VoteResponse QueryBadGob()
+        {
+            // 1 votes for bad gob
+            VoteResponse voteResponse = QueryGobVotes(0, 1);
+            //voteResponse.message = FruitBotResponses.badBotResponses[_rand.Next(FruitBotResponses.badBotResponses.Count())];
+
+            return voteResponse;
+        }
+        private VoteResponse QueryGobVotes(int upvoteInput = 0, int downvoteInput = 0)
+        {
+            VoteResponse voteResponse = new();
+
+            // Download part
+            SpreadsheetsResource.ValuesResource.GetRequest request = _service.Spreadsheets.Values.Get(_spreadsheetId, _gobVoteTrackerRange);
+            ValueRange response = request.Execute();
+            IList<IList<object>> values = response.Values;
+
+            if (values != null && values.Count > 0)
+            {
+                foreach (var row in values)
+                {
+                    voteResponse.version = row[Version].ToString();
+                    voteResponse.goodBot = int.Parse(row[GoodGobVotes].ToString());
+                    voteResponse.badBot = int.Parse(row[BadGobVotes].ToString());
+                }
+            }
+            else
+                return null;
+
+            // Apply the new vote(s)
+            voteResponse.goodBot += upvoteInput;
+            voteResponse.badBot += downvoteInput;
+
+            // Upload part
+            List<IList<object>> newEntries = new();
+            List<object> rowToAppend = new();
+            rowToAppend.Add(voteResponse.version.ToString());
+            rowToAppend.Add(null);
+            rowToAppend.Add(null);
+            rowToAppend.Add(voteResponse.goodBot);
+            rowToAppend.Add(voteResponse.badBot);
+
+            newEntries.Add(rowToAppend);
+
+            ValueRange requestBody = new();
+            requestBody.Values = newEntries;
+
+            SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum VIO = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
+
+            SpreadsheetsResource.ValuesResource.UpdateRequest request2 = _service.Spreadsheets.Values.Update(requestBody, _spreadsheetId, _gobVoteTrackerRange);
+            request2.ValueInputOption = VIO;
+
+            Data.UpdateValuesResponse response2 = request2.Execute();
+
+
+
+            return voteResponse;
+        }
+
+        public void UploadBugReport(string discordTag, string report, string timestamp)
+        {
+            List<IList<object>> newEntries = new();
+            List<object> rowToAppend = new();
+            rowToAppend.Add(discordTag);
+            rowToAppend.Add(report);
+            rowToAppend.Add(timestamp);
+            rowToAppend.Add("Received");
+
+            newEntries.Add(rowToAppend);
+
+            ValueRange requestBody = new();
+            requestBody.Values = newEntries;
+
+            SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum VIO = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
+            SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum IDO = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
+
+            SpreadsheetsResource.ValuesResource.AppendRequest request2 = _service.Spreadsheets.Values.Append(requestBody, _spreadsheetId, _bugReportRange);
+            request2.ValueInputOption = VIO;
+            request2.InsertDataOption = IDO;
+
+            Data.AppendValuesResponse response2 = request2.Execute();
+        }
+
+        public void UploadSuggestion(string discordTag, string suggestionText, string timestamp)
+        {
+            List<IList<object>> newEntries = new();
+            List<object> rowToAppend = new();
+            rowToAppend.Add(discordTag);
+            rowToAppend.Add(suggestionText);
+            rowToAppend.Add(timestamp);
+            rowToAppend.Add("Received");
+
+            newEntries.Add(rowToAppend);
+
+            ValueRange requestBody = new();
+            requestBody.Values = newEntries;
+
+            SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum VIO = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
+            SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum IDO = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
+
+            SpreadsheetsResource.ValuesResource.AppendRequest request2 = _service.Spreadsheets.Values.Append(requestBody, _spreadsheetId, _suggestionRange);
+            request2.ValueInputOption = VIO;
+            request2.InsertDataOption = IDO;
+
+            Data.AppendValuesResponse response2 = request2.Execute();
+        }
     }
+
+   
+
+
 }
