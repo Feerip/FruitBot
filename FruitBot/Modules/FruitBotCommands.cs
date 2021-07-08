@@ -116,24 +116,25 @@ namespace FruitBot.Modules
                         dropIconURL = entry._dropIconWEBP;
 
                     var builder = new EmbedBuilder()
-                        //.WithImageUrl("https://cdn.discordapp.com/attachments/856679881547186196/859871618436562944/bandoshelmet_50.webp")
-                        //.WithImageUrl(entry._dropIconWEBP ?? "null") 
                         .WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                        //.WithThumbnailUrl(entry._dropIconWEBP ?? "null")
                         .WithThumbnailUrl(entry._fruitLogo)
-                        .WithDescription("Last Drop: ")
+                        .WithTitle("Last Drop:")
+                        .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                         .WithColor(new Color(00, 00, 255))
                         .AddField("Player Name", entry._playerName ?? "null", true)
                         .AddField("Drop", entry._dropName ?? "null", true)
+                        .AddField("Points", entry._pointValue, true)
+                        .AddField("Dropped At", entry._timestamp, true)
+                        .AddField("Boss", entry._bossName, true)
                         //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
                         //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
                         //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
                         //.WithCurrentTimestamp()
-                        ;
+    ;
 
                     var embed = builder.Build();
 
-                    await Context.Channel.SendMessageAsync(null, false, embed);
+                    await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new MessageReference(Context.Message.Id));
                     idx++;
                 }
 
@@ -397,7 +398,7 @@ namespace FruitBot.Modules
             var builder = new EmbedBuilder()
             //.WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
             //.WithThumbnailUrl(entry._fruitLogo)
-            .WithDescription($"Fruit Wars contributions for {mention}/{rsn}")
+            .WithDescription($"Fruit Wars contributions for {mention}/RSN {rsn}")
             .WithColor(color)
             .WithThumbnailUrl(thumbnail)
             .AddField($"{emoji}{fruitPlural}{emoji}", $"`{Math.Round(result)}`", true)
@@ -425,7 +426,7 @@ namespace FruitBot.Modules
                 return;
             }
             float result = FruitPantry.FruitPantry.PointsCalculator.PointsByRSN(playerName);
-            string fruit = _thePantry._runescapePlayers[playerName][0];
+            string fruit = _thePantry._runescapePlayers[playerName.ToLower()][0];
             string fruitPlural = FruitResources.TextPlural.Get(fruit);
             string emoji = FruitResources.Emojis.Get(fruit);
             string thumbnail = FruitResources.Logos.Get(fruit);
@@ -454,10 +455,10 @@ namespace FruitBot.Modules
         }
 
         [Command("bugreport")]
-        public async Task BugReport([Remainder]string report = null)
+        public async Task BugReport([Remainder] string report = null)
         {
             string botMention = Context.Client.CurrentUser.Mention;
-            
+
             using (Context.Channel.EnterTypingState())
             {
                 if (report == null)
@@ -541,25 +542,25 @@ namespace FruitBot.Modules
                 string[] splitUrl;
                 do
                 {
-                HttpClient httpClient = new();
-                string result = await httpClient.GetStringAsync("https://reddit.com/r/dogpictures/random.json?limit=1");
-                JArray array = JArray.Parse(result);
-                JObject post = JObject.Parse(array[0]["data"]["children"][0]["data"].ToString());
+                    HttpClient httpClient = new();
+                    string result = await httpClient.GetStringAsync("https://reddit.com/r/dogpictures/random.json?limit=1");
+                    JArray array = JArray.Parse(result);
+                    JObject post = JObject.Parse(array[0]["data"]["children"][0]["data"].ToString());
 
-                string imageUrl = post["url"].ToString();
+                    string imageUrl = post["url"].ToString();
 
-                System.Net.HttpWebRequest webRequest = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create(imageUrl);
-                webRequest.AllowWriteStreamBuffering = true;
-                webRequest.Timeout = 30000;
+                    System.Net.HttpWebRequest webRequest = (System.Net.HttpWebRequest)System.Net.HttpWebRequest.Create(imageUrl);
+                    webRequest.AllowWriteStreamBuffering = true;
+                    webRequest.Timeout = 30000;
 
-                System.Net.WebResponse webResponse = webRequest.GetResponse();
+                    System.Net.WebResponse webResponse = webRequest.GetResponse();
 
-                stream = webResponse.GetResponseStream();
+                    stream = webResponse.GetResponseStream();
 
-                splitUrl = imageUrl.Split('.');
+                    splitUrl = imageUrl.Split('.');
 
                 } while (splitUrl.Last().Count() > 5);
-       
+
                 await Context.Channel.SendFileAsync(stream, $"nsfw.{splitUrl.Last()}", isSpoiler: true, messageReference: new(Context.Message.Id));
             }
             _logger.LogInformation($"{Context.User.Username} executed the nsfw command!");

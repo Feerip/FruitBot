@@ -54,7 +54,7 @@ namespace FruitPantry
         public Dictionary<string, List<string>> _discordUsers { get; set; }
         public Dictionary<string, List<string>> _runescapePlayers { get; set; }
 
-        public int _thresholdValue { get; set; }
+        public int _universalThresholdValue { get; set; }
         public float _thresholdMultiplier { get; set; }
 
 
@@ -124,7 +124,14 @@ namespace FruitPantry
             // Takes the drop log of a single player and returns the threshold level they are currently at for any given boss
             public static int ThresholdLevel(string playerName, string bossName)
             {
-                int thresholdValue = thePantry._thresholdValue;
+                int thresholdValue = thePantry._universalThresholdValue;
+
+                // If universal threshold is set to 0 in db, that means admins don't want points being awarded right now. 
+                // They should have also set the threshold multiplier to 0. In which case, returning 1 marks the drop as
+                // triggering the threshold, and thus multiplying the point value by 0, getting a final 
+                // point value of 0 for the drop.
+                if (thresholdValue == 0)
+                    return 1;
 
                 List<DropLogEntry> playerLog = FilterByPlayer(playerName);
 
@@ -321,7 +328,7 @@ namespace FruitPantry
                 thresholdValue = int.Parse(values[0][ThresholdValue].ToString());
                 thresholdMultiplier = float.Parse(values[0][ThresholdMultiplier].ToString());
             }
-            _thresholdValue = thresholdValue;
+            _universalThresholdValue = thresholdValue;
             _thresholdMultiplier = thresholdMultiplier;
 
         }
