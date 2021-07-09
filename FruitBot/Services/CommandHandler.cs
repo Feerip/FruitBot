@@ -44,10 +44,16 @@ namespace FruitBot.Services
 
 
             _service.CommandExecuted += OnCommandExecuted;
+            _client.Ready += SetStatusAsync;
             _client.Ready += _client_Ready;
 
 
             await _service.AddModulesAsync(Assembly.GetEntryAssembly(), _provider);
+        }
+
+        private async Task SetStatusAsync()
+        {
+            await _client.SetGameAsync($"@FruitBot help", null, ActivityType.Listening);
         }
 
         private async Task _client_Ready()
