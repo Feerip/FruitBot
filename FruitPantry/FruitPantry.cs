@@ -247,11 +247,20 @@ namespace FruitPantry
 
         public SortedDictionary<string, DropLogEntry> RefreshEverything()
         {
-            RefreshDropLog();
-            RefreshClassifications();
-            RefreshPlayerDatabase();
-            RefreshThresholdValues();
-            RefreshItemDatabase();
+            Parallel.For(0, 5, idx =>
+            {
+                if (idx == 0)
+                    RefreshDropLog();
+                else if (idx == 1)
+                    RefreshClassifications();
+                else if (idx == 2)
+                    RefreshPlayerDatabase();
+                else if (idx == 3)
+                    RefreshThresholdValues();
+                else if (idx == 4)
+                    RefreshItemDatabase();
+
+            });
 
             return _dropLog;
         }
@@ -259,12 +268,12 @@ namespace FruitPantry
         public async Task<int> ScrapeGameData(IDiscordClient discordClient)
         {
             RefreshEverything();
-        //    List<DropLogEntry> scraped = DropLogEntry.CreateListFullAuto().Result;
+            //    List<DropLogEntry> scraped = DropLogEntry.CreateListFullAuto().Result;
 
-        //    foreach (DropLogEntry entry in scraped)
-        //    {
-        //        entry._fruit = FruitResources.Text.Get(_runescapePlayers[entry._playerName][0]);
-        //    }
+            //    foreach (DropLogEntry entry in scraped)
+            //    {
+            //        entry._fruit = FruitResources.Text.Get(_runescapePlayers[entry._playerName][0]);
+            //    }
 
             await Add(DropLogEntry.CreateListFullAuto().Result, (DiscordSocketClient)discordClient);
 
@@ -348,7 +357,7 @@ namespace FruitPantry
             {
                 foreach (var row in values)
                 {
-                    discordUsersOutput.Add(row[PlayerDB_DiscordTag].ToString(), new() { row[PlayerDB_Fruit].ToString(), row[PlayerDB_RSN].ToString().ToLower()});
+                    discordUsersOutput.Add(row[PlayerDB_DiscordTag].ToString(), new() { row[PlayerDB_Fruit].ToString(), row[PlayerDB_RSN].ToString().ToLower() });
                     runescapePlayersOutput.Add(row[PlayerDB_RSN].ToString().ToLower(), new() { row[PlayerDB_Fruit].ToString(), row[PlayerDB_DiscordTag].ToString() });
                 }
             }
@@ -654,7 +663,7 @@ namespace FruitPantry
             requestBody.Values = newEntries;
 
             SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum VIO = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
-            
+
             SpreadsheetsResource.ValuesResource.UpdateRequest request2 = _service.Spreadsheets.Values.Update(requestBody, _spreadsheetId, _botVoteTrackerRange);
             request2.ValueInputOption = VIO;
 
@@ -780,7 +789,7 @@ namespace FruitPantry
         }
     }
 
-   
+
 
 
 }
