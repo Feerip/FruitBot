@@ -245,17 +245,20 @@ namespace FruitPantry
             RefreshEverything();
         }
 
-        public void RefreshEverything()
+        public SortedDictionary<string, DropLogEntry> RefreshEverything()
         {
             RefreshDropLog();
             RefreshClassifications();
             RefreshPlayerDatabase();
             RefreshThresholdValues();
             RefreshItemDatabase();
+
+            return _dropLog;
         }
 
         public async Task<int> ScrapeGameData(IDiscordClient discordClient)
         {
+            RefreshEverything();
         //    List<DropLogEntry> scraped = DropLogEntry.CreateListFullAuto().Result;
 
         //    foreach (DropLogEntry entry in scraped)
@@ -266,7 +269,7 @@ namespace FruitPantry
             await Add(DropLogEntry.CreateListFullAuto().Result, (DiscordSocketClient)discordClient);
 
 
-            return _dropLog.Count;
+            return RefreshEverything().Count;
         }
 
         public void RefreshClassifications()
@@ -401,7 +404,7 @@ namespace FruitPantry
             SpreadsheetsResource.ValuesResource.ClearRequest request = _service.Spreadsheets.Values.Clear(requestBody, _spreadsheetId, _dropLogRange);
             Data.ClearValuesResponse response = request.Execute();
 
-            return RefreshDropLog();
+            return RefreshEverything();
         }
 
 

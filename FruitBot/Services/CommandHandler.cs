@@ -24,7 +24,7 @@ namespace FruitBot.Services
         private readonly DiscordSocketClient _client;
         private readonly CommandService _service;
         private readonly IConfiguration _config;
-        private readonly FruitPantry.FruitPantry thePantry = FruitPantry.FruitPantry.GetFruitPantry();
+        private readonly FruitPantry.FruitPantry _thePantry = FruitPantry.FruitPantry.GetFruitPantry();
         //private readonly ReliabilityService _reliabilityService;
 
         public CommandHandler(IServiceProvider provider, DiscordSocketClient client, CommandService service, IConfiguration config)
@@ -132,7 +132,7 @@ namespace FruitBot.Services
 
             if (message.Content.ToLower().Equals("good bot"))
             {
-                FruitPantry.FruitPantry.VoteResponse response = thePantry.QueryGoodBot();
+                FruitPantry.FruitPantry.VoteResponse response = _thePantry.QueryGoodBot();
 
                 await context.Channel.SendMessageAsync(response.message, messageReference: new(context.Message.Id));
                 await context.Channel.SendMessageAsync($"Upvotes: `{response.goodBot}`, Downvotes: `{response.badBot}`");
@@ -141,14 +141,14 @@ namespace FruitBot.Services
 
             if (message.Content.ToLower().Equals("bad bot"))
             {
-                FruitPantry.FruitPantry.VoteResponse response = thePantry.QueryBadBot();
+                FruitPantry.FruitPantry.VoteResponse response = _thePantry.QueryBadBot();
 
                 await context.Channel.SendMessageAsync(response.message, messageReference: new(context.Message.Id));
             }
 
             if (message.Content.ToLower().Equals("good gob"))
             {
-                FruitPantry.FruitPantry.VoteResponse response = thePantry.QueryGoodGob();
+                FruitPantry.FruitPantry.VoteResponse response = _thePantry.QueryGoodGob();
 
                 //await context.Channel.SendMessageAsync(response.message, messageReference: new(context.Message.Id));
                 await context.Channel.SendMessageAsync($"Upvotes: `{response.goodBot}`, Downvotes: `{response.badBot}`", messageReference: new(context.Message.Id));
@@ -156,7 +156,7 @@ namespace FruitBot.Services
             }
             if (message.Content.ToLower().Equals("bad gob"))
             {
-                FruitPantry.FruitPantry.VoteResponse response = thePantry.QueryBadGob();
+                FruitPantry.FruitPantry.VoteResponse response = _thePantry.QueryBadGob();
                 await context.Channel.SendMessageAsync($"Upvotes: `{response.goodBot}`, Downvotes: `{response.badBot}`", messageReference: new(context.Message.Id));
             }
 
@@ -170,6 +170,7 @@ namespace FruitBot.Services
 
         private async Task OnPrivateMessageReceived(SocketMessage arg, SocketCommandContext context, SocketUserMessage message, int argPos)
         {
+            _thePantry.RefreshEverything();
             Random rand = new(DateTime.Now.Millisecond);
             List<string> grapeJob = new();
             grapeJob.Add("Also 🍇Grape🍇 is the superior fruit.");

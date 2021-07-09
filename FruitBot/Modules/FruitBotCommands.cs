@@ -72,6 +72,7 @@ namespace FruitBot.Modules
         [Command("last", RunMode = RunMode.Async)]
         public async Task Last(int numDrops = 1, SocketGuildUser user = null)
         {
+            _thePantry.RefreshEverything();
             FruitPantry.FruitPantry thePantry = FruitPantry.FruitPantry.GetFruitPantry();
             if (user == null)
             {
@@ -178,13 +179,7 @@ namespace FruitBot.Modules
             using (Context.Channel.EnterTypingState())
             {
 
-                FruitPantry.FruitPantry thePantry = FruitPantry.FruitPantry.GetFruitPantry();
-
-                int numEntries = thePantry.RefreshDropLog().Count;
-                thePantry.RefreshClassifications();
-                thePantry.RefreshItemDatabase();
-                thePantry.RefreshPlayerDatabase();
-                thePantry.RefreshThresholdValues();
+                int numEntries = _thePantry.RefreshEverything().Count;
 
                 await ReplyAsync($"All databases refreshed from google sheets.", messageReference: new(Context.Message.Id));
 
@@ -218,7 +213,6 @@ namespace FruitBot.Modules
             await ReplyAsync($"Starting scrape on Runepixels for drop log data. This may take a few minutes.", messageReference: new(Context.Message.Id));
 
             _logger.LogInformation($"{Context.User.Username} invoked the scrape command. This may take a few minutes.");
-
 
             using (Context.Channel.EnterTypingState())
             {
@@ -260,6 +254,7 @@ namespace FruitBot.Modules
         [Command("leaderboard", RunMode = RunMode.Async)]
         public async Task Leaderboard(SocketGuildUser user = null)
         {
+            _thePantry.RefreshEverything();
 
             float grapePoints = 0;
             float bananaPoints = 0;
@@ -363,11 +358,13 @@ namespace FruitBot.Modules
         {
             await Context.User.SendMessageAsync($"Hello {Context.User.Mention}, you've requested to sign up for Fruit Wars. " +
                 $"Please confirm by responding with your Runescape Player Name below in this format (with exact capitalization and any spaces): {Context.Client.CurrentUser.Mention} RSN");
+            
         }
 
         [Command("points", RunMode = RunMode.Async)]
         public async Task Points(SocketGuildUser user = null)
         {
+            _thePantry.RefreshEverything();
             string discordTag;
             float result = 0;
             string mention;
@@ -419,6 +416,7 @@ namespace FruitBot.Modules
         [Command("pointsrsn", RunMode = RunMode.Async)]
         public async Task Points(string playerName = null)
         {
+            _thePantry.RefreshEverything();
             string botMention = Context.Client.CurrentUser.Mention;
             if (playerName == null)
             {
@@ -484,12 +482,12 @@ namespace FruitBot.Modules
             {
                 if (suggestionText == null)
                 {
-                    await Context.Channel.SendMessageAsync($"Syntax: {botMention} bugreport <text>", messageReference: new(Context.Message.Id));
+                    await Context.Channel.SendMessageAsync($"Syntax: {botMention} suggestion <text>", messageReference: new(Context.Message.Id));
                     return;
                 }
                 string discordTag = Context.Message.Author.Username + "#" + Context.Message.Author.Discriminator;
 
-                _thePantry.UploadBugReport(discordTag, suggestionText, DateTime.Now.ToString());
+                _thePantry.UploadSuggestion(discordTag, suggestionText, DateTime.Now.ToString());
 
                 await Context.Channel.SendMessageAsync($"Suggestion successfully uploaded, thank you! If you'd like, you can see the status of your suggestion in the Google Spreadsheet. " +
                     $"Use \"{botMention} leaderboard\" to get the link to the spreadsheet.", messageReference: new(Context.Message.Id));
