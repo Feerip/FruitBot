@@ -127,10 +127,10 @@ namespace FruitBot.Modules
                         .AddField("Points", entry._pointValue, true)
                         .AddField("Dropped At", entry._timestamp, true)
                         .AddField("Boss", entry._bossName, true)
-                        //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
-                        //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
-                        //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
-                        //.WithCurrentTimestamp()
+    //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
+    //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
+    //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
+    //.WithCurrentTimestamp()
     ;
 
                     var embed = builder.Build();
@@ -254,101 +254,104 @@ namespace FruitBot.Modules
         [Command("leaderboard", RunMode = RunMode.Async)]
         public async Task Leaderboard(SocketGuildUser user = null)
         {
-            _thePantry.RefreshEverything();
 
-            float grapePoints = 0;
-            float bananaPoints = 0;
-            float applePoints = 0;
-            float peachPoints = 0;
-            float fruitlessHeathenPoints = 0;
-
-
-            float largestNumber = 0;
-            Color leadingColor = FruitResources.Colors.fruitlessHeathen;
-            string leadingTeamPictureURL = "https://runescape.wiki/images/b/b8/Ugthanki_dung_detail.png";
-
-
-
-            FruitPantry.FruitPantry thePantry = FruitPantry.FruitPantry.GetFruitPantry();
-
-            // Build points values
-            foreach (DropLogEntry entry in thePantry.GetDropLog().Values)
+            using (Context.Channel.EnterTypingState())
             {
-                if (entry._fruit.Equals(FruitResources.Text.grape))
-                    grapePoints += float.Parse(entry._pointValue);
-                else if (entry._fruit.Equals(FruitResources.Text.banana))
-                    bananaPoints += float.Parse(entry._pointValue);
-                else if (entry._fruit.Equals(FruitResources.Text.apple))
-                    applePoints += float.Parse(entry._pointValue);
-                else if (entry._fruit.Equals(FruitResources.Text.peach))
-                    peachPoints += float.Parse(entry._pointValue);
-                else
-                    fruitlessHeathenPoints += float.Parse(entry._pointValue);
+                _thePantry.RefreshEverything();
+
+                float grapePoints = 0;
+                float bananaPoints = 0;
+                float applePoints = 0;
+                float peachPoints = 0;
+                float fruitlessHeathenPoints = 0;
+
+
+                float largestNumber = 0;
+                Color leadingColor = FruitResources.Colors.fruitlessHeathen;
+                string leadingTeamPictureURL = "https://runescape.wiki/images/b/b8/Ugthanki_dung_detail.png";
+
+
+
+                FruitPantry.FruitPantry thePantry = FruitPantry.FruitPantry.GetFruitPantry();
+
+                // Build points values
+                foreach (DropLogEntry entry in thePantry.GetDropLog().Values)
+                {
+                    if (entry._fruit.Equals(FruitResources.Text.grape))
+                        grapePoints += float.Parse(entry._pointValue);
+                    else if (entry._fruit.Equals(FruitResources.Text.banana))
+                        bananaPoints += float.Parse(entry._pointValue);
+                    else if (entry._fruit.Equals(FruitResources.Text.apple))
+                        applePoints += float.Parse(entry._pointValue);
+                    else if (entry._fruit.Equals(FruitResources.Text.peach))
+                        peachPoints += float.Parse(entry._pointValue);
+                    else
+                        fruitlessHeathenPoints += float.Parse(entry._pointValue);
+                }
+                // Now find the largest one
+                if (grapePoints > largestNumber)
+                {
+                    largestNumber = grapePoints;
+                    leadingColor = FruitResources.Colors.grape;
+                    leadingTeamPictureURL = FruitResources.Logos.grape;
+                }
+                if (bananaPoints > largestNumber)
+                {
+                    largestNumber = bananaPoints;
+                    leadingColor = FruitResources.Colors.banana;
+                    leadingTeamPictureURL = FruitResources.Logos.banana;
+                }
+                if (applePoints > largestNumber)
+                {
+                    largestNumber = applePoints;
+                    leadingColor = FruitResources.Colors.apple;
+                    leadingTeamPictureURL = FruitResources.Logos.apple;
+                }
+                if (peachPoints > largestNumber)
+                {
+                    largestNumber = peachPoints;
+                    leadingColor = FruitResources.Colors.peach;
+                    leadingTeamPictureURL = FruitResources.Logos.peach;
+                }
+                if (fruitlessHeathenPoints > largestNumber)
+                {
+                    largestNumber = fruitlessHeathenPoints;
+                    leadingColor = FruitResources.Colors.fruitlessHeathen;
+                    leadingTeamPictureURL = "https://runescape.wiki/images/b/b8/Ugthanki_dung_detail.png";
+                }
+
+
+
+                // Find leading team and assign color/picture based on that
+
+
+                var builder = new EmbedBuilder()
+                            //.WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
+                            //.WithThumbnailUrl(entry._fruitLogo)
+                            .WithTitle("Fruit Wars Leaderboard")
+                            .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
+                            .WithColor(leadingColor)
+                            .WithThumbnailUrl(leadingTeamPictureURL)
+                            .AddField("🍇Grapes🍇", $"`{Math.Round(grapePoints)}`", true)
+                            .AddField("\u200B", '\u200B', true)
+                            .AddField("🍌Bananas🍌", $"`{Math.Round(bananaPoints)}`", true)
+                            .AddField("🍎Apples🍎", $"`{Math.Round(applePoints)}`", true)
+                            .AddField("\u200B", '\u200B', true)
+                            .AddField("🍑Peaches🍑", $"`{Math.Round(peachPoints)}`", true)
+                            .AddField("\u200B", '\u200B', false)
+                            .AddField("💩Fruitless Heathens💩", $"`{Math.Round(fruitlessHeathenPoints)}`", false)
+
+                            //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
+                            //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
+                            //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
+                            .WithCurrentTimestamp()
+                            .WithFooter("Last Update")
+                            ;
+
+                var embed = builder.Build();
+
+                await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
             }
-            // Now find the largest one
-            if (grapePoints > largestNumber)
-            {
-                largestNumber = grapePoints;
-                leadingColor = FruitResources.Colors.grape;
-                leadingTeamPictureURL = FruitResources.Logos.grape;
-            }
-            if (bananaPoints > largestNumber)
-            {
-                largestNumber = bananaPoints;
-                leadingColor = FruitResources.Colors.banana;
-                leadingTeamPictureURL = FruitResources.Logos.banana;
-            }
-            if (applePoints > largestNumber)
-            {
-                largestNumber = applePoints;
-                leadingColor = FruitResources.Colors.apple;
-                leadingTeamPictureURL = FruitResources.Logos.apple;
-            }
-            if (peachPoints > largestNumber)
-            {
-                largestNumber = peachPoints;
-                leadingColor = FruitResources.Colors.peach;
-                leadingTeamPictureURL = FruitResources.Logos.peach;
-            }
-            if (fruitlessHeathenPoints > largestNumber)
-            {
-                largestNumber = fruitlessHeathenPoints;
-                leadingColor = FruitResources.Colors.fruitlessHeathen;
-                leadingTeamPictureURL = "https://runescape.wiki/images/b/b8/Ugthanki_dung_detail.png";
-            }
-
-
-
-            // Find leading team and assign color/picture based on that
-
-
-            var builder = new EmbedBuilder()
-                        //.WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                        //.WithThumbnailUrl(entry._fruitLogo)
-                        .WithTitle("Fruit Wars Leaderboard")
-                        .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
-                        .WithColor(leadingColor)
-                        .WithThumbnailUrl(leadingTeamPictureURL)
-                        .AddField("🍇Grapes🍇", $"`{Math.Round(grapePoints)}`", true)
-                        .AddField("\u200B", '\u200B', true)
-                        .AddField("🍌Bananas🍌", $"`{Math.Round(bananaPoints)}`", true)
-                        .AddField("🍎Apples🍎", $"`{Math.Round(applePoints)}`", true)
-                        .AddField("\u200B", '\u200B', true)
-                        .AddField("🍑Peaches🍑", $"`{Math.Round(peachPoints)}`", true)
-                        .AddField("\u200B", '\u200B', false)
-                        .AddField("💩Fruitless Heathens💩", $"`{Math.Round(fruitlessHeathenPoints)}`", false)
-
-                        //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
-                        //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
-                        //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
-                        .WithCurrentTimestamp()
-                        .WithFooter("Last Update")
-                        ;
-
-            var embed = builder.Build();
-
-            await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
-
             //🍇🍌🍎🍑💩
 
         }
@@ -358,97 +361,102 @@ namespace FruitBot.Modules
         {
             await Context.User.SendMessageAsync($"Hello {Context.User.Mention}, you've requested to sign up for Fruit Wars. " +
                 $"Please confirm by responding with your Runescape Player Name below in this format (with exact capitalization and any spaces): {Context.Client.CurrentUser.Mention} RSN");
-            
+
         }
 
         [Command("points", RunMode = RunMode.Async)]
         public async Task Points(SocketGuildUser user = null)
         {
-            _thePantry.RefreshEverything();
-            string discordTag;
-            float result = 0;
             string mention;
-            string rsn;
-            string fruit;
-            string fruitPlural;
-            string emoji;
-            string thumbnail;
-            Discord.Color color;
-            if (user == null)
+            using (Context.Channel.EnterTypingState())
             {
-                discordTag = $"{Context.Message.Author.Username}#{Context.Message.Author.Discriminator}";
-                mention = Context.Message.Author.Mention;
+                _thePantry.RefreshEverything();
+                string discordTag;
+                float result = 0;
+
+                string rsn;
+                string fruit;
+                string fruitPlural;
+                string emoji;
+                string thumbnail;
+                Discord.Color color;
+                if (user == null)
+                {
+                    discordTag = $"{Context.Message.Author.Username}#{Context.Message.Author.Discriminator}";
+                    mention = Context.Message.Author.Mention;
+                }
+                else
+                {
+                    discordTag = $"{user.Username}#{user.Discriminator}";
+                    mention = user.Mention;
+                }
+                result = FruitPantry.FruitPantry.PointsCalculator.PointsByDiscordTag(discordTag);
+                rsn = _thePantry._discordUsers[discordTag][1];
+                fruit = _thePantry._discordUsers[discordTag][0];
+                fruitPlural = FruitResources.TextPlural.Get(fruit);
+                emoji = FruitResources.Emojis.Get(fruit);
+                color = FruitResources.Colors.Get(fruit);
+                thumbnail = FruitResources.Logos.Get(fruit);
+
+                var builder = new EmbedBuilder()
+                //.WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
+                //.WithThumbnailUrl(entry._fruitLogo)
+                .WithDescription($"Fruit Wars contributions for {mention}/RSN {rsn}")
+                .WithColor(color)
+                .WithThumbnailUrl(thumbnail)
+                .AddField($"{emoji}{fruitPlural}{emoji}", $"`{Math.Round(result)}`", true)
+
+                //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
+                //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
+                //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
+                .WithCurrentTimestamp()
+                ;
+
+                var embed = builder.Build();
+
+                await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
             }
-            else
-            {
-                discordTag = $"{user.Username}#{user.Discriminator}";
-                mention = user.Mention;
-            }
-            result = FruitPantry.FruitPantry.PointsCalculator.PointsByDiscordTag(discordTag);
-            rsn = _thePantry._discordUsers[discordTag][1];
-            fruit = _thePantry._discordUsers[discordTag][0];
-            fruitPlural = FruitResources.TextPlural.Get(fruit);
-            emoji = FruitResources.Emojis.Get(fruit);
-            color = FruitResources.Colors.Get(fruit);
-            thumbnail = FruitResources.Logos.Get(fruit);
-
-            var builder = new EmbedBuilder()
-            //.WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-            //.WithThumbnailUrl(entry._fruitLogo)
-            .WithDescription($"Fruit Wars contributions for {mention}/RSN {rsn}")
-            .WithColor(color)
-            .WithThumbnailUrl(thumbnail)
-            .AddField($"{emoji}{fruitPlural}{emoji}", $"`{Math.Round(result)}`", true)
-
-            //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
-            //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
-            //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
-            .WithCurrentTimestamp()
-            ;
-
-            var embed = builder.Build();
-
-            await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
-
             _logger.LogInformation($"{Context.User.Username} executed the points command: mention mode for user {mention}!");
         }
 
         [Command("pointsrsn", RunMode = RunMode.Async)]
         public async Task Points(string playerName = null)
         {
-            _thePantry.RefreshEverything();
-            string botMention = Context.Client.CurrentUser.Mention;
-            if (playerName == null)
+            using (Context.Channel.EnterTypingState())
             {
-                await Context.Channel.SendMessageAsync($"Syntax: {botMention} pointsrsn <RSN>", messageReference: new(Context.Message.Id));
-                return;
+                _thePantry.RefreshEverything();
+                string botMention = Context.Client.CurrentUser.Mention;
+                if (playerName == null)
+                {
+                    await Context.Channel.SendMessageAsync($"Syntax: {botMention} pointsrsn <RSN>", messageReference: new(Context.Message.Id));
+                    return;
+                }
+                float result = FruitPantry.FruitPantry.PointsCalculator.PointsByRSN(playerName);
+                string fruit = _thePantry._runescapePlayers[playerName.ToLower()][0];
+                string fruitPlural = FruitResources.TextPlural.Get(fruit);
+                string emoji = FruitResources.Emojis.Get(fruit);
+                string thumbnail = FruitResources.Logos.Get(fruit);
+                Discord.Color color = FruitResources.Colors.Get(fruit);
+                // TODO: modify code to include discord IDs in database in order to use @mentions in this command.
+                //string discordMention = Context.Guild.GetUsersAsync().Result.FirstOrDefault("")
+
+                var builder = new EmbedBuilder()
+                //.WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
+                //.WithThumbnailUrl(entry._fruitLogo)
+                .WithDescription($"Fruit Wars contributions for {playerName}")
+                .WithColor(color)
+                .WithThumbnailUrl(thumbnail)
+                .AddField($"{emoji}{fruitPlural}{emoji}", $"`{Math.Round(result)}`", true)
+
+                //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
+                //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
+                .WithCurrentTimestamp()
+                ;
+
+                var embed = builder.Build();
+
+                await Context.Channel.SendMessageAsync(null, false, embed);
             }
-            float result = FruitPantry.FruitPantry.PointsCalculator.PointsByRSN(playerName);
-            string fruit = _thePantry._runescapePlayers[playerName.ToLower()][0];
-            string fruitPlural = FruitResources.TextPlural.Get(fruit);
-            string emoji = FruitResources.Emojis.Get(fruit);
-            string thumbnail = FruitResources.Logos.Get(fruit);
-            Discord.Color color = FruitResources.Colors.Get(fruit);
-            // TODO: modify code to include discord IDs in database in order to use @mentions in this command.
-            //string discordMention = Context.Guild.GetUsersAsync().Result.FirstOrDefault("")
-
-            var builder = new EmbedBuilder()
-            //.WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-            //.WithThumbnailUrl(entry._fruitLogo)
-            .WithDescription($"Fruit Wars contributions for {playerName}")
-            .WithColor(color)
-            .WithThumbnailUrl(thumbnail)
-            .AddField($"{emoji}{fruitPlural}{emoji}", $"`{Math.Round(result)}`", true)
-
-            //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
-            //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
-            .WithCurrentTimestamp()
-            ;
-
-            var embed = builder.Build();
-
-            await Context.Channel.SendMessageAsync(null, false, embed);
-
             _logger.LogInformation($"{Context.User.Username} executed the points command: RSN mode for player {playerName}!");
         }
 
