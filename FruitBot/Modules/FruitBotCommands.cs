@@ -121,7 +121,7 @@ namespace FruitBot.Modules
                         .WithThumbnailUrl(entry._fruitLogo)
                         .WithTitle("Last Drop:")
                         .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
-                        .WithColor(new Color(00, 00, 255))
+                        .WithColor(FruitResources.Colors.Get(entry._fruit))
                         .AddField("Player Name", entry._playerName ?? "null", true)
                         .AddField("Drop", entry._dropName ?? "null", true)
                         .AddField("Points", entry._pointValue, true)
