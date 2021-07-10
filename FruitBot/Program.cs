@@ -35,7 +35,7 @@ namespace FruitBot
                     logging.AddConsole();
                     logging.SetMinimumLevel(LogLevel.Trace); // Defines what kind of information should be logged (e.g. Debug, Information, Warning, Critical) adjust this to your liking
                 })
-                .ConfigureDiscordHost<DiscordSocketClient>((context, config) =>
+                .ConfigureDiscordHost((context, config) =>
                 {
                     config.SocketConfig = new DiscordSocketConfig
                     {

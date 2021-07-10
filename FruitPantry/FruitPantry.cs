@@ -155,7 +155,7 @@ namespace FruitPantry
 
                 foreach (KeyValuePair<string, DropLogEntry> entry in thePantry._dropLog)
                 {
-                    if (entry.Value._playerName.Equals(playerName))
+                    if (entry.Value._playerName.ToLower().Equals(playerName))
                     {
                         playerLog.Add(entry.Value);
                     }
@@ -172,7 +172,7 @@ namespace FruitPantry
             // Calculates and returns the point value contributions of a given player - by Discord tag
             public static float PointsByDiscordTag(string discordTag)
             {
-                return PointsByRSN(GetFruitPantry()._discordUsers[discordTag][1]);
+                return PointsByRSN(thePantry._discordUsers[discordTag][1].ToLower());
             }
 
             // Totals up and returns the point value for all drops in a given list.

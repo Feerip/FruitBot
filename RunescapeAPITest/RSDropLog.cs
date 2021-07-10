@@ -10,6 +10,7 @@ using Runescape.Api.Model;
 using Runescape.Api;
 using Microsoft.VisualBasic.FileIO;
 using System.IO;
+using System.Collections.Concurrent;
 
 namespace RunescapeAPITest
 {
@@ -18,30 +19,40 @@ namespace RunescapeAPITest
         public static List<RSDropLog> PullParallelFromJagexAPI(List<string> playerNames)
         {
             List<RSDropLog> output = new();
+            ConcurrentQueue<RSDropLog> fastContainer = new();
 
-            Parallel.ForEach(playerNames, (playerName) => FastConstructor(playerName, output));
+            @Parallel.ForEach(playerNames, (playerName) => FastConstructor(playerName, fastContainer));
+
+            output = fastContainer.ToList();
 
             return output;
         }
-        private static void FastConstructor(string playerName, List<RSDropLog> list)
+        private static void FastConstructor(string playerName, ConcurrentQueue<RSDropLog> list)
         {
             try
             {
-                list.Add(new(playerName));
+                list.Enqueue(new(playerName));
             }
             catch (WebException e)
             {
-                //Console.WriteLine(e.Message);
+                Console.WriteLine(e.Message);
             }
         }
         public RSDropLog(string playerName)
         {
+            string test = playerName.Replace(" ", "%20");
+            //string playerName = playerName.Replace(" ", "%20");
+
             using (WebClient wc = new WebClient())
             {
-                string json = wc.DownloadString($"https://apps.runescape.com/runemetrics/profile/profile?user={playerName}&activities=20");
+
+                //var encoded = Uri.EscapeUriString($"https://apps.runescape.com/runemetrics/profile/profile?user={escapedPlayerName}&activities=20");
+                string json = wc.DownloadString($"https://apps.runescape.com/runemetrics/profile/profile?user={test}&activities=20");
+
+
                 RSProfile aDropLog = JsonConvert.DeserializeObject<RSProfile>(json);
                 if (aDropLog.name == null)
-                    throw new WebException($"Jagex API returned null: player \"{playerName}\" not found.");
+                    throw new WebException($"Jagex API returned null: player \"{test}\" not found.");
                 else
                 {
                     _name = aDropLog.name;
@@ -136,6 +147,7 @@ namespace RunescapeAPITest
                 foreach (SanitizedDrop drop in output)
                 {
                     drop._dropname = ti.ToTitleCase(drop._dropname
+                        .Replace("I found a pair of ", "")
                         .Replace("I found some ", "")
                         .Replace("I found an ", "")
                         .Replace("I found a ", "")

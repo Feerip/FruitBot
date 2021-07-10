@@ -350,7 +350,7 @@ namespace FruitBot.Modules
         }
 
         [Command("signup", RunMode = RunMode.Async)]
-        public async Task Signup(SocketGuildUser user = null)
+        public async Task Signup([Remainder] string throwaway = null)
         {
             await Context.User.SendMessageAsync($"Hello {Context.User.Mention}, you've requested to sign up for Fruit Wars. " +
                 $"Please confirm by responding with your Runescape Player Name below in this format (with exact capitalization and any spaces): {Context.Client.CurrentUser.Mention} RSN");
@@ -360,6 +360,7 @@ namespace FruitBot.Modules
         [Command("points", RunMode = RunMode.Async)]
         public async Task Points(SocketGuildUser user = null)
         {
+            string botMention = Context.Client.CurrentUser.Mention;
             string mention;
             using (Context.Channel.EnterTypingState())
             {
@@ -408,6 +409,10 @@ namespace FruitBot.Modules
                 var embed = builder.Build();
 
                 await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
+                if (user == Context.Message.Author)
+                {
+                    await Context.Channel.SendMessageAsync($"For future reference, if you want to check your own points you don't have to tag yourself, just type \"{botMention} points\".", messageReference: new(Context.Message.Id));
+                }
             }
             _logger.LogInformation($"{Context.User.Username} executed the points command: mention mode for user {mention}!");
         }
@@ -415,10 +420,15 @@ namespace FruitBot.Modules
         [Command("pointsrsn", RunMode = RunMode.Async)]
         public async Task Points(string playerName = null)
         {
+            string botMention = Context.Client.CurrentUser.Mention;
+            if (true)
+            {
+                await ReplyAsync($"Read my lips. \"{botMention} points\"");
+                return;
+            }
             using (Context.Channel.EnterTypingState())
             {
                 _thePantry.RefreshEverything();
-                string botMention = Context.Client.CurrentUser.Mention;
                 if (playerName == null)
                 {
                     await Context.Channel.SendMessageAsync($"Syntax: {botMention} pointsrsn <RSN>", messageReference: new(Context.Message.Id));
@@ -565,7 +575,23 @@ namespace FruitBot.Modules
             _logger.LogInformation($"{Context.User.Username} executed the nsfw command!");
         }
 
+        [Command("bosses", RunMode = RunMode.Async)]
+        public async Task Bosses()
+        {
 
+
+
+
+        }
+
+        [Command("betasignup", RunMode = RunMode.Async)]
+        public async Task BetaSignup([Remainder] string playerName = null)
+        {
+            IEmote[] fruits = { new Emoji("🍎"), new Emoji("🍌"), new Emoji("🍇"), new Emoji("🍑") };
+            //IUserMessage embedMessage = await Context.Channel.SendMessageAsync(embed: EmbedGenerator.SignupEmbed(Context.User), messageReference: new(Context.Message.Id));
+
+            await Context.Message.AddReactionsAsync(fruits, new());
+        }
 
     }
 }

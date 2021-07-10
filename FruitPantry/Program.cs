@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using RSAdventurerLogScraper;
+using static RunescapeAPITest.RSDropLog;
+using System.Globalization;
 
 namespace FruitPantry
 {
@@ -30,6 +32,18 @@ namespace FruitPantry
             //{Element (id = ab88da5a-8fee-41c7-9482-354fd167084d)}
             Console.WriteLine();
             //var source = driver.PageSource;
+
+            TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
+   
+               string dropname = ti.ToTitleCase("I found an off-hand drygore mace"
+                    .Replace("I found some ", "")
+                    .Replace("I found an ", "")
+                    .Replace("I found a ", "")
+                    .Replace("I found ", "")
+                    .Replace("pair of ", "")
+                    .Replace(".", ""));
+            Console.WriteLine(dropname);
+      
 
             Console.WriteLine();
         }

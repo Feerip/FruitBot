@@ -53,7 +53,8 @@ namespace FruitBot.Services
 
         private async Task SetStatusAsync()
         {
-            await _client.SetGameAsync($"@FruitBot help", null, ActivityType.Listening);
+            //await _client.SetGameAsync($"@FruitBot help", null, ActivityType.Listening);
+            await _client.SetGameAsync($"Fruit Wars | @FruitBot help", null, ActivityType.Playing);
         }
 
         private async Task _client_Ready()

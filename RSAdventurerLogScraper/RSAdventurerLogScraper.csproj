@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net" Version="2.4.0" />
+    <PackageReference Include="Discord.Net" Version="3.0.0-dev-20210710.3" />
     <PackageReference Include="NReco.PhantomJS" Version="1.0.4" />
     <PackageReference Include="PhantomJS" Version="2.1.1" />
     <PackageReference Include="Selenium.Support" Version="3.141.0" />
