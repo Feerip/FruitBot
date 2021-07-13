@@ -536,9 +536,9 @@ namespace FruitBot.Modules
         }
 
         [Command("fuck you gob", RunMode = RunMode.Async)]
-        public async Task FuckYouGob(SocketGuildUser user = null)
+        public async Task FuckYouGob()
         {
-            await Context.Channel.SendMessageAsync($"Fuck you {Context.Guild.GetUserAsync(242069991141146624).Result.Mention}", isTTS: false, messageReference: new(Context.Message.Id));
+            await Context.Channel.SendMessageAsync($"Fuck you <@242069991141146624>", isTTS: false, messageReference: new(Context.Message.Id));
             _logger.LogInformation($"{Context.User.Username} executed the fuck you gob command!");
         }
 
