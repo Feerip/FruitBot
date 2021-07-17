@@ -358,7 +358,7 @@ namespace FruitBot.Modules
         }
 
         [Command("points", RunMode = RunMode.Async)]
-        public async Task Points(SocketGuildUser user = null)
+        public async Task Points(SocketGuildUser user = null, [Remainder] string remainder = null)
         {
             string botMention = Context.Client.CurrentUser.Mention;
             string mention;

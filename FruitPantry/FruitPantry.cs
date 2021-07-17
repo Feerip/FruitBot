@@ -19,6 +19,7 @@ using Discord;
 using Discord.WebSocket;
 using System.Security.Cryptography;
 using static FruitPantry.FruitPantry;
+using System.Reflection.Metadata.Ecma335;
 
 namespace FruitPantry
 {
@@ -98,7 +99,7 @@ namespace FruitPantry
 
         public static class PointsCalculator
         {
-            private static FruitPantry thePantry = GetFruitPantry();
+            private static FruitPantry _thePantry = GetFruitPantry();
 
             // Calculates the point value of a single drop entry with all variables considered
             public static float CalculatePoints(DropLogEntry drop)
@@ -109,8 +110,8 @@ namespace FruitPantry
 
 
                 //float basePoints = thePantry._classificationList[thePantry._itemDatabase[drop._bossName.ToLower()]._classification];
-                float basePoints = thePantry._classificationList[drop._bossName];
-                float thresholdMultiplier = thePantry._thresholdMultiplier;
+                float basePoints = _thePantry._classificationList[drop._bossName];
+                float thresholdMultiplier = _thePantry._thresholdMultiplier;
 
                 int thresholdLevel = ThresholdLevel(drop._playerName, drop._bossName);
 
@@ -124,7 +125,7 @@ namespace FruitPantry
             // Takes the drop log of a single player and returns the threshold level they are currently at for any given boss
             public static int ThresholdLevel(string playerName, string bossName)
             {
-                int thresholdValue = thePantry._universalThresholdValue;
+                int thresholdValue = _thePantry._universalThresholdValue;
 
                 // If universal threshold is set to 0 in db, that means admins don't want points being awarded right now. 
                 // They should have also set the threshold multiplier to 0. In which case, returning 1 marks the drop as
@@ -153,10 +154,12 @@ namespace FruitPantry
             {
                 List<DropLogEntry> playerLog = new();
 
-                foreach (KeyValuePair<string, DropLogEntry> entry in thePantry._dropLog)
+                foreach (KeyValuePair<string, DropLogEntry> entry in _thePantry._dropLog)
                 {
                     if (entry.Value._playerName.ToLower().Equals(playerName))
                     {
+                        if (!entry.Value._fruit.Equals(_thePantry._runescapePlayers[entry.Value._playerName.ToLower()][0]))
+                            continue;
                         playerLog.Add(entry.Value);
                     }
                 }
@@ -172,7 +175,7 @@ namespace FruitPantry
             // Calculates and returns the point value contributions of a given player - by Discord tag
             public static float PointsByDiscordTag(string discordTag)
             {
-                return PointsByRSN(thePantry._discordUsers[discordTag][1].ToLower());
+                return PointsByRSN(_thePantry._discordUsers[discordTag][1].ToLower());
             }
 
             // Totals up and returns the point value for all drops in a given list.
@@ -181,6 +184,8 @@ namespace FruitPantry
                 float result = 0;
                 foreach (DropLogEntry entry in entries)
                 {
+                    //if (!entry._fruit.Equals(_thePantry._runescapePlayers[entry._playerName.ToLower()][0]))
+                    //    continue;
                     result += float.Parse(entry._pointValue);
                 }
                 return result;

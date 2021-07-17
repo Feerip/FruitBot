@@ -42,6 +42,9 @@ namespace FruitBot
                         LogLevel = LogSeverity.Verbose, // Defines what kind of information should be logged from the API (e.g. Verbose, Info, Warning, Critical) adjust this to your liking
                         AlwaysDownloadUsers = true,
                         MessageCacheSize = 1000,
+                        GatewayIntents = GatewayIntents.All,
+                        LargeThreshold = 1000,
+                        
                     };  
 
                     config.Token = context.Configuration["token"];
