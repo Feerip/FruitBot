@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <ApplicationIcon>C:\Users\feerip\OneDrive\Icons\grapist2_square_smaller.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
