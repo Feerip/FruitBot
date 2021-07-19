@@ -634,15 +634,6 @@ namespace FruitBot.Modules
             _logger.LogInformation($"{Context.User.Username} executed the nsfw command!");
         }
 
-        [Command("bosses", RunMode = RunMode.Async)]
-        public async Task Bosses()
-        {
-
-
-
-
-        }
-
         [Command("betasignup", RunMode = RunMode.Async)]
         public async Task BetaSignup([Remainder] string playerName = null)
         {
