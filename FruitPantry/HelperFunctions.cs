@@ -13,6 +13,8 @@ namespace FruitPantry
 {
     public static class HelperFunctions
     {
+        private static FruitPantry _thePantry = FruitPantry.GetFruitPantry();
+
         public static async Task LastHelper(int numDrops, DiscordSocketClient discordClient)
         {
 
@@ -72,6 +74,79 @@ namespace FruitPantry
                 idx++;
             }
 
+        }
+
+        //public static async Task<EmbedBuilder> BuildEmbedFrom
+
+        public static async Task<List<string>> BuildLastDropList(int numDrops)
+        {
+            // List of messages due to max length of 2000 chars
+            List<string> messages = new();
+            List<string> lines = new();
+            // Code box entry
+            string message = "";
+
+            // Headers
+
+
+            //output += "|------------------------------------------------------------------------------|" + "\n";
+
+            int idx = 0;
+            foreach (KeyValuePair<string, DropLogEntry> entryPair in _thePantry.GetDropLog())
+            {
+                if (idx % 22 == 0)
+                {
+                    message = "```\n";
+                    message += "----------------------------------------------------------------------" + "\n";
+                    message += $"| {FruitResources.Emojis.fruitlessHeathen}Name         | Drop            | Boss   | Pts |    Timestamp     |" + "\n";
+                }
+                DropLogEntry entry = entryPair.Value;
+                lines.Add(string.Format(
+                    "| {0,-14} | {1,-15} | {2,-6} | {3,3} | {4,16} |",
+                    FruitResources.Emojis.Get(entry._fruit) + entry._playerName,
+                    entry._dropName.Substring(0, Math.Min(entry._dropName.Length, 15)),
+                    entry._bossName.Substring(0, Math.Min(entry._bossName.Length, 6)),
+                    entry._pointValue.ToString(),
+                    entry._timestamp
+                    ) + "\n");
+
+
+                idx++;
+                if (idx % 22 == 0)
+                {
+                    lines.Reverse();
+                    foreach (string line in lines)
+                    {
+                        message += line;
+                    }
+
+                    message += "----------------------------------------------------------------------```";
+                    messages.Add(message);
+                    lines = new();
+                    message = "";
+                }
+
+                if (idx == numDrops)
+                {
+                    if (!message.Equals(""))
+                    {
+                        lines.Reverse();
+                        foreach (string line in lines)
+                        {
+                            message += line;
+                        }
+                        message += "----------------------------------------------------------------------```";
+                        messages.Add(message);
+                    }
+                    break;
+                }
+
+            }
+
+
+
+            messages.Reverse();
+            return messages;
         }
     }
 }

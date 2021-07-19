@@ -25,7 +25,7 @@ namespace FruitPantry
 {
     public sealed class FruitPantry
     {
-        public static string _version = "1.1";
+        public static string _version = "1.3";
 
         private static readonly FruitPantry _instance = new();
 
@@ -641,12 +641,12 @@ namespace FruitPantry
 
             if (values != null && values.Count > 0)
             {
-                foreach (var row in values)
-                {
-                    voteResponse.version = row[Version].ToString();
-                    voteResponse.goodBot = int.Parse(row[GoodBotVotes].ToString());
-                    voteResponse.badBot = int.Parse(row[BadBotVotes].ToString());
-                }
+                var row = values[0];
+
+                voteResponse.version = row[Version].ToString();
+                voteResponse.goodBot = int.Parse(row[GoodBotVotes].ToString());
+                voteResponse.badBot = int.Parse(row[BadBotVotes].ToString());
+
             }
             else
                 return null;
@@ -791,6 +791,22 @@ namespace FruitPantry
             request2.InsertDataOption = IDO;
 
             Data.AppendValuesResponse response2 = request2.Execute();
+        }
+
+        public SortedDictionary<string, float> GetClassifications()
+        {
+            SortedDictionary<string, float> output = new();
+
+            SpreadsheetsResource.ValuesResource.GetRequest request = _service.Spreadsheets.Values.Get(_spreadsheetId, _classificationRange);
+            ValueRange response = request.Execute();
+            IList<IList<object>> values = response.Values;
+
+            foreach(IList<object> classification in values)
+            {
+                output.Add(classification[0].ToString(), float.Parse(classification[1].ToString()));
+            }
+
+            return output;
         }
     }
 

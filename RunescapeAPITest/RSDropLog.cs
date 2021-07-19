@@ -148,6 +148,7 @@ namespace RunescapeAPITest
                 {
                     drop._dropname = ti.ToTitleCase(drop._dropname
                         .Replace("I found a pair of ", "")
+                        .Replace("I found a set of ", "")
                         .Replace("I found some ", "")
                         .Replace("I found an ", "")
                         .Replace("I found a ", "")

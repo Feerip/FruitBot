@@ -142,7 +142,7 @@ namespace FruitBot.Services
                 FruitPantry.FruitPantry.VoteResponse response = _thePantry.QueryGoodBot();
 
                 await context.Channel.SendMessageAsync(response.message, messageReference: new(context.Message.Id));
-                await context.Channel.SendMessageAsync($"Upvotes: `{response.goodBot}`, Downvotes: `{response.badBot}`");
+                await context.Channel.SendMessageAsync($"V{FruitPantry.FruitPantry._version} Upvotes: `{response.goodBot}`, Downvotes: `{response.badBot}`");
                 // This is on purpose, only send the upvote/downvote tally if the user is not being abusive to my poor baby
             }
 
