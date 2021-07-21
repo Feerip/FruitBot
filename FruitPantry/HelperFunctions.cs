@@ -78,7 +78,7 @@ namespace FruitPantry
 
         //public static async Task<EmbedBuilder> BuildEmbedFrom
 
-        public static async Task<List<string>> BuildLastDropList(int numDrops)
+        public static async Task<List<string>> BuildLastDropList(int numDrops, string playerName = null, string fruit = null)
         {
             // List of messages due to max length of 2000 chars
             List<string> messages = new();
@@ -92,8 +92,10 @@ namespace FruitPantry
             //output += "|------------------------------------------------------------------------------|" + "\n";
 
             int idx = 0;
+            int linesAdded = 0;
             foreach (KeyValuePair<string, DropLogEntry> entryPair in _thePantry.GetDropLog())
             {
+                bool addLine = true;
                 if (idx % 22 == 0)
                 {
                     message = "```\n";
@@ -101,18 +103,38 @@ namespace FruitPantry
                     message += $"| {FruitResources.Emojis.fruitlessHeathen}Name         | Drop            | Boss   | Pts |    Timestamp     |" + "\n";
                 }
                 DropLogEntry entry = entryPair.Value;
-                lines.Add(string.Format(
-                    "| {0,-14} | {1,-15} | {2,-6} | {3,3} | {4,16} |",
-                    FruitResources.Emojis.Get(entry._fruit) + entry._playerName,
-                    entry._dropName.Substring(0, Math.Min(entry._dropName.Length, 15)),
-                    entry._bossName.Substring(0, Math.Min(entry._bossName.Length, 6)),
-                    entry._pointValue.ToString(),
-                    entry._timestamp
-                    ) + "\n");
+                if ((playerName != null))
+                {
+                    if (!entry._playerName.ToLower().Equals(playerName.ToLower()))
+                    {
+                        addLine = false;
+                        //continue;
+                    }
+                }
+                if (fruit != null)
+                {
+                    if (!entry._fruit.ToLower().Equals(fruit.ToLower()))
+                    {
+                        addLine = false;
+                    }
+                }
 
+                if (addLine)
+                {
+                    lines.Add(string.Format(
+                        "| {0,-14} | {1,-15} | {2,-6} | {3,3} | {4,16} |",
+                        FruitResources.Emojis.Get(entry._fruit) + entry._playerName,
+                        entry._dropName.Substring(0, Math.Min(entry._dropName.Length, 15)),
+                        entry._bossName.Substring(0, Math.Min(entry._bossName.Length, 6)),
+                        entry._pointValue.ToString(),
+                        entry._timestamp
+                        ) + "\n");
 
-                idx++;
-                if (idx % 22 == 0)
+                    linesAdded++;
+                    idx++;
+                }
+                //if (idx % 22 == 0)
+                if (lines.Count == 22)
                 {
                     lines.Reverse();
                     foreach (string line in lines)
@@ -126,7 +148,8 @@ namespace FruitPantry
                     message = "";
                 }
 
-                if (idx == numDrops)
+                //if (idx == numDrops)
+                if ((linesAdded == numDrops) || (entryPair.Key == _thePantry.GetDropLog().Last().Key))
                 {
                     if (!message.Equals(""))
                     {

@@ -62,59 +62,112 @@ namespace FruitBot.Modules
             _logger.LogInformation($"{Context.User.Username} executed the help command!");
         }
 
-
+        // This is starting to spaghetti and needs a complete refactor
         [Command("last", RunMode = RunMode.Async)]
-        public async Task Last(int numDrops = -1, SocketGuildUser user = null)
+        public async Task Last(string numTryParse = null, SocketGuildUser user = null)
         {
             using (Context.Channel.EnterTypingState())
             {
+                string fruit = null;
+                int numDrops;
+                bool remindSingleEntry = false;
+                try
+                {
+                    if (int.Parse(numTryParse) == 1)
+                        remindSingleEntry = true;
+                }
+                // Yeah I know this is bad practice, I'll fix it later.
+                catch (Exception ex)
+                { }
+
+                string rsn = null;
+                if (numTryParse == null)
+                    numTryParse = "1";
+                bool isNumDrops = int.TryParse(numTryParse, out numDrops);
+                if (!isNumDrops)
+                    numDrops = 1;
+                string numTryParse2 = numTryParse
+                        .Replace("<@!", "")
+                        .Replace(">", "");
+                ulong buffer;
+                bool isDiscordUserID = ulong.TryParse(numTryParse2, out buffer);
+                if ((!isNumDrops) && (isDiscordUserID))
+                {
+                    //await ReplyAsync($"Custom Parse Failed. Attempting command restructuring.", messageReference: new(Context.Message.Id));
+                    user = (SocketGuildUser)Context.Guild.GetUserAsync(ulong.Parse(numTryParse2)).Result;
+                    numDrops = 1;
+
+                    //return;
+                }
+                // This must mean it's an RSN!!
+                // Okay don't get too excited just yet, check to see if it's a fruit first.
+                else if ((!isNumDrops) && (!isDiscordUserID))
+                {
+                    if (numTryParse.ToLower().Equals(FruitResources.TextPlural.apple))
+                        fruit = FruitResources.Text.apple;
+                    else if (numTryParse.ToLower().Equals(FruitResources.TextPlural.banana))
+                        fruit = FruitResources.Text.banana;
+                    else if (numTryParse.ToLower().Equals(FruitResources.TextPlural.grape))
+                        fruit = FruitResources.Text.grape;
+                    else if (numTryParse.ToLower().Equals(FruitResources.TextPlural.peach))
+                        fruit = FruitResources.Text.peach;
+                    else if (numTryParse.ToLower().Equals(FruitResources.TextPlural.fruitlessHeathen))
+                        fruit = FruitResources.Text.fruitlessHeathen;
+                    else
+                        rsn = numTryParse;
+                }
+
                 _thePantry.RefreshEverything();
                 //FruitPantry.FruitPantry thePantry = FruitPantry.FruitPantry.GetFruitPantry();
                 string botMention = Context.Client.CurrentUser.Mention;
 
-                if (user == null)
+                
+                if (user != null)
                 {
-                    if (_thePantry.GetDropLog().Count < 1)
+                    rsn = _thePantry._discordUsers[user.Username + "#" + user.Discriminator][1];
+                }
+
+                if (_thePantry.GetDropLog().Count < 1)
+                {
+                    await ReplyAsync($"There are currently no entries in the drop log to display.");
+                }
+                else
+                {
+                    if (numDrops < 1)
+                        await ReplyAsync($"Really? What are you trying to accomplish here?", messageReference: new(Context.Message.Id));
+                    else if (numDrops == 1)
                     {
-                        await ReplyAsync($"There are currently no entries in the drop log to display.");
+                        await LastHelper(numDrops, Context, rsn);
+                        if (remindSingleEntry)
+                            await ReplyAsync($"For future reference, if you only want the last (1) drop, you don't have to specify a number, just type \"{botMention} last\".", messageReference: new(Context.Message.Id));
                     }
                     else
                     {
-                        if ((numDrops == 0) || (numDrops < -1))
-                            await ReplyAsync($"Really? What are you trying to accomplish here?", messageReference: new(Context.Message.Id));
-                        else if (numDrops == -1)
-                            await LastHelper(1, Context);
-                        else if (numDrops == 1)
+
+                        List<string> output = await FruitPantry.HelperFunctions.BuildLastDropList(numDrops, rsn, fruit);
+
+                        int numMessages = output.Count;
+
+                        if (numMessages > 1)
                         {
-                            await LastHelper(numDrops, Context);
-                            await ReplyAsync($"For future reference, if you only want the last (1) drop, you don't have to specify a number, just type \"{botMention} last\".", messageReference: new(Context.Message.Id));
+                            for (int idx = 0; idx < numMessages; idx++)
+                            {
+                                output[idx] = $"`{idx + 1}/{numMessages}`\n" + output[idx];
+                            }
                         }
-                        else
+
+                        foreach (string message in output)
                         {
-                            List<string> output = await FruitPantry.HelperFunctions.BuildLastDropList(numDrops);
-
-                            int numMessages = output.Count;
-
-                            if (numMessages > 1)
-                            {
-                                for (int idx = 0; idx < numMessages; idx++)
-                                {
-                                    output[idx] = $"`{idx + 1}/{numMessages}`\n" + output[idx];
-                                }
-                            }
-
-                            foreach (string message in output)
-                            {
-                                await Context.Channel.SendMessageAsync(message, messageReference: new(Context.Message.Id));
-                            }
+                            await Context.Channel.SendMessageAsync(message, messageReference: new(Context.Message.Id));
                         }
                     }
+
                 }
             }
             _logger.LogInformation($"{Context.User.Username} executed the lastdrop command!");
         }
 
-        public static async Task LastHelper(int numDrops, ICommandContext Context)
+        public static async Task LastHelper(int numDrops, ICommandContext Context, string rsn = null)
         {
             using (Context.Channel.EnterTypingState())
             {
@@ -127,10 +180,16 @@ namespace FruitBot.Modules
 
                 foreach (KeyValuePair<string, DropLogEntry> entryPair in thePantry.GetDropLog())
                 {
+
+
                     if (idx == numDrops)
                         break;
                     DropLogEntry entry = entryPair.Value;
-
+                    if (rsn != null)
+                    {
+                        if (!entry._playerName.ToLower().Equals(rsn.ToLower()))
+                            continue;
+                    }
                     //quick and dirty fix, remove later
                     string dropIconURL;
                     if (entry._dropIconWEBP == null)
@@ -276,6 +335,7 @@ namespace FruitBot.Modules
         }
 
         [Command("leaderboard", RunMode = RunMode.Async)]
+        [Alias("lb")]
         public async Task Leaderboard(SocketGuildUser user = null)
         {
 
@@ -538,41 +598,13 @@ namespace FruitBot.Modules
 
         [Command("test", RunMode = RunMode.Async)]
         //[RequireUserPermission(GuildPermission.Administrator)]
-        public async Task Test(int number = 1)
+        public async Task Test(int numDrops = -1, SocketGuildUser user = null, [Remainder] string input = null)
         {
-            bool testing = true;
+            bool testing = false;
             if (testing)
             {
-                List<string> output = await FruitPantry.HelperFunctions.BuildLastDropList(number);
 
-                int numMessages = output.Count;
 
-                if (numMessages > 1)
-                {
-                    for (int idx = 0; idx < numMessages; idx++)
-                    {
-                        output[idx] = $"`{idx + 1}/{numMessages}`\n" + output[idx];
-                    }
-                }
-
-                foreach (string message in output)
-                {
-                    await Context.Channel.SendMessageAsync(message, messageReference: new(Context.Message.Id));
-                }
-                //IMessage msg = await Context.Channel.SendMessageAsync(output, messageReference: new(Context.Message.Id));
-
-                //msg.
-
-                ////throw new Exception("This is a test exception thrown on purpose to simulate error conditions.");
-                ////await Context.Channel.SendMessageAsync($"{Context.Guild.GetUserAsync(299595210231513090).Result.Mention} likes {Context.Guild.GetUserAsync(242069991141146624).Result.Mention}s bananas", isTTS: true);
-                ////var message = Context.Channel.SendMessageAsync($"Purging now.").Result;
-                //var messages = Context.Channel.GetMessagesAsync(numMessages + 1).Flatten();
-
-                ////foreach (IMessage msg in message)
-                //foreach (IMessage msg in messages.ToListAsync().Result)
-                //{
-                //    await Context.Channel.DeleteMessageAsync(msg);
-                //}
             }
             else
             {

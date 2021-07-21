@@ -140,9 +140,8 @@ namespace FruitPantry
 
                 foreach (DropLogEntry entry in playerLog)
                 {
-                    if (!entry._bossName.Equals(bossName))
-                        break;
-                    dropsFromThisBoss++;
+                    if (entry._bossName.Equals(bossName))
+                        dropsFromThisBoss++;
                 }
 
                 int thresholdLevel = dropsFromThisBoss / thresholdValue;
@@ -156,9 +155,9 @@ namespace FruitPantry
 
                 foreach (KeyValuePair<string, DropLogEntry> entry in _thePantry._dropLog)
                 {
-                    if (entry.Value._playerName.ToLower().Equals(playerName))
+                    if (entry.Value._playerName.ToLower().Equals(playerName.ToLower()))
                     {
-                        if (!entry.Value._fruit.Equals(_thePantry._runescapePlayers[entry.Value._playerName.ToLower()][0]))
+                        if ((_thePantry._runescapePlayers.ContainsKey(playerName)) && (!entry.Value._fruit.Equals(_thePantry._runescapePlayers[entry.Value._playerName.ToLower()][0])))
                             continue;
                         playerLog.Add(entry.Value);
                     }
@@ -513,6 +512,7 @@ namespace FruitPantry
                     }
                     catch (KeyNotFoundException e)
                     {
+                        //Console.WriteLine(e.Message);
                         //await discordClient.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(
                         //    $"Warning: Found a fruitless heathen ({entry._playerName}) in scraped Runepixels data. This drop will not be added to the drop log.");
                         //continue;
@@ -801,7 +801,7 @@ namespace FruitPantry
             ValueRange response = request.Execute();
             IList<IList<object>> values = response.Values;
 
-            foreach(IList<object> classification in values)
+            foreach (IList<object> classification in values)
             {
                 output.Add(classification[0].ToString(), float.Parse(classification[1].ToString()));
             }
