@@ -99,8 +99,8 @@ namespace FruitPantry
                 if (idx % 22 == 0)
                 {
                     message = "```\n";
-                    message += "----------------------------------------------------------------------" + "\n";
-                    message += $"| {FruitResources.Emojis.fruitlessHeathen}Name         | Drop            | Boss   | Pts |    Timestamp     |" + "\n";
+                    message += "-------------------------------------------------------------------------" + "\n";
+                    message += $"| {FruitResources.Emojis.fruitlessHeathen}Name         | Drop            | Boss   |  Pts   |    Timestamp     |" + "\n";
                 }
                 DropLogEntry entry = entryPair.Value;
                 if ((playerName != null))
@@ -122,11 +122,11 @@ namespace FruitPantry
                 if (addLine)
                 {
                     lines.Add(string.Format(
-                        "| {0,-14} | {1,-15} | {2,-6} | {3,3} | {4,16} |",
+                        "| {0,-14} | {1,-15} | {2,-6} | {3,6} | {4,16} |",
                         FruitResources.Emojis.Get(entry._fruit) + entry._playerName,
                         entry._dropName.Substring(0, Math.Min(entry._dropName.Length, 15)),
                         entry._bossName.Substring(0, Math.Min(entry._bossName.Length, 6)),
-                        entry._pointValue.ToString(),
+                        float.Parse(entry._pointValue).ToString("0.00"),
                         entry._timestamp
                         ) + "\n");
 
@@ -142,7 +142,7 @@ namespace FruitPantry
                         message += line;
                     }
 
-                    message += "----------------------------------------------------------------------```";
+                    message += "-------------------------------------------------------------------------```";
                     messages.Add(message);
                     lines = new();
                     message = "";

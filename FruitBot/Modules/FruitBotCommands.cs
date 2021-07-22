@@ -597,6 +597,7 @@ namespace FruitBot.Modules
         }
 
         [Command("test", RunMode = RunMode.Async)]
+        [RequireOwner]
         //[RequireUserPermission(GuildPermission.Administrator)]
         public async Task Test(int numDrops = -1, SocketGuildUser user = null, [Remainder] string input = null)
         {
