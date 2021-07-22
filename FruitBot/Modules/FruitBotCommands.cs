@@ -64,67 +64,27 @@ namespace FruitBot.Modules
 
         // This is starting to spaghetti and needs a complete refactor
         [Command("last", RunMode = RunMode.Async)]
-        public async Task Last(string numTryParse = null, SocketGuildUser user = null)
+        public async Task Last([Remainder]TypeReaders.LastCommandArguments args)
         {
             using (Context.Channel.EnterTypingState())
             {
-                string fruit = null;
-                int numDrops;
                 bool remindSingleEntry = false;
-                try
-                {
-                    if (int.Parse(numTryParse) == 1)
-                        remindSingleEntry = true;
-                }
-                // Yeah I know this is bad practice, I'll fix it later.
-                catch (Exception ex)
-                { }
 
-                string rsn = null;
-                if (numTryParse == null)
-                    numTryParse = "1";
-                bool isNumDrops = int.TryParse(numTryParse, out numDrops);
-                if (!isNumDrops)
-                    numDrops = 1;
-                string numTryParse2 = numTryParse
-                        .Replace("<@!", "")
-                        .Replace(">", "");
-                ulong buffer;
-                bool isDiscordUserID = ulong.TryParse(numTryParse2, out buffer);
-                if ((!isNumDrops) && (isDiscordUserID))
-                {
-                    //await ReplyAsync($"Custom Parse Failed. Attempting command restructuring.", messageReference: new(Context.Message.Id));
-                    user = (SocketGuildUser)Context.Guild.GetUserAsync(ulong.Parse(numTryParse2)).Result;
-                    numDrops = 1;
 
-                    //return;
-                }
-                // This must mean it's an RSN!!
-                // Okay don't get too excited just yet, check to see if it's a fruit first.
-                else if ((!isNumDrops) && (!isDiscordUserID))
-                {
-                    if (numTryParse.ToLower().Equals(FruitResources.TextPlural.apple))
-                        fruit = FruitResources.Text.apple;
-                    else if (numTryParse.ToLower().Equals(FruitResources.TextPlural.banana))
-                        fruit = FruitResources.Text.banana;
-                    else if (numTryParse.ToLower().Equals(FruitResources.TextPlural.grape))
-                        fruit = FruitResources.Text.grape;
-                    else if (numTryParse.ToLower().Equals(FruitResources.TextPlural.peach))
-                        fruit = FruitResources.Text.peach;
-                    else if (numTryParse.ToLower().Equals(FruitResources.TextPlural.fruitlessHeathen))
-                        fruit = FruitResources.Text.fruitlessHeathen;
-                    else
-                        rsn = numTryParse;
-                }
 
                 _thePantry.RefreshEverything();
                 //FruitPantry.FruitPantry thePantry = FruitPantry.FruitPantry.GetFruitPantry();
                 string botMention = Context.Client.CurrentUser.Mention;
 
-                
-                if (user != null)
+                if (args == null)
                 {
-                    rsn = _thePantry._discordUsers[user.Username + "#" + user.Discriminator][1];
+                    await LastHelper(1, Context);
+                    return;
+                }
+
+                if (args.DiscordUserFound)
+                {
+                    args.RSN = _thePantry._discordUsers[args.DiscordUser.Username + "#" + args.DiscordUser.Discriminator][1];
                 }
 
                 if (_thePantry.GetDropLog().Count < 1)
@@ -133,18 +93,18 @@ namespace FruitBot.Modules
                 }
                 else
                 {
-                    if (numDrops < 1)
-                        await ReplyAsync($"Really? What are you trying to accomplish here?", messageReference: new(Context.Message.Id));
-                    else if (numDrops == 1)
+                    if (!args.NumDropsFound)
+                        args.NumDrops = 1;
+                    if (args.NumDropsFound && (args.NumDrops == 1))
                     {
-                        await LastHelper(numDrops, Context, rsn);
-                        if (remindSingleEntry)
-                            await ReplyAsync($"For future reference, if you only want the last (1) drop, you don't have to specify a number, just type \"{botMention} last\".", messageReference: new(Context.Message.Id));
+                        remindSingleEntry = true;
                     }
+
+                    if (args.NumDrops == 1)
+                        await LastHelper(args.NumDrops, Context, args.RSN, args.Fruit);
                     else
                     {
-
-                        List<string> output = await FruitPantry.HelperFunctions.BuildLastDropList(numDrops, rsn, fruit);
+                        List<string> output = await FruitPantry.HelperFunctions.BuildLastDropList(args.NumDrops, args.RSN, args.Fruit);
 
                         int numMessages = output.Count;
 
@@ -162,12 +122,16 @@ namespace FruitBot.Modules
                         }
                     }
 
+                    if (remindSingleEntry)
+                        await ReplyAsync($"For future reference, if you only want the last (1) drop, you don't have to specify a number, just type \"{botMention} last {{optionalFilter}}\".", messageReference: new(Context.Message.Id));
+
                 }
             }
+
             _logger.LogInformation($"{Context.User.Username} executed the lastdrop command!");
         }
 
-        public static async Task LastHelper(int numDrops, ICommandContext Context, string rsn = null)
+        public static async Task LastHelper(int numDrops, ICommandContext Context, string rsn = null, string fruit = null)
         {
             using (Context.Channel.EnterTypingState())
             {
@@ -188,6 +152,11 @@ namespace FruitBot.Modules
                     if (rsn != null)
                     {
                         if (!entry._playerName.ToLower().Equals(rsn.ToLower()))
+                            continue;
+                    }
+                    if (fruit != null)
+                    {
+                        if (!entry._fruit.Equals(fruit, StringComparison.OrdinalIgnoreCase))
                             continue;
                     }
                     //quick and dirty fix, remove later
@@ -597,13 +566,35 @@ namespace FruitBot.Modules
         }
 
         [Command("test", RunMode = RunMode.Async)]
-        [RequireOwner]
+        //[RequireOwner]
         //[RequireUserPermission(GuildPermission.Administrator)]
-        public async Task Test(int numDrops = -1, SocketGuildUser user = null, [Remainder] string input = null)
+        public async Task Test([Remainder] TypeReaders.LastCommandArguments args = null)
         {
             bool testing = false;
             if (testing)
             {
+                // string output = "";
+                // if (args == null)
+                // {
+                //     await Context.Channel.SendMessageAsync($"No arguments found, no parsing necessary.", messageReference: new(Context.Message.Id));
+                //     return;
+                // }
+
+                // if (args.NumDropsFound)
+                //     output += $"Numdrops: {args.NumDrops}\n";
+                // else
+                //     output += $"Numdrops: NULL\n";
+
+                // output += $"Fruit: {args.Fruit ?? "NULL"}\n";
+
+                // if (args.DiscordUserFound)
+                //     output += $"Discord User: {args.DiscordUser.Mention}\n";
+                // else
+                //     output += $"Discord User: NULL\n";
+
+                //output += $"RSN: \"{args.RSN ?? "NULL"}\"\n";
+
+                // await Context.Channel.SendMessageAsync(output, messageReference: new(Context.Message.Id));
 
 
             }

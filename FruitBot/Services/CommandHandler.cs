@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Timers;
 using OpenQA.Selenium.Remote;
+using FruitBot.Modules;
 
 namespace FruitBot.Services
 {
@@ -41,6 +42,10 @@ namespace FruitBot.Services
         public override async Task InitializeAsync(CancellationToken cancellationToken)
         {
             _client.MessageReceived += OnMessageReceived;
+
+            // Add LastCommandTypeReader to read type for command "last"
+            _service.AddTypeReader(typeof(TypeReaders.LastCommandArguments), new TypeReaders.LastCommandTypeReader());
+
 
 
             _service.CommandExecuted += OnCommandExecuted;

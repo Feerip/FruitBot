@@ -40,6 +40,46 @@ namespace DataTypes
             public static string apple { get; } = "Apple";
             public static string peach { get; } = "Peach";
             public static string fruitlessHeathen { get; } = "Fruitless Heathen";
+
+            public static bool TryParse(string input, out string fruit)
+            {
+                if (input == null)
+                {
+                    fruit = null;
+                    return false;
+                }
+                else if (string.IsNullOrEmpty(input))
+                {
+                    fruit = fruitlessHeathen;
+                    return true;
+                }
+                else if (input.Equals(Text.grape, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.grape, StringComparison.OrdinalIgnoreCase))
+                {
+                    fruit = grape;
+                    return true;
+                }
+                else if (input.Equals(Text.banana, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.banana, StringComparison.OrdinalIgnoreCase))
+                {
+                    fruit = banana;
+                    return true;
+                }
+                else if (input.Equals(Text.apple, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.apple, StringComparison.OrdinalIgnoreCase))
+                {
+                    fruit = apple;
+                    return true;
+                }
+                else if (input.Equals(Text.peach, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.peach, StringComparison.OrdinalIgnoreCase))
+                {
+                    fruit = peach;
+                    return true;
+                }
+                else
+                {
+                    fruit = null;
+                    return false;
+                }
+
+            }
         }
         public static class TextPlural
         {
@@ -56,6 +96,8 @@ namespace DataTypes
             public static string apple { get; } = "Apples";
             public static string peach { get; } = "Peaches";
             public static string fruitlessHeathen { get; } = "Fruitless Heathens";
+
+            
         }
 
         public static class Logos

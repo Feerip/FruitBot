@@ -25,7 +25,7 @@ namespace FruitPantry
 {
     public sealed class FruitPantry
     {
-        public static string _version = "1.4";
+        public static string _version = "1.5";
 
         private static readonly FruitPantry _instance = new();
 
