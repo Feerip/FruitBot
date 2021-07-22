@@ -64,7 +64,7 @@ namespace FruitBot.Modules
 
         // This is starting to spaghetti and needs a complete refactor
         [Command("last", RunMode = RunMode.Async)]
-        public async Task Last([Remainder]TypeReaders.LastCommandArguments args)
+        public async Task Last([Remainder] TypeReaders.LastCommandArguments args = null)
         {
             using (Context.Channel.EnterTypingState())
             {

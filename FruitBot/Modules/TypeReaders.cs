@@ -55,7 +55,7 @@ namespace FruitBot.Modules
                     // If the argument can be parsed to a ulong after removing the standard Discord tag header and footer, that means it's 
                     // a Discord mention and should be converted to a SocketGuildUser. 
                     // Priority #2.
-                    else if ((args.DiscordUserFound == false) && ulong.TryParse(tokens[idx].Replace("<@!", "").Replace(">", ""), out userDiscordID))
+                    else if ((args.DiscordUserFound == false) && ulong.TryParse(tokens[idx].Replace("<@!", "").Replace("<@", "").Replace(">", ""), out userDiscordID))
                     {
 
                         args.DiscordUserFound = true;
