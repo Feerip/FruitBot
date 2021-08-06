@@ -25,7 +25,7 @@ namespace FruitPantry
 {
     public sealed class FruitPantry
     {
-        public static string _version = "1.5";
+        public static string _version = "1.6";
 
         private static readonly FruitPantry _instance = new();
 
@@ -95,7 +95,7 @@ namespace FruitPantry
 
         public static int NumNewEntries = 0;
 
-        Random _rand;
+        public Random _rand;
 
         public static class PointsCalculator
         {
@@ -140,7 +140,7 @@ namespace FruitPantry
 
                 foreach (DropLogEntry entry in playerLog)
                 {
-                    if (entry._bossName.Equals(bossName))
+                    if (entry._bossName.Equals(bossName) && (float.Parse(entry._pointValue) > 0))
                         dropsFromThisBoss++;
                 }
 
@@ -163,6 +163,43 @@ namespace FruitPantry
                     }
                 }
                 return playerLog;
+            }
+
+            public static SortedDictionary<string, float> PointsOfAllParticipants()
+            {
+                List<string> everyone = new();
+
+                foreach (KeyValuePair<string, List<string>> player in _thePantry._runescapePlayers)
+                    everyone.Add(player.Key);
+
+                return PointsForListOfPlayers(everyone);
+            }
+
+            public static SortedDictionary<string, float> PointsOfFruitTeamMembers(string fruit)
+            {
+                List<string> fruitTeamMembers = new();
+
+                foreach (KeyValuePair<string, List<string>> player in _thePantry._runescapePlayers)
+                {
+                    if (player.Value[0].Equals(fruit, StringComparison.OrdinalIgnoreCase))
+                    {
+                        fruitTeamMembers.Add(player.Key);
+                    }
+                }
+
+                return PointsForListOfPlayers(fruitTeamMembers);
+            }
+
+            public static SortedDictionary<string, float> PointsForListOfPlayers(List<string> runescapePlayers)
+            {
+                SortedDictionary<string, float> output = new();
+
+                foreach (string player in runescapePlayers)
+                {
+                    output.Add(player, PointsByRSN(player));
+                }
+
+                return output;
             }
 
             // Calculates and returns the point value contributions of a given player
@@ -224,14 +261,14 @@ namespace FruitPantry
 
 
             _dropLogRange = "Drop Log!A2:J";
-            _classificationRange = $"Classifications!A2:B19";
+            _classificationRange = $"Classifications!A2:B";
             _thresholdValuesRange = $"Classifications!D2:E2";
-            _itemDatabaseRange = $"Item Database!A2:G316";
+            _itemDatabaseRange = $"Item Database!A2:G";
             _playerDatabaseRange = $"Players!A2:C";
             _botVoteTrackerRange = $"Vote Tracker!A2:C";
             _gobVoteTrackerRange = $"Vote Tracker!A2:E";
             _bugReportRange = $"Bug Reports!A2:D";
-            _suggestionRange = $"Suggestions!A2:D;";
+            _suggestionRange = $"Suggestions!A2:D";
 
             _dropLog = new(comparer: new LogEntryKeyComparer());
 

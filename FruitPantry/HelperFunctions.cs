@@ -171,5 +171,99 @@ namespace FruitPantry
             messages.Reverse();
             return messages;
         }
+
+        class MyComparer : IComparer<KeyValuePair<string, float>>
+        {
+            public int Compare(KeyValuePair<string, float> x, KeyValuePair<string, float> y)
+            {
+                int result = y.Value.CompareTo(x.Value);
+
+                if (result == 0)
+                    result = y.Key.CompareTo(x.Key);
+
+                return result;
+            }
+        }
+
+        public static async Task<List<string>> BuildPointsList(SortedDictionary<string, float> teamMembers)
+        {
+            List<string> messages = new();
+            List<string> lines = new();
+            List<KeyValuePair<string, float>> sortedByPoints = teamMembers.ToList();
+
+
+            //foreach (KeyValuePair<string, float> teamMember in teamMembers)
+            //    sortedByPoints.Add(new(teamMember.Key, teamMember.Value));
+
+            //IOrderedEnumerable<KeyValuePair<string, float>> query = teamMembers.OrderByDescending(x => x.Value);
+
+            //sortedByPoints.Sort((x, y) => 
+
+            //(y.Value.CompareTo(x.Value)));
+
+            //sortedByPoints.Sort(new MyComparer());
+
+            IEnumerable<KeyValuePair<string, float>> query = sortedByPoints.OrderByDescending(x => x.Value);
+
+
+            string message = "";
+
+            int idx = 0;
+            int linesAdded = 0;
+
+
+            foreach (KeyValuePair<string, float> player in query)
+            {
+                string playerName = player.Key;
+                float playerPoints = player.Value;
+
+                if (idx % 60 == 0)
+                {
+                    message += "```\n";
+                    message += $"----------------------------" + "\n";
+                    message += $"| {FruitResources.Emojis.fruitlessHeathen}Name         |   Pts   |" + "\n";
+                }
+
+                lines.Add(string.Format("| {0,-14} | {1,7} |", FruitResources.Emojis.Get(_thePantry._runescapePlayers[playerName][0]) + playerName, playerPoints.ToString("0.00")) + "\n");
+
+                linesAdded++;
+                idx++;
+
+                if (lines.Count == 60)
+                {
+                    //lines.Reverse();
+                    foreach (string line in lines)
+                    {
+                        message += line;
+                    }
+
+                    message += "----------------------------```";
+                    messages.Add(message);
+                    lines = new();
+                    message = "";
+                }
+
+                if (player.Key.Equals(query.Last().Key, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!message.Equals(""))
+                    {
+                        //lines.Reverse();
+                        foreach (string line in lines)
+                        {
+                            message += line;
+                        }
+                        message += "----------------------------```";
+                        messages.Add(message);
+                    }
+                    break;
+                }
+
+
+            }
+
+            //messages.Reverse();
+            return messages;
+
+        }
     }
 }

@@ -47,6 +47,7 @@ namespace FruitBot.Modules
                                             $"{botMention} **fuck you gob** - for when you *really* need to say it.\n" +
                                             $"{botMention} **nsfw** - you know what this command does.\n" +
                                             $"{botMention} **bosses** - shows a list of eligible bosses and the point values for each.\n" +
+                                            $"{botMention} **coinflip** - flips a coin.\n" +
                                             $"{botMention} **bugreport** <***Report***> - submit a bug report\n" +
                                             $"{botMention} **suggestion** <***Suggestion***> - submit a suggestion\n" +
                                             $"{botMention} **version** - shows version information for {botMention}.")
@@ -259,10 +260,11 @@ namespace FruitBot.Modules
         }
 
         [Command("scrape", RunMode = RunMode.Async)]
+        [Alias("pull")]
         public async Task Scrape(SocketGuildUser user = null)
         {
 
-            await ReplyAsync($"Starting scrape on Runepixels for drop log data. This may take a few minutes.", messageReference: new(Context.Message.Id));
+            await ReplyAsync($"Starting pull from Runemetrics for drop log data. This may take a few minutes.", messageReference: new(Context.Message.Id));
 
             _logger.LogInformation($"{Context.User.Username} invoked the scrape command. This may take a few minutes.");
 
@@ -418,14 +420,15 @@ namespace FruitBot.Modules
         }
 
         [Command("points", RunMode = RunMode.Async)]
-        public async Task Points(SocketGuildUser user = null, [Remainder] string remainder = null)
+        public async Task Points([Remainder] TypeReaders.LastCommandArguments args = null)
         {
             string botMention = Context.Client.CurrentUser.Mention;
             string mention;
             using (Context.Channel.EnterTypingState())
             {
                 _thePantry.RefreshEverything();
-                string discordTag;
+                string discordTag = $"{Context.Message.Author.Username}#{Context.Message.Author.Discriminator}";
+                mention = Context.Message.Author.Mention;
                 float result = 0;
 
                 string rsn;
@@ -434,45 +437,94 @@ namespace FruitBot.Modules
                 string emoji;
                 string thumbnail;
                 Discord.Color color;
-                if (user == null)
+
+                bool fruitMode = false;
+                bool allMode = false;
+
+                if (args == null)
                 {
-                    discordTag = $"{Context.Message.Author.Username}#{Context.Message.Author.Discriminator}";
-                    mention = Context.Message.Author.Mention;
+                    // Use defaults aka context message values
+                }
+                else if (args.DiscordUserFound)
+                {
+                    discordTag = $"{args.DiscordUser.Username}#{args.DiscordUser.Discriminator}";
+                    mention = args.DiscordUser.Mention;
+                }
+                else if (args.RSNFound)
+                {
+                    discordTag = _thePantry._runescapePlayers[args.RSN][1];
+                    mention = null;
+                }
+                else if (args.FruitFound)
+                {
+                    fruitMode = true;
+                }
+                else if (args.EveryoneFlagFound)
+                {
+                    allMode = true;
+                }
+
+                if (fruitMode || allMode)
+                {
+                    SortedDictionary<string, float> players;
+                    if (fruitMode)
+                        players = FruitPantry.FruitPantry.PointsCalculator.PointsOfFruitTeamMembers(args.Fruit);
+                    else if (allMode)
+                        players = FruitPantry.FruitPantry.PointsCalculator.PointsOfAllParticipants();
+                    else
+                        players = null;
+
+
+                    List<string> output = await FruitPantry.HelperFunctions.BuildPointsList(players);
+
+                    int numMessages = output.Count;
+
+                    if (numMessages > 1)
+                    {
+                        for (int idx = 0; idx < numMessages; idx++)
+                        {
+                            output[idx] = $"`{idx + 1}/{numMessages}`\n" + output[idx];
+                        }
+                    }
+
+                    foreach (string message in output)
+                    {
+                        await Context.Channel.SendMessageAsync(message, messageReference: new(Context.Message.Id));
+                    }
                 }
                 else
                 {
-                    discordTag = $"{user.Username}#{user.Discriminator}";
-                    mention = user.Mention;
+                    result = FruitPantry.FruitPantry.PointsCalculator.PointsByDiscordTag(discordTag);
+                    rsn = _thePantry._discordUsers[discordTag][1];
+                    fruit = _thePantry._discordUsers[discordTag][0];
+                    fruitPlural = FruitResources.TextPlural.Get(fruit);
+                    emoji = FruitResources.Emojis.Get(fruit);
+                    color = FruitResources.Colors.Get(fruit);
+                    thumbnail = FruitResources.Logos.Get(fruit);
+
+                    var builder = new EmbedBuilder()
+                    //.WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
+                    //.WithThumbnailUrl(entry._fruitLogo)
+                    .WithDescription($"Fruit Wars contributions for {mention}/RSN {rsn}")
+                    .WithColor(color)
+                    .WithThumbnailUrl(thumbnail)
+                    .AddField($"{emoji}{fruitPlural}{emoji}", $"`{Math.Round(result)}`", true)
+
+                    //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
+                    //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
+                    //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
+                    .WithCurrentTimestamp()
+                    ;
+
+                    var embed = builder.Build();
+
+                    await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
+                    if ((args != null) && (args.DiscordUser == Context.Message.Author))
+                    {
+                        await Context.Channel.SendMessageAsync($"For future reference, if you want to check your own points you don't have to tag yourself, just type \"{botMention} points\".", messageReference: new(Context.Message.Id));
+                    }
                 }
-                result = FruitPantry.FruitPantry.PointsCalculator.PointsByDiscordTag(discordTag);
-                rsn = _thePantry._discordUsers[discordTag][1];
-                fruit = _thePantry._discordUsers[discordTag][0];
-                fruitPlural = FruitResources.TextPlural.Get(fruit);
-                emoji = FruitResources.Emojis.Get(fruit);
-                color = FruitResources.Colors.Get(fruit);
-                thumbnail = FruitResources.Logos.Get(fruit);
 
-                var builder = new EmbedBuilder()
-                //.WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                //.WithThumbnailUrl(entry._fruitLogo)
-                .WithDescription($"Fruit Wars contributions for {mention}/RSN {rsn}")
-                .WithColor(color)
-                .WithThumbnailUrl(thumbnail)
-                .AddField($"{emoji}{fruitPlural}{emoji}", $"`{Math.Round(result)}`", true)
-
-                //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
-                //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
-                //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
-                .WithCurrentTimestamp()
-                ;
-
-                var embed = builder.Build();
-
-                await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
-                if (user == Context.Message.Author)
-                {
-                    await Context.Channel.SendMessageAsync($"For future reference, if you want to check your own points you don't have to tag yourself, just type \"{botMention} points\".", messageReference: new(Context.Message.Id));
-                }
             }
             _logger.LogInformation($"{Context.User.Username} executed the points command: mention mode for user {mention}!");
         }
@@ -573,28 +625,6 @@ namespace FruitBot.Modules
             bool testing = false;
             if (testing)
             {
-                // string output = "";
-                // if (args == null)
-                // {
-                //     await Context.Channel.SendMessageAsync($"No arguments found, no parsing necessary.", messageReference: new(Context.Message.Id));
-                //     return;
-                // }
-
-                // if (args.NumDropsFound)
-                //     output += $"Numdrops: {args.NumDrops}\n";
-                // else
-                //     output += $"Numdrops: NULL\n";
-
-                // output += $"Fruit: {args.Fruit ?? "NULL"}\n";
-
-                // if (args.DiscordUserFound)
-                //     output += $"Discord User: {args.DiscordUser.Mention}\n";
-                // else
-                //     output += $"Discord User: NULL\n";
-
-                //output += $"RSN: \"{args.RSN ?? "NULL"}\"\n";
-
-                // await Context.Channel.SendMessageAsync(output, messageReference: new(Context.Message.Id));
 
 
             }
@@ -690,5 +720,41 @@ namespace FruitBot.Modules
 
         }
 
+        [Command("fuck me gob", RunMode = RunMode.Async)]
+        public async Task FuckMeGob(string input = null)
+        {
+            if (Context.Message.Author.Id == 746368167617495151)
+            {
+                await Context.Channel.SendMessageAsync($"Hello sir <@!242069991141146624>, {Context.Message.Author.Mention} has requested sexual gratification. Please see to it at your earliest convenience.", messageReference: new(Context.Message.Id));
+            }
+            else
+            {
+                await Context.Channel.SendMessageAsync($"https://i.kym-cdn.com/entries/icons/original/000/008/910/IF0yE_copy.jpg", messageReference: new(Context.Message.Id));
+            }
+            _logger.LogInformation($"{Context.User.Username} executed the fuck me gob command!");
+        }
+        
+        [Command("coinflip", RunMode = RunMode.Async)]
+        public async Task CoinFlip(string input = null)
+        {
+            int coin = _thePantry._rand.Next(2); 
+
+            if (coin == 0)
+            {
+                await Context.Channel.SendMessageAsync("https://cdn.discordapp.com/attachments/769476224363397144/870832802877292585/Head.png", messageReference:new(Context.Message.Id));
+            }
+            else if (coin == 1)
+            {
+                await Context.Channel.SendMessageAsync("https://cdn.discordapp.com/attachments/769476224363397144/870832807566528552/tails.png", messageReference: new(Context.Message.Id));
+            }
+            else
+            {
+                // Throw in low iq meme here later
+                throw new ArithmeticException();
+            }
+
+            _logger.LogInformation($"{Context.User.Username} executed the coinflip command! Result: {(coin == 0 ? "heads" : "tails")}");
+
+        }
     }
 }

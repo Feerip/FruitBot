@@ -24,6 +24,7 @@ namespace FruitBot.Modules
             public bool RSNFound = false;
             public bool DiscordUserFound = false;
             public bool FruitFound = false;
+            public bool EveryoneFlagFound = false;
         }
 
         public class LastCommandTypeReader : TypeReader
@@ -39,7 +40,12 @@ namespace FruitBot.Modules
 
                 string[] tokens = input.Split(' ');
 
-                
+                // If the argument just says "everyone" then set the everyone flag as well as noMoreArguments.
+                if (input.Equals("everyone", StringComparison.OrdinalIgnoreCase))
+                {
+                    args.EveryoneFlagFound = true;
+                    noMoreArguments = true;
+                }
                 for (int idx = 0; (!noMoreArguments) && (idx < tokens.Length); idx++)
                 {
                     // If the argument is a straight up number, that means it's the number of drops the user wants to see.
@@ -109,7 +115,7 @@ namespace FruitBot.Modules
                         }
                     }
                 }
-               
+
                 return Task.FromResult(TypeReaderResult.FromSuccess(args));
             }
         }

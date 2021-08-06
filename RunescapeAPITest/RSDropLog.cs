@@ -131,7 +131,7 @@ namespace RunescapeAPITest
                 {
                     foreach (RSActivity activity in activities)
                     {
-                        if (activity.text.Contains("found"))
+                        if (activity.text.Contains("found", StringComparison.OrdinalIgnoreCase) || activity.text.Contains("challenged by", StringComparison.OrdinalIgnoreCase))
                         {
                             SanitizedDrop drop = new();
                             drop._dropname = activity.text;
@@ -153,7 +153,6 @@ namespace RunescapeAPITest
                         .Replace("I found an ", "")
                         .Replace("I found a ", "")
                         .Replace("I found ", "")
-                        .Replace("pair of ", "")
                         .Replace(".", ""));
                 }
                 return output;
