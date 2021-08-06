@@ -52,6 +52,7 @@ namespace FruitPantry
         private SortedDictionary<string, DropLogEntry> _dropLog;
         public Dictionary<string, ItemDatabaseEntry> _itemDatabase { get; private set; }
         public Dictionary<string, float> _classificationList { get; set; }
+        public Dictionary<string, Discord.Color> _classificationColorList { get; set; }
         public Dictionary<string, List<string>> _discordUsers { get; set; }
         public Dictionary<string, List<string>> _runescapePlayers { get; set; }
 
@@ -72,6 +73,7 @@ namespace FruitPantry
 
         public readonly int Classification = 0;
         public readonly int PointsPerDrop = 1;
+        public readonly int ClassificationColor = 2;
 
         public readonly int PlayerDB_RSN = 0;
         public readonly int PlayerDB_Fruit = 1;
@@ -261,7 +263,7 @@ namespace FruitPantry
 
 
             _dropLogRange = "Drop Log!A2:J";
-            _classificationRange = $"Classifications!A2:B";
+            _classificationRange = $"Classifications!A2:C";
             _thresholdValuesRange = $"Classifications!D2:E2";
             _itemDatabaseRange = $"Item Database!A2:G";
             _playerDatabaseRange = $"Players!A2:C";
@@ -324,7 +326,8 @@ namespace FruitPantry
 
         public void RefreshClassifications()
         {
-            Dictionary<string, float> output = new();
+            Dictionary<string, float> parsedPoints = new();
+            Dictionary<string, Discord.Color> parsedColors = new();
             SpreadsheetsResource.ValuesResource.GetRequest request = _service.Spreadsheets.Values.Get(_spreadsheetId, _classificationRange);
             ValueRange response = request.Execute();
 
@@ -334,10 +337,13 @@ namespace FruitPantry
             {
                 foreach (var row in values)
                 {
-                    output.Add(row[Classification].ToString(), float.Parse(row[PointsPerDrop].ToString()));
+                    parsedPoints.Add(row[Classification].ToString(), float.Parse(row[PointsPerDrop].ToString()));
+                    parsedColors.Add(row[Classification].ToString(), new(Convert.ToUInt32(row[ClassificationColor].ToString(), 16)));
+
                 }
             }
-            _classificationList = output;
+            _classificationList = parsedPoints;
+            _classificationColorList = parsedColors;
         }
 
         public void RefreshItemDatabase()

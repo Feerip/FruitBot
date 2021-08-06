@@ -190,7 +190,7 @@ namespace FruitBot.Modules
                     var builder = new EmbedBuilder()
                         .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
                         .WithTitle(entry._dropName ?? "null")
-                        .WithColor(FruitResources.Colors.Get(entry._fruit))
+                        .WithColor(thePantry._classificationColorList[entry._bossName])
                         .AddField("Player Name", entry._playerName ?? "null", true)
                         //.AddField("Drop", entry._dropName ?? "null", true)
 #if FRUITWARSMODE

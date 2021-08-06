@@ -52,7 +52,7 @@ namespace FruitPantry
                 var builder = new EmbedBuilder()
                     .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
                     .WithTitle(entry._dropName ?? "null")
-                    .WithColor(color)
+                    .WithColor(thePantry._classificationColorList[entry._dropName.ToLower()])
                     .AddField("Player Name", entry._playerName ?? "null", true)
                     //.AddField("Drop", entry._dropName ?? "null", true)
 #if FRUITWARSMODE
