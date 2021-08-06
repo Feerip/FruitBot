@@ -179,8 +179,8 @@ namespace FruitBot.Modules
 #if FRUITWARSMODE
                         .AddField("Points", entry._pointValue, true)
 #endif
-                        .AddField("Dropped At", entry._timestamp, true)
                         .AddField("Boss", entry._bossName, true)
+                        .AddField("Dropped At", entry._timestamp, true)
     //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
     //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
     //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
