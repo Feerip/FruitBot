@@ -50,16 +50,14 @@ namespace FruitPantry
                 thumbnail = FruitResources.Logos.Get(fruit);
 
                 var builder = new EmbedBuilder()
-                    //.WithImageUrl("https://cdn.discordapp.com/attachments/856679881547186196/859871618436562944/bandoshelmet_50.webp")
-                    //.WithImageUrl(entry._dropIconWEBP ?? "null") 
-                    .WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                    //.WithThumbnailUrl(entry._dropIconWEBP ?? "null")
-                    .WithThumbnailUrl(entry._fruitLogo)
+                    .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
                     .WithTitle("New Drop Found in Drop Log")
                     .WithColor(color)
                     .AddField("Player Name", entry._playerName ?? "null", true)
                     .AddField("Drop", entry._dropName ?? "null", true)
+#if FRUITWARSMODE
                     .AddField("Points", entry._pointValue, true)
+#endif
                     .AddField("Dropped At", entry._timestamp, true)
                     .AddField("Boss", entry._bossName, true)
                     //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
