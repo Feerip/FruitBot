@@ -48,6 +48,7 @@ namespace FruitBot.Modules
                                             $"{botMention} **nsfw** - you know what this command does.\n" +
                                             $"{botMention} **bosses** - shows a list of eligible bosses and the point values for each.\n" +
                                             $"{botMention} **coinflip** - flips a coin.\n" +
+                                            $"{botMention} **spreadsheet** - link to the bot control spreadsheet (public view-only, admin edit)\n" +
                                             $"{botMention} **bugreport** <***Report***> - submit a bug report\n" +
                                             $"{botMention} **suggestion** <***Suggestion***> - submit a suggestion\n" +
                                             $"{botMention} **version** - shows version information for {botMention}.")
@@ -61,6 +62,23 @@ namespace FruitBot.Modules
 
             }
             _logger.LogInformation($"{Context.User.Username} executed the help command!");
+        }
+
+        [Command("spreadsheet", RunMode = RunMode.Async)]
+        public async Task Spreadsheet()
+        {
+            using (Context.Channel.EnterTypingState())
+            {
+                EmbedBuilder builder = new EmbedBuilder()
+                    .WithTitle("Spreadsheet Link")
+                    .WithUrl("https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing")
+                    .WithDescription("Bot Control Spreadsheet (public view-only, admin edit)");
+
+                Embed embed = builder.Build();
+
+                await Context.Channel.SendMessageAsync(embed: embed, messageReference: new(Context.Message.Id));
+            }
+            _logger.LogInformation($"{Context.User.Username} executed the spreadsheet command!");
         }
 
         // This is starting to spaghetti and needs a complete refactor
@@ -172,7 +190,6 @@ namespace FruitBot.Modules
                     var builder = new EmbedBuilder()
                         .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
                         .WithTitle(entry._dropName ?? "null")
-                        .WithFooter("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                         .WithColor(FruitResources.Colors.Get(entry._fruit))
                         .AddField("Player Name", entry._playerName ?? "null", true)
                         //.AddField("Drop", entry._dropName ?? "null", true)

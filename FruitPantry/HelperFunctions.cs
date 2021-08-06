@@ -52,7 +52,6 @@ namespace FruitPantry
                 var builder = new EmbedBuilder()
                     .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
                     .WithTitle(entry._dropName ?? "null")
-                    .WithFooter("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                     .WithColor(color)
                     .AddField("Player Name", entry._playerName ?? "null", true)
                     //.AddField("Drop", entry._dropName ?? "null", true)
