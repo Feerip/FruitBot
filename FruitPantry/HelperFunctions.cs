@@ -51,10 +51,10 @@ namespace FruitPantry
 
                 var builder = new EmbedBuilder()
                     .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                    .WithTitle("New Drop Found in Drop Log")
+                    .WithTitle(entry._dropName ?? "null")
                     .WithColor(color)
                     .AddField("Player Name", entry._playerName ?? "null", true)
-                    .AddField("Drop", entry._dropName ?? "null", true)
+                    //.AddField("Drop", entry._dropName ?? "null", true)
 #if FRUITWARSMODE
                     .AddField("Points", entry._pointValue, true)
 #endif

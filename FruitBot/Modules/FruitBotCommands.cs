@@ -171,11 +171,11 @@ namespace FruitBot.Modules
 
                     var builder = new EmbedBuilder()
                         .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                        .WithTitle("Last Drop:")
+                        .WithTitle(entry._dropName ?? "null")
                         .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                         .WithColor(FruitResources.Colors.Get(entry._fruit))
                         .AddField("Player Name", entry._playerName ?? "null", true)
-                        .AddField("Drop", entry._dropName ?? "null", true)
+                        //.AddField("Drop", entry._dropName ?? "null", true)
 #if FRUITWARSMODE
                         .AddField("Points", entry._pointValue, true)
 #endif
