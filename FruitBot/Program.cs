@@ -1,4 +1,5 @@
 ﻿#define DEBUG_LIMITS
+#define FRUITWARSMODE
 using System;
 using System.IO;
 using System.Threading.Tasks;

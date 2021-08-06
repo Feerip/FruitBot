@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -80,11 +81,12 @@ namespace FruitBot.Services
             //service.LeaderboardAtResetStartAsync(new CancellationToken(), 05);
             //service.LeaderboardAtResetStartAsync(new CancellationToken(), 11);
             //await service.LeaderboardAtResetStartAsync(new CancellationToken(), 17);
+#if FRUITWARSMODE
 
             List<int> intlist = new List<int> { 17, 23, 05, 11 };
 
             Parallel.ForEach(intlist, (i) => service.LeaderboardAtResetStartAsync(new CancellationToken(), i, 02));
-
+#endif
 
             //service.LeaderboardAtResetStartAsync(new CancellationToken(), 05, 00);
             //service.LeaderboardAtResetStartAsync(new CancellationToken(), 04, 58);

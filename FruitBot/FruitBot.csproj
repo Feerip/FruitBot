@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!--<DefineConstants>FRUITWARSMODE</DefineConstants>-->
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <ApplicationIcon>C:\Users\feerip\OneDrive\Icons\grapist2_square_smaller.ico</ApplicationIcon>
