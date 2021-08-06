@@ -60,7 +60,11 @@ namespace FruitBot.Services
         private async Task SetStatusAsync()
         {
             //await _client.SetGameAsync($"@FruitBot help", null, ActivityType.Listening);
+#if FRUITWARSMODE
             await _client.SetGameAsync($"Fruit Wars | @FruitBot help", null, ActivityType.Playing);
+#else
+            await _client.SetGameAsync($"@FruitBot help", null, ActivityType.Listening);
+#endif
         }
 
         private async Task _client_Ready()
