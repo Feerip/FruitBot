@@ -170,14 +170,15 @@ namespace FruitBot.Modules
                         dropIconURL = entry._dropIconWEBP;
 
                     var builder = new EmbedBuilder()
-                        .WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                        .WithThumbnailUrl(entry._fruitLogo)
+                        .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
                         .WithTitle("Last Drop:")
                         .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                         .WithColor(FruitResources.Colors.Get(entry._fruit))
                         .AddField("Player Name", entry._playerName ?? "null", true)
                         .AddField("Drop", entry._dropName ?? "null", true)
+#if FRUITWARSMODE
                         .AddField("Points", entry._pointValue, true)
+#endif
                         .AddField("Dropped At", entry._timestamp, true)
                         .AddField("Boss", entry._bossName, true)
     //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
@@ -733,15 +734,15 @@ namespace FruitBot.Modules
             }
             _logger.LogInformation($"{Context.User.Username} executed the fuck me gob command!");
         }
-        
+
         [Command("coinflip", RunMode = RunMode.Async)]
         public async Task CoinFlip(string input = null)
         {
-            int coin = _thePantry._rand.Next(2); 
+            int coin = _thePantry._rand.Next(2);
 
             if (coin == 0)
             {
-                await Context.Channel.SendMessageAsync("https://cdn.discordapp.com/attachments/769476224363397144/870832802877292585/Head.png", messageReference:new(Context.Message.Id));
+                await Context.Channel.SendMessageAsync("https://cdn.discordapp.com/attachments/769476224363397144/870832802877292585/Head.png", messageReference: new(Context.Message.Id));
             }
             else if (coin == 1)
             {
