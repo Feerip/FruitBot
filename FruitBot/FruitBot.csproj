@@ -4,8 +4,10 @@
     <!--<DefineConstants>FRUITWARSMODE</DefineConstants>-->
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <ApplicationIcon>C:\Users\feerip\OneDrive\Icons\grapist2_square_smaller.ico</ApplicationIcon>
+    <ApplicationIcon>Assets/grapist2_square_smaller.ico</ApplicationIcon>
     <DebugType>portable</DebugType>
+    <Nullable>disable</Nullable>
+    <PackageIcon>grapist2_square_smaller.ico</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -35,6 +37,9 @@
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\grapist2_square_smaller.ico">
+      <Pack>True</Pack>
     </None>
   </ItemGroup>
 
