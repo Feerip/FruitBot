@@ -228,6 +228,7 @@ namespace RSAdventurerLogScraper
             return output;
         }
 
+        [Obsolete]
         public static Dictionary<string, ItemDatabaseEntry> PullWikiImages(Dictionary<string, ItemDatabaseEntry> itemDBEntries)
         {
 
@@ -246,30 +247,30 @@ namespace RSAdventurerLogScraper
                 driver.Navigate();
                 try
                 {
-                    // Wait until table loads
-                    new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(ExpectedConditions.ElementExists(By.ClassName("floatleft")));
-                    // Find the activities table
-                    IWebElement activitiesTable = driver.FindElementByClassName("floatleft");
-                    // Find the activity selector interface
-                    IWebElement switchElement = activitiesTable.FindElement(By.ClassName("image"));
-                    // Find the drops button within the selector interface
-                    IWebElement dropsButton = switchElement.FindElement(By.TagName("img"));
-                    // Click the drops button once found
-                    switchElement.Click();
+                    //// Wait until table loads
+                    //new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(ExpectedConditions.ElementExists(By.ClassName("floatleft")));
+                    //// Find the activities table
+                    //IWebElement activitiesTable = driver.FindElementByClassName("floatleft");
+                    //// Find the activity selector interface
+                    //IWebElement switchElement = activitiesTable.FindElement(By.ClassName("image"));
+                    //// Find the drops button within the selector interface
+                    //IWebElement dropsButton = switchElement.FindElement(By.TagName("img"));
+                    //// Click the drops button once found
+                    //switchElement.Click();
 
-                    new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(ExpectedConditions.ElementExists(By.CssSelector("img[crossorigin='anonymous']")));
+                    //new WebDriverWait(driver, TimeSpan.FromSeconds(30)).Until(ExpectedConditions.ElementExists(By.CssSelector("img[crossorigin='anonymous']")));
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine($"==============================================Image URL Pull failed for {entry.Key}. Continuing onto next item.");
                     continue;
                 }                //IWebElement button = driver.findElement(By.cssSelector("input[value='Submit']"));
-                IWebElement imageLargeContainer = driver.FindElementByCssSelector("img[crossorigin='anonymous']");
+                //IWebElement imageLargeContainer = driver.FindElementByCssSelector("img[crossorigin='anonymous']");
 
-                //IWebElement imageLarge = imageLargeContainer.FindElement(By.TagName("img"));
-                string imageSrc = imageLargeContainer.GetAttribute("src");
+                ////IWebElement imageLarge = imageLargeContainer.FindElement(By.TagName("img"));
+                //string imageSrc = imageLargeContainer.GetAttribute("src");
 
-                itemDBEntries[entry.Key]._imageURL = imageSrc;
+                //itemDBEntries[entry.Key]._imageURL = imageSrc;
             }
             return itemDBEntries;
         }
