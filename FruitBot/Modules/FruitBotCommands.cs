@@ -662,8 +662,10 @@ namespace FruitBot.Modules
         }
         public async Task VersionHelper(Embed embed = null)
         {
-            IUserMessage message = await Context.Channel.SendMessageAsync($"Vought FruitBot V{FruitPantry.FruitPantry._version} - {Context.Guild.GetRole(859595508359364629)} Loyalist", false, embed, messageReference: new(Context.Message.Id));
-            await message.ModifyAsync(msg => msg.Content = $"Vought FruitBot V{FruitPantry.FruitPantry._version} - {Context.Guild.GetRole(859595508359364629).Mention} Loyalist");
+            //IUserMessage message = await Context.Channel.SendMessageAsync($"Vought FruitBot V{FruitPantry.FruitPantry._version} - {Context.Guild.GetRole(859595508359364629)} Loyalist", false, embed, messageReference: new(Context.Message.Id));
+            //await message.ModifyAsync(msg => msg.Content = $"Vought FruitBot V{FruitPantry.FruitPantry._version} - {Context.Guild.GetRole(859595508359364629).Mention} Loyalist");
+            IUserMessage message = await Context.Channel.SendMessageAsync($"Vought FruitBot V{FruitPantry.FruitPantry._version}", false, embed, messageReference: new(Context.Message.Id));
+            await message.ModifyAsync(msg => msg.Content = $"Vought FruitBot V{FruitPantry.FruitPantry._version}");
         }
 
         [Command("fuck you gob", RunMode = RunMode.Async)]
@@ -790,7 +792,7 @@ namespace FruitBot.Modules
 
         [Command("stop", RunMode = RunMode.Async)]
         [Alias("Restart", "Update")]
-        [RequireUserPermission(GuildPermission.Administrator)]  
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Stop()
         {
             _logger.LogInformation($"{Context.User.Username} executed the stop command! Exiting now.");
@@ -798,6 +800,6 @@ namespace FruitBot.Modules
             Environment.Exit(0);
         }
 
-        
+
     }
 }
