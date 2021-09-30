@@ -153,8 +153,8 @@ namespace RunescapeAPITest
                         .Replace("I found an ", "")
                         .Replace("I found a ", "")
                         .Replace("I found ", "")
+                        .Replace("Found an ", "")
                         .Replace("Found a ", "")
-                        .Replace("Found an", "")
                         .Replace(".", ""));
                 }
                 return output;

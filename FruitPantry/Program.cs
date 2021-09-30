@@ -34,16 +34,7 @@ namespace FruitPantry
             //var source = driver.PageSource;
 
             TextInfo ti = CultureInfo.CurrentCulture.TextInfo;
-   
-               string dropname = ti.ToTitleCase("I found an off-hand drygore mace"
-                    .Replace("I found some ", "")
-                    .Replace("I found an ", "")
-                    .Replace("I found a ", "")
-                    .Replace("I found ", "")
-                    .Replace("Found an ", "")
-                    .Replace("pair of ", "")
-                    .Replace(".", ""));
-            Console.WriteLine(dropname);
+
       
 
             Console.WriteLine();
