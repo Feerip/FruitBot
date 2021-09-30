@@ -49,26 +49,51 @@ namespace FruitPantry
                 color = FruitResources.Colors.Get(fruit);
                 thumbnail = FruitResources.Logos.Get(fruit);
 
-                var builder = new EmbedBuilder()
-                    .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                    .WithTitle(entry._dropName ?? "null")
-                    .WithColor(thePantry._classificationColorList[entry._dropName.ToLower()])
-                    .AddField("Player Name", entry._playerName ?? "null", true)
-                    //.AddField("Drop", entry._dropName ?? "null", true)
+                EmbedBuilder builder;
+
+                if (entry._bossName.Equals("Unknowns", StringComparison.OrdinalIgnoreCase))
+                {
+                    builder = new EmbedBuilder()
+                        .WithThumbnailUrl(thePantry._itemDatabase["unknown"]._imageURL)
+                        .WithTitle(entry._dropName ?? "null")
+                        .WithColor(thePantry._classificationColorList[entry._bossName])
+                        .AddField("Player Name", entry._playerName ?? "null", true)
+                        ;
+
+                }
+                else
+                {
+
+                    builder = new EmbedBuilder()
+                        .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
+                        .WithTitle(entry._dropName ?? "null")
+                        .WithColor(thePantry._classificationColorList[entry._bossName])
+                        .AddField("Player Name", entry._playerName ?? "null", true)
+                        ;
+                }
 #if FRUITWARSMODE
-                    .AddField("Points", entry._pointValue, true)
+                builder.AddField("Points", entry._pointValue, true);
 #endif
-                    .AddField("Boss", entry._bossName, true)
-                    .AddField("Dropped At", entry._timestamp, true)
-                    //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
-                    //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
-                    //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
-                    //.WithCurrentTimestamp()
-                    ;
+                builder.AddField("Boss", entry._bossName, true);
+                builder.AddField("Dropped At", entry._timestamp, true);
+
 
                 var embed = builder.Build();
 
-                await discordClient.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(null, false, embed);
+                string message = null;
+                ulong channel = 862385904719364096;
+
+                if (entry._bossName.Equals("Unknowns", StringComparison.OrdinalIgnoreCase))
+                {
+                    message = "<@&856709182514397194> halp <a:MEOW:881462772636995595> I found an unfamiliar item WHAT DO I DOOOOO";
+                    channel = 856679881547186196;
+                }
+                await discordClient.GetGuild(769476224363397140).GetTextChannel(channel).SendMessageAsync(message, false, embed);
+
+                if (entry._bossName.Equals("InsaneRNG", StringComparison.OrdinalIgnoreCase))
+                    await discordClient.GetGuild(769476224363397140).GetTextChannel(769476224363397144).SendMessageAsync(null, false, embed);
+
+
                 idx++;
             }
 

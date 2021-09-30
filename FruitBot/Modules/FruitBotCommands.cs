@@ -192,17 +192,14 @@ namespace FruitBot.Modules
                         .WithTitle(entry._dropName ?? "null")
                         .WithColor(thePantry._classificationColorList[entry._bossName])
                         .AddField("Player Name", entry._playerName ?? "null", true)
-                        //.AddField("Drop", entry._dropName ?? "null", true)
+                        ;
+
+
 #if FRUITWARSMODE
-                        .AddField("Points", entry._pointValue, true)
+                    builder.AddField("Points", entry._pointValue, true);
 #endif
-                        .AddField("Boss", entry._bossName, true)
-                        .AddField("Dropped At", entry._timestamp, true)
-    //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
-    //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
-    //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
-    //.WithCurrentTimestamp()
-    ;
+                    builder.AddField("Boss", entry._bossName, true);
+                    builder.AddField("Dropped At", entry._timestamp, true);
 
                     var embed = builder.Build();
 
@@ -636,14 +633,17 @@ namespace FruitBot.Modules
         }
 
         [Command("test", RunMode = RunMode.Async)]
-        //[RequireOwner]
-        //[RequireUserPermission(GuildPermission.Administrator)]
+        [RequireUserPermission(GuildPermission.Administrator)]
         public async Task Test([Remainder] TypeReaders.LastCommandArguments args = null)
         {
-            bool testing = false;
+            bool testing = true;
             if (testing)
             {
+                RaidsSignup signup = new();
 
+                Embed embed = signup.GenerateEmbed();
+
+                await Context.Channel.SendMessageAsync(null, embed: embed);
 
             }
             else
@@ -774,5 +774,30 @@ namespace FruitBot.Modules
             _logger.LogInformation($"{Context.User.Username} executed the coinflip command! Result: {(coin == 0 ? "heads" : "tails")}");
 
         }
+
+        [Command("echo", RunMode = RunMode.Async)]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task Echo([Remainder] string input)
+        {
+            using (Context.Channel.EnterTypingState())
+            {
+                await Context.Channel.SendMessageAsync(input);
+            }
+
+            _logger.LogInformation($"{Context.User.Username} executed the echo command! Content: \"{input}\"");
+
+        }
+
+        [Command("stop", RunMode = RunMode.Async)]
+        [Alias("Restart", "Update")]
+        [RequireUserPermission(GuildPermission.Administrator)]  
+        public async Task Stop()
+        {
+            _logger.LogInformation($"{Context.User.Username} executed the stop command! Exiting now.");
+            await Context.Channel.SendMessageAsync("Stop command acknowledged. Restarting now. If I'm not back within 30 seconds, cry for help.", messageReference: new(Context.Message.Id));
+            Environment.Exit(0);
+        }
+
+        
     }
 }

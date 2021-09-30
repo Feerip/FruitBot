@@ -35,6 +35,7 @@ namespace FruitPantry
             //_timer = new Timer(DoWork, _client, TimeSpan.Zero,
             //    TimeSpan.FromMinutes(5));
 
+            //original 300000
             _timer2 = new(300000);
             _timer2.Elapsed += DoWork;
             _timer2.AutoReset = true;
@@ -195,7 +196,7 @@ namespace FruitPantry
             return;
         }
 
-        private void DoWork(object state, ElapsedEventArgs e)
+        private async void DoWork(object state, ElapsedEventArgs e)
         {
             //var count = Interlocked.Increment(ref executionCount);
 
@@ -212,7 +213,7 @@ namespace FruitPantry
 
                 int numTotalEntries = thePantry.ScrapeGameData(_client).Result;
 
-                _ = HelperFunctions.LastHelper(FruitPantry.NumNewEntries, _client);
+                await HelperFunctions.LastHelper(FruitPantry.NumNewEntries, _client);
 
                 FruitPantry.NumNewEntries = 0;
 

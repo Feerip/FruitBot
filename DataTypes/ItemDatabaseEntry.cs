@@ -14,5 +14,6 @@ namespace DataTypes
         public string _classification { get; set; }
         public string _wikiLink { get; set; }
         public string _imageURL { get; set; }
+        public bool _monitored { get; set; }
     }
 }

@@ -181,7 +181,7 @@ namespace RSAdventurerLogScraper
         // Automatically generates a full list of the last 50 drops in the clan.
         public static async Task<List<DropLogEntry>> CreateListFullAuto()
         {
-            Console.WriteLine("===============================================Starting pull from RuneMetrics API");
+            //Console.WriteLine("===============================================Starting pull from RuneMetrics API");
             List<DropLogEntry> output = new();
 
             List<RSDropLog> dropLogs = RSDropLog.PullParallelFromJagexAPI(RSDropLog.GetAllVoughtPlayerNames().Result);

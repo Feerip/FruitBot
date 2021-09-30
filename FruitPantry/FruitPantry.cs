@@ -358,16 +358,20 @@ namespace FruitPantry
             {
                 foreach (var row in values)
                 {
-                    if (string.Equals(row[ItemDBActiveFlag].ToString(), "TRUE"))
-                    {
-                        ItemDatabaseEntry newItem = new();
-                        newItem._itemName = row[ItemDBItemName].ToString();
-                        newItem._classification = row[ItemDBClassification].ToString();
-                        newItem._wikiLink = row[ItemDBWikiLink].ToString();
-                        newItem._imageURL = row[ItemDBImageURL].ToString();
+                    //if (string.Equals(row[ItemDBActiveFlag].ToString(), "TRUE"))
+                    //{
+                    ItemDatabaseEntry newItem = new();
+                    newItem._itemName = row[ItemDBItemName].ToString();
+                    newItem._classification = row[ItemDBClassification].ToString();
+                    newItem._wikiLink = row[ItemDBWikiLink].ToString();
+                    newItem._imageURL = row[ItemDBImageURL].ToString();
+                    if (row[ItemDBActiveFlag].ToString().Equals("TRUE", StringComparison.OrdinalIgnoreCase))
+                        newItem._monitored = true;
+                    else
+                        newItem._monitored = false;
 
-                        output.Add(row[ItemDBItemName].ToString().ToLower(), newItem);
-                    }
+                    output.Add(row[ItemDBItemName].ToString().ToLower(), newItem);
+                    //}
                 }
             }
             _itemDatabase = output;
@@ -472,7 +476,18 @@ namespace FruitPantry
 
         public bool IsBeingMonitored(DropLogEntry entry)
         {
-            return _itemDatabase.ContainsKey(entry._dropName.ToLower());
+            if (_itemDatabase.ContainsKey(entry._dropName.ToLower()))
+            {
+                return _itemDatabase[entry._dropName.ToLower()]._monitored;
+            }
+            else return false;
+        }
+
+        public bool UnknownsBeingMonitored()
+        {
+            if (_itemDatabase.ContainsKey("unknown"))
+                return _itemDatabase["unknown"]._monitored;
+            else return false;
         }
 
 
@@ -562,6 +577,27 @@ namespace FruitPantry
                     }
                     entry._bossName = _itemDatabase[entry._dropName.ToLower()]._classification;
                     entry._pointValue = PointsCalculator.CalculatePoints(entry).ToString();
+                    await Add(entry);
+
+                }
+                //If unknown item
+                else if (!AlreadyExists(entry) && UnknownsBeingMonitored() && !_itemDatabase.ContainsKey(entry._dropName.ToLower()))
+                {
+                    NumNewEntries++;
+                    // _runescapePlayers list index is <KEY>(PlayerName){Fruit, DiscordTag}
+                    try
+                    {
+                        entry._fruit = _runescapePlayers[entry._playerName.ToLower()][0];
+                    }
+                    catch (KeyNotFoundException e)
+                    {
+                        //Console.WriteLine(e.Message);
+                        //await discordClient.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(
+                        //    $"Warning: Found a fruitless heathen ({entry._playerName}) in scraped Runepixels data. This drop will not be added to the drop log.");
+                        //continue;
+                    }
+                    entry._bossName = "Unknowns";
+                    entry._pointValue = "0";
                     await Add(entry);
 
                 }

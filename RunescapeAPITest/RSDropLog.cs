@@ -35,7 +35,7 @@ namespace RunescapeAPITest
             }
             catch (WebException e)
             {
-                Console.WriteLine(e.Message);
+                //Console.WriteLine(e.Message);
             }
         }
         public RSDropLog(string playerName)
@@ -153,6 +153,8 @@ namespace RunescapeAPITest
                         .Replace("I found an ", "")
                         .Replace("I found a ", "")
                         .Replace("I found ", "")
+                        .Replace("Found a ", "")
+                        .Replace("Found an", "")
                         .Replace(".", ""));
                 }
                 return output;
