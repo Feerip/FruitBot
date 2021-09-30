@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
-using Discord;
-using Discord.Commands;
+﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RS3APIDropLog;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 
 namespace FruitPantry
 {
@@ -18,9 +14,9 @@ namespace FruitPantry
     {
         private readonly ILogger<TimedHostedService> _logger;
         private System.Timers.Timer _timer2;
-        private DiscordSocketClient _client;
+        private readonly DiscordSocketClient _client;
 
-        public TimedHostedService( DiscordSocketClient client)
+        public TimedHostedService(DiscordSocketClient client)
         {
             _client = client;
         }
@@ -42,11 +38,11 @@ namespace FruitPantry
             return Task.CompletedTask;
         }
 
-        void BroadcastLeaderboardAtDesignatedTimesOfDay(object state, int dailyHourToBroadcast, int hourlyMinuteToBroadcast)
+        private void BroadcastLeaderboardAtDesignatedTimesOfDay(object state, int dailyHourToBroadcast, int hourlyMinuteToBroadcast)
         {
-            var targetTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, dailyHourToBroadcast, hourlyMinuteToBroadcast, 00);
-            var oneMinute = new TimeSpan(0, 1, 0);
-            var zero = new TimeSpan(0, 0, 0);
+            DateTime targetTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, dailyHourToBroadcast, hourlyMinuteToBroadcast, 00);
+            TimeSpan oneMinute = new TimeSpan(0, 1, 0);
+            TimeSpan zero = new TimeSpan(0, 0, 0);
 
             while (true)
             {
@@ -71,7 +67,7 @@ namespace FruitPantry
 
         }
 
-        void ShowLeaderboard(object state)
+        private void ShowLeaderboard(object state)
         {
             using (_client.GetGuild(769476224363397140).GetTextChannel(862385904719364096).EnterTypingState())
             {
@@ -101,15 +97,25 @@ namespace FruitPantry
                 foreach (DropLogEntry entry in thePantry.GetDropLog().Values)
                 {
                     if (entry._fruit.Equals("Grape"))
+                    {
                         grapePoints += float.Parse(entry._pointValue);
+                    }
                     else if (entry._fruit.Equals("Banana"))
+                    {
                         bananaPoints += float.Parse(entry._pointValue);
+                    }
                     else if (entry._fruit.Equals("Apple"))
+                    {
                         applePoints += float.Parse(entry._pointValue);
+                    }
                     else if (entry._fruit.Equals("Peach"))
+                    {
                         peachPoints += float.Parse(entry._pointValue);
+                    }
                     else
+                    {
                         fruitlessHeathenPoints += float.Parse(entry._pointValue);
+                    }
                 }
                 // Now find the largest one
                 if (grapePoints > largestNumber)
@@ -148,7 +154,7 @@ namespace FruitPantry
                 // Find leading team and assign color/picture based on that
 
 
-                var builder = new EmbedBuilder()
+                EmbedBuilder builder = new EmbedBuilder()
                             .WithTitle("Fruit Wars Leaderboard")
                             .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                             .WithColor(leadingColor)
@@ -164,9 +170,9 @@ namespace FruitPantry
                             .WithCurrentTimestamp()
                             ;
 
-                var embed = builder.Build();
+                Embed embed = builder.Build();
 
-                 _client.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(null, false, embed);
+                _client.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(null, false, embed);
 
                 //🍇🍌🍎🍑💩
 

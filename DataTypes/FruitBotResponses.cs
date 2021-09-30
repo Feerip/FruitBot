@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataTypes
+﻿namespace DataTypes
 {
 
     // Good bot/bad bot idea shamelessly stolen from https://github.com/IsaacKhor
@@ -57,7 +51,7 @@ namespace DataTypes
 
         };
         // add logic to send 4 lines of 9x dance when you get a chance, 4 lines with \n makes them all smol
-        private static string d = "<a:dance:861575125785772032>";
+        private static readonly string d = "<a:dance:861575125785772032>";
         public static string[] goodBotResponses = {
             $"{d}{d}{d}{d}{d}{d}{d}{d}{d}\n" +
             $"{d}{d}{d}{d}{d}{d}{d}{d}{d}\n" +

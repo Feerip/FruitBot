@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using FruitPantry;
 using Microsoft.Extensions.Logging;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FruitBot.Modules
 {
@@ -17,8 +13,9 @@ namespace FruitBot.Modules
         private readonly ILogger<General> _logger;
 
         public General(ILogger<General> logger)
-            => _logger = logger;
-
+        {
+            _logger = logger;
+        }
 
         [Command("ping")]
         public async Task PingAsync()
@@ -37,8 +34,8 @@ namespace FruitBot.Modules
         [Command("math")]
         public async Task MathAsync([Remainder] string math)
         {
-            var dt = new DataTable();
-            var result = dt.Compute(math, null);
+            DataTable dt = new DataTable();
+            object result = dt.Compute(math, null);
 
             await ReplyAsync($"Result: {result}");
             _logger.LogInformation($"{Context.User.Username} executed the math command!");
@@ -49,7 +46,7 @@ namespace FruitBot.Modules
         {
             if (user == null)
             {
-                var builder = new EmbedBuilder()
+                EmbedBuilder builder = new EmbedBuilder()
                     .WithThumbnailUrl(Context.User.GetAvatarUrl() ?? Context.User.GetDefaultAvatarUrl())
                     .WithDescription("self info")
                     .WithColor(new Color(00, 00, 255))
@@ -60,13 +57,13 @@ namespace FruitBot.Modules
                     .AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
                     .WithCurrentTimestamp();
 
-                var embed = builder.Build();
+                Embed embed = builder.Build();
 
                 await Context.Channel.SendMessageAsync(null, false, embed);
             }
             else
             {
-                var builder = new EmbedBuilder()
+                EmbedBuilder builder = new EmbedBuilder()
                     .WithThumbnailUrl(user.GetAvatarUrl() ?? Context.User.GetDefaultAvatarUrl())
                     .WithDescription("self info")
                     .WithColor(new Color(00, 00, 255))
@@ -77,7 +74,7 @@ namespace FruitBot.Modules
                     .AddField("Roles", string.Join(" ", (user).Roles.Select(x => x.Mention)))
                     .WithCurrentTimestamp();
 
-                var embed = builder.Build();
+                Embed embed = builder.Build();
 
                 await Context.Channel.SendMessageAsync(null, false, embed);
             }
@@ -87,7 +84,7 @@ namespace FruitBot.Modules
         [Command("server")]
         public async Task Server()
         {
-            var builder = new EmbedBuilder()
+            EmbedBuilder builder = new EmbedBuilder()
                 .WithThumbnailUrl(Context.Guild.IconUrl)
                 .WithDescription("here is some server info")
                 .WithTitle($"{Context.Guild.Name} Information")
@@ -95,7 +92,7 @@ namespace FruitBot.Modules
                 .AddField("Created at", Context.Guild.CreatedAt.ToString("MM/dd/yyyy"), true)
                 .AddField("Member count", (Context.Guild as SocketGuild).MemberCount + " members", true)
                 .AddField("Online users", (Context.Guild as SocketGuild).Users.Where(x => x.Status != UserStatus.Offline).Count() + " members", true);
-            var embed = builder.Build();
+            Embed embed = builder.Build();
             await Context.Channel.SendMessageAsync(null, false, embed);
             _logger.LogInformation($"{Context.User.Username} executed the server command!");
         }

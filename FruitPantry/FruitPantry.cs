@@ -4,13 +4,13 @@ using Discord.WebSocket;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
+using RS3APIDropLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Data = Google.Apis.Sheets.v4.Data;
-using RS3APIDropLog;
 
 namespace FruitPantry
 {
@@ -20,23 +20,23 @@ namespace FruitPantry
 
         private static readonly FruitPantry _instance = new();
 
-        private string[] _scopes = { SheetsService.Scope.Spreadsheets };
-        private string _applicationName;
-        private string _credentialsFile;
-        private string _spreadsheetId;
+        private readonly string[] _scopes = { SheetsService.Scope.Spreadsheets };
+        private readonly string _applicationName;
+        private readonly string _credentialsFile;
+        private readonly string _spreadsheetId;
 
-        private string _dropLogRange;
-        private string _classificationRange;
-        private string _playerDatabaseRange;
-        private string _itemDatabaseRange;
-        private string _thresholdValuesRange;
-        private string _botVoteTrackerRange;
-        private string _gobVoteTrackerRange;
-        private string _bugReportRange;
-        private string _suggestionRange;
+        private readonly string _dropLogRange;
+        private readonly string _classificationRange;
+        private readonly string _playerDatabaseRange;
+        private readonly string _itemDatabaseRange;
+        private readonly string _thresholdValuesRange;
+        private readonly string _botVoteTrackerRange;
+        private readonly string _gobVoteTrackerRange;
+        private readonly string _bugReportRange;
+        private readonly string _suggestionRange;
 
-        private SheetsService _service;
-        private GoogleCredential _credentials;
+        private readonly SheetsService _service;
+        private readonly GoogleCredential _credentials;
 
 
 
@@ -92,7 +92,7 @@ namespace FruitPantry
 
         public static class PointsCalculator
         {
-            private static FruitPantry _thePantry = GetFruitPantry();
+            private static readonly FruitPantry _thePantry = GetFruitPantry();
 
             // Calculates the point value of a single drop entry with all variables considered
             public static float CalculatePoints(DropLogEntry drop)
@@ -119,7 +119,9 @@ namespace FruitPantry
                 // triggering the threshold, and thus multiplying the point value by 0, getting a final 
                 // point value of 0 for the drop.
                 if (thresholdValue == 0)
+                {
                     return 1;
+                }
 
                 List<DropLogEntry> playerLog = FilterByPlayer(playerName);
 
@@ -128,7 +130,9 @@ namespace FruitPantry
                 foreach (DropLogEntry entry in playerLog)
                 {
                     if (entry._bossName.Equals(bossName) && (float.Parse(entry._pointValue) > 0))
+                    {
                         dropsFromThisBoss++;
+                    }
                 }
 
                 int thresholdLevel = dropsFromThisBoss / thresholdValue;
@@ -145,7 +149,10 @@ namespace FruitPantry
                     if (entry.Value._playerName.ToLower().Equals(playerName.ToLower()))
                     {
                         if ((_thePantry._runescapePlayers.ContainsKey(playerName)) && (!entry.Value._fruit.Equals(_thePantry._runescapePlayers[entry.Value._playerName.ToLower()][0])))
+                        {
                             continue;
+                        }
+
                         playerLog.Add(entry.Value);
                     }
                 }
@@ -157,7 +164,9 @@ namespace FruitPantry
                 List<string> everyone = new();
 
                 foreach (KeyValuePair<string, List<string>> player in _thePantry._runescapePlayers)
+                {
                     everyone.Add(player.Key);
+                }
 
                 return PointsForListOfPlayers(everyone);
             }
@@ -251,16 +260,25 @@ namespace FruitPantry
             Parallel.For(0, 5, idx =>
             {
                 if (idx == 0)
+                {
                     RefreshDropLog();
+                }
                 else if (idx == 1)
+                {
                     RefreshClassifications();
+                }
                 else if (idx == 2)
+                {
                     RefreshPlayerDatabase();
+                }
                 else if (idx == 3)
+                {
                     RefreshThresholdValues();
+                }
                 else if (idx == 4)
+                {
                     RefreshItemDatabase();
-
+                }
             });
 
             return _dropLog;
@@ -287,7 +305,7 @@ namespace FruitPantry
 
             if (values != null && values.Count > 0)
             {
-                foreach (var row in values)
+                foreach (IList<object> row in values)
                 {
                     parsedPoints.Add(row[Classification].ToString(), float.Parse(row[PointsPerDrop].ToString()));
                     parsedColors.Add(row[Classification].ToString(), new(Convert.ToUInt32(row[ClassificationColor].ToString(), 16)));
@@ -308,7 +326,7 @@ namespace FruitPantry
 
             if (values != null && values.Count > 0)
             {
-                foreach (var row in values)
+                foreach (IList<object> row in values)
                 {
                     ItemDatabaseEntry newItem = new();
                     newItem._itemName = row[ItemDBItemName].ToString();
@@ -316,9 +334,13 @@ namespace FruitPantry
                     newItem._wikiLink = row[ItemDBWikiLink].ToString();
                     newItem._imageURL = row[ItemDBImageURL].ToString();
                     if (row[ItemDBActiveFlag].ToString().Equals("TRUE", StringComparison.OrdinalIgnoreCase))
+                    {
                         newItem._monitored = true;
+                    }
                     else
+                    {
                         newItem._monitored = false;
+                    }
 
                     output.Add(row[ItemDBItemName].ToString().ToLower(), newItem);
                 }
@@ -355,7 +377,7 @@ namespace FruitPantry
 
             if (values != null && values.Count > 0)
             {
-                foreach (var row in values)
+                foreach (IList<object> row in values)
                 {
                     discordUsersOutput.Add(row[PlayerDB_DiscordTag].ToString(), new() { row[PlayerDB_Fruit].ToString(), row[PlayerDB_RSN].ToString().ToLower() });
                     runescapePlayersOutput.Add(row[PlayerDB_RSN].ToString().ToLower(), new() { row[PlayerDB_Fruit].ToString(), row[PlayerDB_DiscordTag].ToString() });
@@ -385,7 +407,7 @@ namespace FruitPantry
 
             if (values != null && values.Count > 0)
             {
-                foreach (var row in values)
+                foreach (IList<object> row in values)
                 {
                     output.Add(row[EntryKey].ToString(), new(
                                                 playerName: row[RSN],
@@ -428,14 +450,22 @@ namespace FruitPantry
             {
                 return _itemDatabase[entry._dropName.ToLower()]._monitored;
             }
-            else return false;
+            else
+            {
+                return false;
+            }
         }
 
         public bool UnknownsBeingMonitored()
         {
             if (_itemDatabase.ContainsKey("unknown"))
+            {
                 return _itemDatabase["unknown"]._monitored;
-            else return false;
+            }
+            else
+            {
+                return false;
+            }
         }
 
 
@@ -513,7 +543,7 @@ namespace FruitPantry
                     {
                         entry._fruit = _runescapePlayers[entry._playerName.ToLower()][0];
                     }
-                    catch (KeyNotFoundException e)
+                    catch (KeyNotFoundException)
                     {
 #if FRUITWARSMODE
                         Console.WriteLine(e.Message);
@@ -535,7 +565,7 @@ namespace FruitPantry
                     {
                         entry._fruit = _runescapePlayers[entry._playerName.ToLower()][0];
                     }
-                    catch (KeyNotFoundException e)
+                    catch (KeyNotFoundException)
                     {
 #if FRUITWARSMODE
                         //Console.WriteLine(e.Message);
@@ -594,7 +624,7 @@ namespace FruitPantry
 
             if (values != null && values.Count > 0)
             {
-                var row = values[0];
+                IList<object> row = values[0];
 
                 voteResponse.version = row[Version].ToString();
                 voteResponse.goodBot = int.Parse(row[GoodBotVotes].ToString());
@@ -602,7 +632,9 @@ namespace FruitPantry
 
             }
             else
+            {
                 return null;
+            }
 
             // Apply the new vote(s)
             voteResponse.goodBot += upvoteInput;
@@ -656,7 +688,7 @@ namespace FruitPantry
 
             if (values != null && values.Count > 0)
             {
-                foreach (var row in values)
+                foreach (IList<object> row in values)
                 {
                     voteResponse.version = row[Version].ToString();
                     voteResponse.goodBot = int.Parse(row[GoodGobVotes].ToString());
@@ -664,7 +696,9 @@ namespace FruitPantry
                 }
             }
             else
+            {
                 return null;
+            }
 
             // Apply the new vote(s)
             voteResponse.goodBot += upvoteInput;

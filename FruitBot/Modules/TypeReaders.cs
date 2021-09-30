@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataTypes;
-using Discord;
+﻿using DataTypes;
 using Discord.Commands;
 using Discord.WebSocket;
+using System;
+using System.Threading.Tasks;
 
 namespace FruitBot.Modules
 {
@@ -33,7 +29,6 @@ namespace FruitBot.Modules
             {
                 LastCommandArguments args = new();
 
-                ulong userDiscordID;
                 bool noMoreArguments = false;
 
                 bool foundFilter = false;
@@ -55,13 +50,15 @@ namespace FruitBot.Modules
                         args.NumDropsFound = true;
                         // Check to make sure that the number of drops requested valid, otherwise throw some sass at the user
                         if (args.NumDrops < 1)
+                        {
                             return Task.FromResult(TypeReaderResult.FromError(CommandError.ParseFailed, "Invalid command: number of drops must be greater than zero. " +
                                 "Exactly what are you trying to accomplish here?"));
+                        }
                     }
                     // If the argument can be parsed to a ulong after removing the standard Discord tag header and footer, that means it's 
                     // a Discord mention and should be converted to a SocketGuildUser. 
                     // Priority #2.
-                    else if ((args.DiscordUserFound == false) && ulong.TryParse(tokens[idx].Replace("<@!", "").Replace("<@", "").Replace(">", ""), out userDiscordID))
+                    else if ((args.DiscordUserFound == false) && ulong.TryParse(tokens[idx].Replace("<@!", "").Replace("<@", "").Replace(">", ""), out ulong userDiscordID))
                     {
 
                         args.DiscordUserFound = true;
@@ -69,8 +66,10 @@ namespace FruitBot.Modules
                         args.DiscordUser = (SocketGuildUser)context.Guild.GetUserAsync(userDiscordID).Result;
                         // Check to make sure this is the last argument. If not, it's an invalid command.
                         if (idx != tokens.Length - 1)
+                        {
                             return Task.FromResult(TypeReaderResult.FromError(CommandError.BadArgCount, "Invalid command: too many arguments. " +
                                 "Discord @tag must be the last argument in the command."));
+                        }
                     }
                     // If the full argument can be parsed into a fruit, well then obviously it's a fruit.
                     // Priority #3
@@ -81,8 +80,10 @@ namespace FruitBot.Modules
                         foundFilter = true;
                         // Check to make sure this is the last argument. If not, it's an invalid command.
                         if (idx != tokens.Length - 1)
+                        {
                             return Task.FromResult(TypeReaderResult.FromError(CommandError.BadArgCount, "Invalid command: too many arguments. " +
                                 "Fruit type must be the last argument in the command."));
+                        }
                     }
                     // If all else fails, then it's either an RSN or garbage, and should be treated as such.
                     // Lowest priority
@@ -90,8 +91,10 @@ namespace FruitBot.Modules
                     {
                         // Check to make sure this is the only filter type specified
                         if (foundFilter)
+                        {
                             return Task.FromResult(TypeReaderResult.FromError(CommandError.BadArgCount, "Invalid command: too many arguments. " +
                                 "You may only use ONE \"filtering\" argument on the command (@tag, FruitName, or RSN)."));
+                        }
 
                         // Stop looping even if there are more arguments, because RSNs can have spaces in them
                         // and at this point the rest of the argument should be treated as an RSN, with the calling
@@ -104,7 +107,9 @@ namespace FruitBot.Modules
                         {
                             args.RSN += tokens[idx];
                             if (idx != tokens.Length - 1)
+                            {
                                 args.RSN += " ";
+                            }
                         }
                         args.RSNFound = true;
                         // Check to make sure the RSN is shorter than the 12 character limit imposed by Jagex, to save everyone some time.

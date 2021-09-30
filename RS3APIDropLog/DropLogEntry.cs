@@ -1,15 +1,8 @@
-﻿using System;
+﻿using DataTypes;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using DataTypes;
-using Discord;
-using DataTypes;
-using RS3APIDropLog;
 
 namespace RS3APIDropLog
 {
@@ -34,15 +27,28 @@ namespace RS3APIDropLog
             get
             {
                 if (_fruit.Equals(FruitResources.Text.grape))
+                {
                     return FruitResources.Logos.grape;
+                }
+
                 if (_fruit.Equals(FruitResources.Text.banana))
+                {
                     return FruitResources.Logos.banana;
+                }
+
                 if (_fruit.Equals(FruitResources.Text.apple))
+                {
                     return FruitResources.Logos.apple;
+                }
+
                 if (_fruit.Equals(FruitResources.Text.peach))
+                {
                     return FruitResources.Logos.peach;
+                }
                 else
+                {
                     return FruitResources.Logos.fruitlessHeathen;
+                }
                 //placeholder for "fruitless heathen"
             }
         }
@@ -65,28 +71,51 @@ namespace RS3APIDropLog
 
             // Image links
             if (playerAvatarPNG != null)
+            {
                 _playerAvatarPNG = playerAvatarPNG.ToString();
+            }
             else
+            {
                 _playerAvatarPNG = null;
+            }
+
             if (dropIconWEBP != null)
+            {
                 _dropIconWEBP = dropIconWEBP.ToString() ?? null;
+            }
             else
+            {
                 _dropIconWEBP = null;
+            }
 
 
             // Runemetrics stuff
             if (bossName != null)
+            {
                 _bossName = bossName.ToString();
+            }
             else
+            {
                 _bossName = null;
+            }
+
             if (runemetricsDropID != null)
+            {
                 _runemetricsDropID = runemetricsDropID.ToString();
+            }
             else
+            {
                 _runemetricsDropID = null;
+            }
+
             if (pointValue != null)
+            {
                 _pointValue = pointValue.ToString();
+            }
             else
+            {
                 _pointValue = null;
+            }
 
             // Calculate unique ID to ensure no duplicates
             // playerName + timestamp is an easy way to get a unique ID for each drop
@@ -95,15 +124,16 @@ namespace RS3APIDropLog
 
             if (entryKey != null)
             {
-                if (!String.Equals((_timestamp + " " + _playerName), _entryKey))
+                if (!string.Equals((_timestamp + " " + _playerName), _entryKey))
                 {
                     throw new DataException("DropLogEntry data corrupted: entry key verification error while downloading entry");
                 }
             }
 
             if (EntryKeyCorrupted)
+            {
                 throw new DataException("DropLogEntry data corrupted: Entry key does not match expected result.");
-
+            }
         }
 
         // Automatic ctor (pass in an instance of the javascript class "activity" on runepixels)
@@ -112,16 +142,24 @@ namespace RS3APIDropLog
         public static bool operator ==(DropLogEntry lhs, DropLogEntry rhs)
         {
             if (lhs._entryKey == rhs._entryKey)
+            {
                 return true;
+            }
             else
+            {
                 return false;
+            }
         }
         public static bool operator !=(DropLogEntry lhs, DropLogEntry rhs)
         {
             if (lhs._entryKey != rhs._entryKey)
+            {
                 return true;
+            }
             else
+            {
                 return false;
+            }
         }
 
         public DropLogEntry(string playerName, RSDropLog.SanitizedDrop input)
@@ -136,7 +174,9 @@ namespace RS3APIDropLog
             _entryKey = _timestamp + " " + _playerName;
 
             if (EntryKeyCorrupted)
+            {
                 throw new DataException("DropLogEntry data corrupted: Entry key does not match expected result.");
+            }
         }
 
         // Automatically generates a full list of the last 50 drops in the clan.
@@ -156,13 +196,7 @@ namespace RS3APIDropLog
             return output;
         }
 
-        public bool EntryKeyCorrupted
-        {
-            get
-            {
-                return !String.Equals((_timestamp + " " + _playerName), _entryKey);
-            }
-        }
+        public bool EntryKeyCorrupted => !string.Equals((_timestamp + " " + _playerName), _entryKey);
 
         // sanitization taken care of internally, pass DropLogEntry the drop name as is. 
         private string SanitizeDropName(string dropName)

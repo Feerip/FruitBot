@@ -1,30 +1,28 @@
 ﻿#define DEBUG_LIMITS
 #define FRUITWARSMODE
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using Discord;
 using Discord.Addons.Hosting;
 using Discord.Commands;
 using Discord.WebSocket;
+using FruitBot.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using FruitBot.Services;
-using System.Timers;
-using System.Runtime.CompilerServices;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace FruitBot
 {
     public class Program
     {
-         static async Task<int> Main(string[] args)
+        private static async Task<int> Main(string[] args)
         {
-            var builder = new HostBuilder()
+            IHostBuilder builder = new HostBuilder()
                 .ConfigureAppConfiguration(x =>
                 {
-                    var configuration = new ConfigurationBuilder()
+                    IConfigurationRoot configuration = new ConfigurationBuilder()
                         .SetBasePath(Directory.GetCurrentDirectory())
                         .AddJsonFile("appsettings.json", false, true)
                         .Build();
@@ -45,9 +43,9 @@ namespace FruitBot
                         MessageCacheSize = 1000,
                         GatewayIntents = GatewayIntents.All,
                         LargeThreshold = 1000,
-                                               
-                    };  
-                    
+
+                    };
+
                     config.Token = context.Configuration["token"];
 
                 })
@@ -63,15 +61,15 @@ namespace FruitBot
                 })
                 .UseConsoleLifetime();
 
-            var host = builder.Build();
+            IHost host = builder.Build();
             using (host)
             {
-                
+
                 await host.RunAsync();
 
             }
             Environment.ExitCode = 1;
-            return 1;  
+            return 1;
         }
 
     }

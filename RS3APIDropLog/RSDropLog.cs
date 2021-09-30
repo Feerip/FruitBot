@@ -1,16 +1,14 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.FileIO;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Runescape.Api.Model;
-using Runescape.Api;
-using Microsoft.VisualBasic.FileIO;
-using System.IO;
-using System.Collections.Concurrent;
 
 namespace RS3APIDropLog
 {
@@ -33,7 +31,7 @@ namespace RS3APIDropLog
             {
                 list.Enqueue(new(playerName));
             }
-            catch (WebException e)
+            catch (WebException)
             {
             }
         }
@@ -49,7 +47,9 @@ namespace RS3APIDropLog
 
                 RSProfile aDropLog = JsonConvert.DeserializeObject<RSProfile>(json);
                 if (aDropLog.name == null)
+                {
                     throw new WebException($"Jagex API returned null: player \"{test}\" not found.");
+                }
                 else
                 {
                     _name = aDropLog.name;
@@ -66,11 +66,14 @@ namespace RS3APIDropLog
             request.AutomaticDecompression = DecompressionMethods.GZip;
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             Stream stream = response.GetResponseStream();
-            TextFieldParser parser = new (stream, Encoding.UTF7);
+            TextFieldParser parser = new(stream, Encoding.UTF7);
             parser.TextFieldType = FieldType.Delimited;
             parser.SetDelimiters(",");
             if (!parser.EndOfData)
+            {
                 parser.ReadFields();
+            }
+
             while (!parser.EndOfData)
             {
                 string[] fields = parser.ReadFields();

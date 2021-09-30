@@ -1,19 +1,17 @@
-﻿using System;
+﻿using DataTypes;
+using Discord;
+using Discord.WebSocket;
+using RS3APIDropLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Discord.WebSocket;
-using Discord;
-using RS3APIDropLog;
-using DataTypes;
-using static DataTypes.FruitResources;
 
 namespace FruitPantry
 {
     public static class HelperFunctions
     {
-        private static FruitPantry _thePantry = FruitPantry.GetFruitPantry();
+        private static readonly FruitPantry _thePantry = FruitPantry.GetFruitPantry();
 
         public static async Task LastHelper(int numDrops, DiscordSocketClient discordClient)
         {
@@ -25,7 +23,10 @@ namespace FruitPantry
             foreach (KeyValuePair<string, DropLogEntry> entryPair in thePantry.GetDropLog())
             {
                 if (idx == numDrops)
+                {
                     break;
+                }
+
                 DropLogEntry entry = entryPair.Value;
 
                 string fruit = entry._fruit;
@@ -36,11 +37,17 @@ namespace FruitPantry
                 //quick and dirty fix, remove later
                 string dropIconURL;
                 if (entry._dropIconWEBP == null)
+                {
                     dropIconURL = "";
+                }
                 else if (entry._dropIconWEBP.Equals("https://runepixels.com/assets/images/runescape/activities/drop.webp"))
+                {
                     dropIconURL = "";
+                }
                 else
+                {
                     dropIconURL = entry._dropIconWEBP;
+                }
 
                 emoji = FruitResources.Emojis.Get(fruit);
                 color = FruitResources.Colors.Get(fruit);
@@ -75,7 +82,7 @@ namespace FruitPantry
                 builder.AddField("Dropped At", entry._timestamp, true);
 
 
-                var embed = builder.Build();
+                Embed embed = builder.Build();
 
                 string message = null;
                 ulong channel = 862385904719364096;
@@ -88,8 +95,9 @@ namespace FruitPantry
                 await discordClient.GetGuild(769476224363397140).GetTextChannel(channel).SendMessageAsync(message, false, embed);
 
                 if (entry._bossName.Equals("InsaneRNG", StringComparison.OrdinalIgnoreCase))
+                {
                     await discordClient.GetGuild(769476224363397140).GetTextChannel(769476224363397144).SendMessageAsync(null, false, embed);
-
+                }
 
                 idx++;
             }
@@ -183,14 +191,16 @@ namespace FruitPantry
             return messages;
         }
 
-        class MyComparer : IComparer<KeyValuePair<string, float>>
+        private class MyComparer : IComparer<KeyValuePair<string, float>>
         {
             public int Compare(KeyValuePair<string, float> x, KeyValuePair<string, float> y)
             {
                 int result = y.Value.CompareTo(x.Value);
 
                 if (result == 0)
+                {
                     result = y.Key.CompareTo(x.Key);
+                }
 
                 return result;
             }

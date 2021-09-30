@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
+using System;
+using System.Collections.Generic;
 
 namespace FruitBot
 {
@@ -106,15 +103,15 @@ namespace FruitBot
 
         }
 
-        private List<SocketGuildUser> _inviteList = new();
+        private readonly List<SocketGuildUser> _inviteList = new();
 
-        private Dictionary<SocketGuildUser, Roles.BM> _BM_Roles = new();
-        private Dictionary<Roles.BM, SocketGuildUser> _BM_Players = new();
-        private Dictionary<SocketGuildUser, Roles.BM> _BM_Player_Signup_Roles = new();
+        private readonly Dictionary<SocketGuildUser, Roles.BM> _BM_Roles = new();
+        private readonly Dictionary<Roles.BM, SocketGuildUser> _BM_Players = new();
+        private readonly Dictionary<SocketGuildUser, Roles.BM> _BM_Player_Signup_Roles = new();
 
-        private Dictionary<SocketGuildUser, Roles.Yaka> _Yaka_Roles = new();
-        private Dictionary<Roles.Yaka, SocketGuildUser> _Yaka_Players = new();
-        private Dictionary<SocketGuildUser, Roles.Yaka> _Yaka_Player_Signup_Roles = new();
+        private readonly Dictionary<SocketGuildUser, Roles.Yaka> _Yaka_Roles = new();
+        private readonly Dictionary<Roles.Yaka, SocketGuildUser> _Yaka_Players = new();
+        private readonly Dictionary<SocketGuildUser, Roles.Yaka> _Yaka_Player_Signup_Roles = new();
 
 
         public Embed GenerateEmbed()
@@ -147,9 +144,14 @@ namespace FruitBot
         public void BMSignup(SocketGuildUser discordUser, Roles.BM role)
         {
             if (AlreadySignedUp(discordUser))
+            {
                 throw new Exception("You have already signed up for raids.");
+            }
+
             if (SignedUpForBM(discordUser))
+            {
                 throw new Exception("You can only sign up for 1 role at BM.");
+            }
 
             //Add to the non-final signup sheet for BM
             _BM_Player_Signup_Roles.Add(discordUser, role);
@@ -167,9 +169,14 @@ namespace FruitBot
         public void YakaSignup(SocketGuildUser discordUser, Roles.Yaka role)
         {
             if (AlreadySignedUp(discordUser))
+            {
                 throw new Exception("You have already signed up for raids.");
+            }
+
             if (SignedUpForYaka(discordUser))
+            {
                 throw new Exception("You can only sign up for 1 role at BM.");
+            }
 
             //Add to the non-final signup sheet for Yaka
             _Yaka_Player_Signup_Roles.Add(discordUser, role);
@@ -184,38 +191,59 @@ namespace FruitBot
         public bool RoleTaken(Roles.BM role)
         {
             if (_BM_Players.ContainsKey(role))
+            {
                 return true;
+            }
             else
+            {
                 return false;
+            }
         }
         public bool RoleTaken(Roles.Yaka role)
         {
             if (_Yaka_Players.ContainsKey(role))
+            {
                 return true;
+            }
             else
+            {
                 return false;
+            }
         }
         public bool SignedUpForBM(SocketGuildUser discordUser)
         {
             if (_BM_Player_Signup_Roles.ContainsKey(discordUser))
+            {
                 return true;
-            else return false;
+            }
+            else
+            {
+                return false;
+            }
         }
         public bool SignedUpForYaka(SocketGuildUser discordUser)
         {
             if (_BM_Player_Signup_Roles.ContainsKey(discordUser))
+            {
                 return true;
+            }
             else
+            {
                 return false;
+            }
         }
 
 
         public bool AlreadySignedUp(SocketGuildUser discordUser)
         {
             if (_inviteList.Contains(discordUser))
+            {
                 return true;
+            }
             else
+            {
                 return false;
+            }
         }
 
         private int FinalizeSignup(SocketGuildUser discordUser)

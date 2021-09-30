@@ -1,21 +1,18 @@
 ﻿
-using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Discord;
 using Discord.Addons.Hosting;
 using Discord.Commands;
 using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
-using FruitPantry;
-using System.Collections.Generic;
-using Google.Apis.Sheets.v4.Data;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System.Timers;
 using FruitBot.Modules;
+using FruitPantry;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 
 namespace FruitBot.Services
 {
@@ -70,7 +67,7 @@ namespace FruitBot.Services
             // Until that's resolved, the powershell script needs to always restart it, but once we get this working it can restart on exit code 1 and 
             //  stay closed on exit code 0.
 
-            var timer = new System.Timers.Timer(10000);
+            System.Timers.Timer timer = new System.Timers.Timer(10000);
             timer.Elapsed += new ElapsedEventHandler(CheckConnection);
             timer.Start();
 
@@ -87,15 +84,24 @@ namespace FruitBot.Services
         {
             Environment.ExitCode = 1;
             if (_client.ConnectionState == ConnectionState.Disconnecting)
+            {
                 Environment.Exit(1);
-
+            }
         }
 
         private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> arg1, ISocketMessageChannel arg2, SocketReaction arg3)
         {
-            if (arg3.MessageId != 857061904944988160) return;
-            if (arg3.Emote.Name != "✅") return;
-            var role = (arg2 as SocketGuildChannel).Guild.Roles.FirstOrDefault(x => x.Id == 856709182514397194);
+            if (arg3.MessageId != 857061904944988160)
+            {
+                return;
+            }
+
+            if (arg3.Emote.Name != "✅")
+            {
+                return;
+            }
+
+            SocketRole role = (arg2 as SocketGuildChannel).Guild.Roles.FirstOrDefault(x => x.Id == 856709182514397194);
             await (arg3.User.Value as SocketGuildUser).AddRoleAsync(role);
 
 
@@ -108,18 +114,30 @@ namespace FruitBot.Services
 
         private async Task OnChannelCreated(SocketChannel arg)
         {
-            if ((arg as ITextChannel) == null) return;
-            var channel = arg as ITextChannel;
+            if ((arg as ITextChannel) == null)
+            {
+                return;
+            }
+
+            ITextChannel channel = arg as ITextChannel;
 
             await channel.SendMessageAsync("Channel created");
         }
 
         private async Task OnMessageReceived(SocketMessage arg)
         {
-            if (!(arg is SocketUserMessage message)) return;
-            var context = new SocketCommandContext(_client, message);
-            if (message.Source != MessageSource.User) return;
-            var argPos = 0;
+            if (!(arg is SocketUserMessage message))
+            {
+                return;
+            }
+
+            SocketCommandContext context = new SocketCommandContext(_client, message);
+            if (message.Source != MessageSource.User)
+            {
+                return;
+            }
+
+            int argPos = 0;
 
 
 
@@ -158,8 +176,10 @@ namespace FruitBot.Services
                 await context.Channel.SendMessageAsync($"Upvotes: `{response.goodBot}`, Downvotes: `{response.badBot}`", messageReference: new(context.Message.Id));
             }
 
-            if (!message.HasMentionPrefix(_client.CurrentUser, ref argPos)) return;
-
+            if (!message.HasMentionPrefix(_client.CurrentUser, ref argPos))
+            {
+                return;
+            }
 
             await _service.ExecuteAsync(context, argPos, _provider);
 
@@ -178,7 +198,9 @@ namespace FruitBot.Services
 
 
             if (!message.HasMentionPrefix(_client.CurrentUser, ref argPos))
+            {
                 return;
+            }
             else
             {
                 string[] buffer = context.Message.ToString().Split(' ');
@@ -188,7 +210,9 @@ namespace FruitBot.Services
                 {
                     RSNInput += buffer[idx];
                     if (idx < buffer.Count() - 1 && !buffer[idx].Equals(" "))
+                    {
                         RSNInput += " ";
+                    }
                 }
 
 
@@ -277,7 +301,10 @@ namespace FruitBot.Services
                     case CommandError.Exception:
                         await context.Channel.SendMessageAsync($"Error type: {CommandError.Exception}");
                         if (result.ErrorReason.Contains("was not present in the dictionary."))
+                        {
                             await context.Channel.SendMessageAsync($"It's possible that this could be due to the person specified not being signed up for Fruit Wars.");
+                        }
+
                         break;
                     case CommandError.ObjectNotFound:
                         await context.Channel.SendMessageAsync($"Error type: {CommandError.ObjectNotFound}");

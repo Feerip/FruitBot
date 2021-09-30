@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using DataTypes;
+﻿using DataTypes;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using RS3APIDropLog;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace FruitBot.Modules
 {
@@ -19,7 +19,9 @@ namespace FruitBot.Modules
         private readonly FruitPantry.FruitPantry _thePantry = FruitPantry.FruitPantry.GetFruitPantry();
 
         public FruitBotCommands(ILogger<FruitBotCommands> logger)
-            => _logger = logger;
+        {
+            _logger = logger;
+        }
 
         [Command("help", RunMode = RunMode.Async)]
         public async Task Help()
@@ -29,7 +31,7 @@ namespace FruitBot.Modules
                 string botMention = Context.Client.CurrentUser.Mention;
 
 
-                var builder = new EmbedBuilder()
+                EmbedBuilder builder = new EmbedBuilder()
                         .WithTitle("Usage: ")
                         .WithDescription($"{botMention} **help** - displays this help message. Commands are NOT case-sensitive.\n" +
                                             $"{botMention} **last** <***NumEntries***> - shows the last <*NumEntries*> entries in the drop log. Shows only 1 if number not specified.\n" +
@@ -53,7 +55,7 @@ namespace FruitBot.Modules
                         .WithColor(new Color(00, 00, 255))
                         ;
 
-                var embed = builder.Build();
+                Embed embed = builder.Build();
 
                 await VersionHelper(embed);
 
@@ -109,14 +111,19 @@ namespace FruitBot.Modules
                 else
                 {
                     if (!args.NumDropsFound)
+                    {
                         args.NumDrops = 1;
+                    }
+
                     if (args.NumDropsFound && (args.NumDrops == 1))
                     {
                         remindSingleEntry = true;
                     }
 
                     if (args.NumDrops == 1)
+                    {
                         await LastHelper(args.NumDrops, Context, args.RSN, args.Fruit);
+                    }
                     else
                     {
                         List<string> output = await FruitPantry.HelperFunctions.BuildLastDropList(args.NumDrops, args.RSN, args.Fruit);
@@ -138,8 +145,9 @@ namespace FruitBot.Modules
                     }
 
                     if (remindSingleEntry)
+                    {
                         await ReplyAsync($"For future reference, if you only want the last (1) drop, you don't have to specify a number, just type \"{botMention} last {{optionalFilter}}\".", messageReference: new(Context.Message.Id));
-
+                    }
                 }
             }
 
@@ -159,28 +167,41 @@ namespace FruitBot.Modules
 
 
                     if (idx == numDrops)
+                    {
                         break;
+                    }
+
                     DropLogEntry entry = entryPair.Value;
                     if (rsn != null)
                     {
                         if (!entry._playerName.ToLower().Equals(rsn.ToLower()))
+                        {
                             continue;
+                        }
                     }
                     if (fruit != null)
                     {
                         if (!entry._fruit.Equals(fruit, StringComparison.OrdinalIgnoreCase))
+                        {
                             continue;
+                        }
                     }
                     //quick and dirty fix, remove later
                     string dropIconURL;
                     if (entry._dropIconWEBP == null)
+                    {
                         dropIconURL = "";
+                    }
                     else if (entry._dropIconWEBP.Equals("https://runepixels.com/assets/images/runescape/activities/drop.webp"))
+                    {
                         dropIconURL = "";
+                    }
                     else
+                    {
                         dropIconURL = entry._dropIconWEBP;
+                    }
 
-                    var builder = new EmbedBuilder()
+                    EmbedBuilder builder = new EmbedBuilder()
                         .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
                         .WithTitle(entry._dropName ?? "null")
                         .WithColor(thePantry._classificationColorList[entry._bossName])
@@ -194,7 +215,7 @@ namespace FruitBot.Modules
                     builder.AddField("Boss", entry._bossName, true);
                     builder.AddField("Dropped At", entry._timestamp, true);
 
-                    var embed = builder.Build();
+                    Embed embed = builder.Build();
 
                     await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new MessageReference(Context.Message.Id));
                     idx++;
@@ -207,7 +228,7 @@ namespace FruitBot.Modules
         public async Task ToDo(SocketGuildUser user = null)
         {
 
-            var builder = new EmbedBuilder()
+            EmbedBuilder builder = new EmbedBuilder()
                 .WithDescription("Todo list for Admins")
                 .WithColor(new Color(255, 00, 0))
                 .AddField("Priority 1: ", "Threshold Formula (with variable placeholders)", true)
@@ -215,7 +236,7 @@ namespace FruitBot.Modules
                 .AddField("Low Priority: ", "Finalize Threshold Formula Variables", true)
                 ;
 
-            var embed = builder.Build();
+            Embed embed = builder.Build();
 
             await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
         }
@@ -324,15 +345,25 @@ namespace FruitBot.Modules
                 foreach (DropLogEntry entry in thePantry.GetDropLog().Values)
                 {
                     if (entry._fruit.Equals(FruitResources.Text.grape))
+                    {
                         grapePoints += float.Parse(entry._pointValue);
+                    }
                     else if (entry._fruit.Equals(FruitResources.Text.banana))
+                    {
                         bananaPoints += float.Parse(entry._pointValue);
+                    }
                     else if (entry._fruit.Equals(FruitResources.Text.apple))
+                    {
                         applePoints += float.Parse(entry._pointValue);
+                    }
                     else if (entry._fruit.Equals(FruitResources.Text.peach))
+                    {
                         peachPoints += float.Parse(entry._pointValue);
+                    }
                     else
+                    {
                         fruitlessHeathenPoints += float.Parse(entry._pointValue);
+                    }
                 }
                 // Now find the largest one
                 if (grapePoints > largestNumber)
@@ -371,7 +402,7 @@ namespace FruitBot.Modules
                 // Find leading team and assign color/picture based on that
 
 
-                var builder = new EmbedBuilder()
+                EmbedBuilder builder = new EmbedBuilder()
                             .WithTitle("Fruit Wars Leaderboard")
                             .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                             .WithColor(leadingColor)
@@ -388,7 +419,7 @@ namespace FruitBot.Modules
                             .WithFooter("Last Update")
                             ;
 
-                var embed = builder.Build();
+                Embed embed = builder.Build();
 
                 await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
             }
@@ -453,12 +484,17 @@ namespace FruitBot.Modules
                 {
                     SortedDictionary<string, float> players;
                     if (fruitMode)
+                    {
                         players = FruitPantry.FruitPantry.PointsCalculator.PointsOfFruitTeamMembers(args.Fruit);
+                    }
                     else if (allMode)
+                    {
                         players = FruitPantry.FruitPantry.PointsCalculator.PointsOfAllParticipants();
+                    }
                     else
+                    {
                         players = null;
-
+                    }
 
                     List<string> output = await FruitPantry.HelperFunctions.BuildPointsList(players);
 
@@ -487,7 +523,7 @@ namespace FruitBot.Modules
                     color = FruitResources.Colors.Get(fruit);
                     thumbnail = FruitResources.Logos.Get(fruit);
 
-                    var builder = new EmbedBuilder()
+                    EmbedBuilder builder = new EmbedBuilder()
                     .WithDescription($"Fruit Wars contributions for {mention}/RSN {rsn}")
                     .WithColor(color)
                     .WithThumbnailUrl(thumbnail)
@@ -495,7 +531,7 @@ namespace FruitBot.Modules
                     .WithCurrentTimestamp()
                     ;
 
-                    var embed = builder.Build();
+                    Embed embed = builder.Build();
 
                     await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
                     if ((args != null) && (args.DiscordUser == Context.Message.Author))
@@ -650,7 +686,7 @@ namespace FruitBot.Modules
         {
             SortedDictionary<string, float> classifications = _thePantry.GetClassifications();
 
-            var builder = new EmbedBuilder()
+            EmbedBuilder builder = new EmbedBuilder()
                 .WithTitle("Points per boss drop:")
                 .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                 .WithColor(new(0, 255, 0))
@@ -662,7 +698,7 @@ namespace FruitBot.Modules
             }
 
 
-            var embed = builder.Build();
+            Embed embed = builder.Build();
 
             await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
 

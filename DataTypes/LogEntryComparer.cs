@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataTypes
 {
     public class LogEntryKeyComparer : IComparer<string>
     {
-        public  int Compare(string x, string y)
+        public int Compare(string x, string y)
         {
             // Split the key into three parts: date (fr-FR format), time, and username.
             string[] lhsbuffer = x.Split(' ');
@@ -27,9 +23,13 @@ namespace DataTypes
             // On the infinitely miniscule chance that both drops are from the same person, string's compare will
             // return the zero needed.
             if (result == 0)
+            {
                 return string.Compare(lhsbuffer[2], rhsbuffer[2]);
+            }
             else
+            {
                 return result;
-       }
+            }
+        }
     }
 }

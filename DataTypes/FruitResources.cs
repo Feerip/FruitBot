@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataTypes
 {
@@ -13,11 +8,29 @@ namespace DataTypes
         {
             public static Discord.Color Get(string fruit)
             {
-                if (fruit.Equals(Text.grape)) return grape;
-                if (fruit.Equals(Text.banana)) return banana;
-                if (fruit.Equals(Text.apple)) return apple;
-                if (fruit.Equals(Text.peach)) return peach;
-                else return fruitlessHeathen;
+                if (fruit.Equals(Text.grape))
+                {
+                    return grape;
+                }
+
+                if (fruit.Equals(Text.banana))
+                {
+                    return banana;
+                }
+
+                if (fruit.Equals(Text.apple))
+                {
+                    return apple;
+                }
+
+                if (fruit.Equals(Text.peach))
+                {
+                    return peach;
+                }
+                else
+                {
+                    return fruitlessHeathen;
+                }
             }
             public static Discord.Color grape = new(128, 00, 128);
             public static Discord.Color banana = new(255, 255, 0);
@@ -29,11 +42,29 @@ namespace DataTypes
         {
             public static string Get(string fruit)
             {
-                if (fruit.Equals(grape)) return grape;
-                if (fruit.Equals(banana)) return banana;
-                if (fruit.Equals(apple)) return apple;
-                if (fruit.Equals(peach)) return peach;
-                else return fruitlessHeathen;
+                if (fruit.Equals(grape))
+                {
+                    return grape;
+                }
+
+                if (fruit.Equals(banana))
+                {
+                    return banana;
+                }
+
+                if (fruit.Equals(apple))
+                {
+                    return apple;
+                }
+
+                if (fruit.Equals(peach))
+                {
+                    return peach;
+                }
+                else
+                {
+                    return fruitlessHeathen;
+                }
             }
             public static string grape { get; } = "Grape";
             public static string banana { get; } = "Banana";
@@ -85,11 +116,29 @@ namespace DataTypes
         {
             public static string Get(string fruit)
             {
-                if (fruit.Equals(Text.grape)) return grape;
-                if (fruit.Equals(Text.banana)) return banana;
-                if (fruit.Equals(Text.apple)) return apple;
-                if (fruit.Equals(Text.peach)) return peach;
-                else return fruitlessHeathen;
+                if (fruit.Equals(Text.grape))
+                {
+                    return grape;
+                }
+
+                if (fruit.Equals(Text.banana))
+                {
+                    return banana;
+                }
+
+                if (fruit.Equals(Text.apple))
+                {
+                    return apple;
+                }
+
+                if (fruit.Equals(Text.peach))
+                {
+                    return peach;
+                }
+                else
+                {
+                    return fruitlessHeathen;
+                }
             }
             public static string grape { get; } = "Grapes";
             public static string banana { get; } = "Bananas";
@@ -97,18 +146,36 @@ namespace DataTypes
             public static string peach { get; } = "Peaches";
             public static string fruitlessHeathen { get; } = "Fruitless Heathens";
 
-            
+
         }
 
         public static class Logos
         {
             public static string Get(string fruit)
             {
-                if (fruit.Equals(Text.grape)) return grape;
-                if (fruit.Equals(Text.banana)) return banana;
-                if (fruit.Equals(Text.apple)) return apple;
-                if (fruit.Equals(Text.peach)) return peach;
-                else return fruitlessHeathen;
+                if (fruit.Equals(Text.grape))
+                {
+                    return grape;
+                }
+
+                if (fruit.Equals(Text.banana))
+                {
+                    return banana;
+                }
+
+                if (fruit.Equals(Text.apple))
+                {
+                    return apple;
+                }
+
+                if (fruit.Equals(Text.peach))
+                {
+                    return peach;
+                }
+                else
+                {
+                    return fruitlessHeathen;
+                }
             }
             public static string grape { get; }
                 = "https://cdn.discordapp.com/attachments/856679881547186196/859869023607717898/GrapeThing.png";
@@ -129,11 +196,29 @@ namespace DataTypes
         {
             public static string Get(string fruit)
             {
-                if (fruit.Equals(Text.grape)) return grape;
-                if (fruit.Equals(Text.banana)) return banana;
-                if (fruit.Equals(Text.apple)) return apple;
-                if (fruit.Equals(Text.peach)) return peach;
-                else return fruitlessHeathen;
+                if (fruit.Equals(Text.grape))
+                {
+                    return grape;
+                }
+
+                if (fruit.Equals(Text.banana))
+                {
+                    return banana;
+                }
+
+                if (fruit.Equals(Text.apple))
+                {
+                    return apple;
+                }
+
+                if (fruit.Equals(Text.peach))
+                {
+                    return peach;
+                }
+                else
+                {
+                    return fruitlessHeathen;
+                }
             }
             public static string grape { get; } = "🍇";
 
