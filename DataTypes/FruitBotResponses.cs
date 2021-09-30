@@ -55,7 +55,6 @@ namespace DataTypes
 
 
 
-
         };
         // add logic to send 4 lines of 9x dance when you get a chance, 4 lines with \n makes them all smol
         private static string d = "<a:dance:861575125785772032>";
