@@ -18,7 +18,6 @@ namespace FruitBot.Modules
         private readonly ILogger<FruitBotCommands> _logger;
         private readonly FruitPantry.FruitPantry _thePantry = FruitPantry.FruitPantry.GetFruitPantry();
 
-
         public FruitBotCommands(ILogger<FruitBotCommands> logger)
             => _logger = logger;
 
