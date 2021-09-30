@@ -17,6 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Discord.Addons.Hosting" Version="4.0.2" />
     <PackageReference Include="Discord.Net" Version="3.0.0-dev-20210822.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0-rc.1.21451.13" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-rc.1.21451.13" />
@@ -30,11 +31,6 @@
     <ProjectReference Include="..\FruitPantry\FruitPantry.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Discord.Addons.Hosting">
-      <HintPath>..\..\..\..\Downloads\Discord.Addons.Hosting-master2\Discord.Addons.Hosting-master\Discord.Addons.Hosting\bin\Debug\net5.0\Discord.Addons.Hosting.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
   <ItemGroup>
     <None Update="appsettings.json">
