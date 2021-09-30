@@ -40,6 +40,7 @@ namespace FruitPantry
                     .Replace("I found an ", "")
                     .Replace("I found a ", "")
                     .Replace("I found ", "")
+                    .Replace("Found an ", "")
                     .Replace("pair of ", "")
                     .Replace(".", ""));
             Console.WriteLine(dropname);
