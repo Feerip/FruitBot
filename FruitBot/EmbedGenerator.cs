@@ -17,20 +17,7 @@ namespace FruitBot
             EmbedBuilder builder = new EmbedBuilder()
                 .WithTitle($"Fruit Wars Signup")
                 .WithDescription($"Hello {user.Mention}, Please click on one of the fruits below to sign up for a team.")
-                
                 ;
-
-
-
-
-
-
-
-
-
-
-        
-
 
             return builder.Build();
         }

@@ -1,25 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DataTypes;
+using Discord;
+using Discord.WebSocket;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
-using Newtonsoft.Json.Converters;
-using RSAdventurerLogScraper;
-using DataTypes;
-
-using Data = Google.Apis.Sheets.v4.Data;
-using OpenQA.Selenium;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
-using Discord;
-using Discord.WebSocket;
-using System.Security.Cryptography;
-using static FruitPantry.FruitPantry;
-using System.Reflection.Metadata.Ecma335;
+using System.Threading.Tasks;
+using Data = Google.Apis.Sheets.v4.Data;
+using RS3APIDropLog;
 
 namespace FruitPantry
 {
@@ -106,12 +97,6 @@ namespace FruitPantry
             // Calculates the point value of a single drop entry with all variables considered
             public static float CalculatePoints(DropLogEntry drop)
             {
-
-                //FruitPantry thePantry = GetFruitPantry();
-
-
-
-                //float basePoints = thePantry._classificationList[thePantry._itemDatabase[drop._bossName.ToLower()]._classification];
                 float basePoints = _thePantry._classificationList[drop._bossName];
                 float thresholdMultiplier = _thePantry._thresholdMultiplier;
 
@@ -222,38 +207,11 @@ namespace FruitPantry
                 float result = 0;
                 foreach (DropLogEntry entry in entries)
                 {
-                    //if (!entry._fruit.Equals(_thePantry._runescapePlayers[entry._playerName.ToLower()][0]))
-                    //    continue;
                     result += float.Parse(entry._pointValue);
                 }
                 return result;
             }
-
-
         }
-
-
-
-
-
-        //public FruitPantry(string applicationName, string spreadsheetID, string sheet, string credentialsFile)
-        //{
-        //    _applicationName = applicationName;
-        //    _spreadsheetId = spreadsheetID;
-        //    _sheet = sheet;
-
-        //    _credentials = GoogleCredential.FromFile(credentialsFile).CreateScoped(_scopes);
-
-        //    _service = new SheetsService(new() 
-        //    { 
-        //        HttpClientInitializer = _credentials,
-        //        ApplicationName = _applicationName 
-        //    });
-
-        //    _range = $"{_sheet}!A2:J";
-
-        //    ForceRefresh();
-        //}
 
         private FruitPantry()
         {
@@ -311,12 +269,6 @@ namespace FruitPantry
         public async Task<int> ScrapeGameData(IDiscordClient discordClient)
         {
             RefreshEverything();
-            //    List<DropLogEntry> scraped = DropLogEntry.CreateListFullAuto().Result;
-
-            //    foreach (DropLogEntry entry in scraped)
-            //    {
-            //        entry._fruit = FruitResources.Text.Get(_runescapePlayers[entry._playerName][0]);
-            //    }
 
             await Add(DropLogEntry.CreateListFullAuto().Result, (DiscordSocketClient)discordClient);
 
@@ -358,8 +310,6 @@ namespace FruitPantry
             {
                 foreach (var row in values)
                 {
-                    //if (string.Equals(row[ItemDBActiveFlag].ToString(), "TRUE"))
-                    //{
                     ItemDatabaseEntry newItem = new();
                     newItem._itemName = row[ItemDBItemName].ToString();
                     newItem._classification = row[ItemDBClassification].ToString();
@@ -371,7 +321,6 @@ namespace FruitPantry
                         newItem._monitored = false;
 
                     output.Add(row[ItemDBItemName].ToString().ToLower(), newItem);
-                    //}
                 }
             }
             _itemDatabase = output;
@@ -438,7 +387,6 @@ namespace FruitPantry
             {
                 foreach (var row in values)
                 {
-                    //if ()
                     output.Add(row[EntryKey].ToString(), new(
                                                 playerName: row[RSN],
                                                 fruit: row[Fruit],
@@ -556,24 +504,23 @@ namespace FruitPantry
 
         public async Task<SortedDictionary<string, DropLogEntry>> Add(List<DropLogEntry> entries, DiscordSocketClient discordClient)
         {
-            //List<DropLogEntry> uniqueEntries = new();
-
             foreach (DropLogEntry entry in entries)
             {
                 if (!AlreadyExists(entry) && IsBeingMonitored(entry))
                 {
                     NumNewEntries++;
-                    // _runescapePlayers list index is <KEY>(PlayerName){Fruit, DiscordTag}
                     try
                     {
                         entry._fruit = _runescapePlayers[entry._playerName.ToLower()][0];
                     }
                     catch (KeyNotFoundException e)
                     {
-                        //Console.WriteLine(e.Message);
-                        //await discordClient.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(
-                        //    $"Warning: Found a fruitless heathen ({entry._playerName}) in scraped Runepixels data. This drop will not be added to the drop log.");
-                        //continue;
+#if FRUITWARSMODE
+                        Console.WriteLine(e.Message);
+                        await discordClient.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(
+                            $"Warning: Found a fruitless heathen ({entry._playerName}) in scraped Runepixels data. This drop will not be added to the drop log.");
+                        continue;
+#endif
                     }
                     entry._bossName = _itemDatabase[entry._dropName.ToLower()]._classification;
                     entry._pointValue = PointsCalculator.CalculatePoints(entry).ToString();
@@ -584,17 +531,18 @@ namespace FruitPantry
                 else if (!AlreadyExists(entry) && UnknownsBeingMonitored() && !_itemDatabase.ContainsKey(entry._dropName.ToLower()))
                 {
                     NumNewEntries++;
-                    // _runescapePlayers list index is <KEY>(PlayerName){Fruit, DiscordTag}
                     try
                     {
                         entry._fruit = _runescapePlayers[entry._playerName.ToLower()][0];
                     }
                     catch (KeyNotFoundException e)
                     {
+#if FRUITWARSMODE
                         //Console.WriteLine(e.Message);
                         //await discordClient.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(
                         //    $"Warning: Found a fruitless heathen ({entry._playerName}) in scraped Runepixels data. This drop will not be added to the drop log.");
                         //continue;
+#endif
                     }
                     entry._bossName = "Unknowns";
                     entry._pointValue = "0";
@@ -602,81 +550,7 @@ namespace FruitPantry
 
                 }
             }
-
-
             return _dropLog;
-        }
-
-        // Guaranteed unique entries. don't have to worry about checking them, just send them through the API
-        //private SortedDictionary<string, DropLogEntry> ProcessNewEntries(List<DropLogEntry> entries)
-        //{
-        //    List<IList<object>> newEntries = new();
-        //    foreach (DropLogEntry entry in entries)
-        //    {
-
-        //        List<object> rowToAppend = new();
-        //        rowToAppend.Add(entry._playerName);
-        //        rowToAppend.Add(entry._fruit);
-        //        rowToAppend.Add(entry._dropName);
-        //        rowToAppend.Add(entry._timestamp);
-        //        rowToAppend.Add(entry._runemetricsDropID);
-        //        rowToAppend.Add(entry._playerAvatarPNG);
-        //        rowToAppend.Add(entry._dropIconWEBP);
-        //        rowToAppend.Add(entry._bossName);
-        //        rowToAppend.Add(entry._pointValue);
-        //        rowToAppend.Add(entry._entryKey);
-
-        //        newEntries.Add(rowToAppend);
-        //    }
-        //    ValueRange requestBody = new();
-        //    requestBody.Values = newEntries;
-
-        //    SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum VIO = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
-        //    SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum IDO = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
-
-        //    SpreadsheetsResource.ValuesResource.AppendRequest request = _service.Spreadsheets.Values.Append(requestBody, _spreadsheetId, _dropLogRange);
-        //    request.ValueInputOption = VIO;
-        //    request.InsertDataOption = IDO;
-
-        //    Data.AppendValuesResponse response = request.Execute();
-        //    RefreshDropLog();
-
-        //    return _dropLog;
-        //}
-        public int PullWikiImages()
-        {
-            List<string> wikiURLs = new();
-            _itemDatabase = DropLogEntry.PullWikiImages(_itemDatabase);
-
-            List<IList<object>> newEntries = new();
-
-            int idx = 0;
-            foreach (KeyValuePair<string, ItemDatabaseEntry> entry in _itemDatabase)
-            {
-
-                List<object> rowToAppend = new();
-                rowToAppend.Add(entry.Key);
-                rowToAppend.Add(entry.Value._classification);
-                rowToAppend.Add("");
-                rowToAppend.Add("");
-                rowToAppend.Add(entry.Value._wikiLink);
-                rowToAppend.Add(entry.Value._imageURL);
-
-                newEntries.Add(rowToAppend);
-
-                idx++;
-            }
-            ValueRange requestBody = new();
-            requestBody.Values = newEntries;
-
-            SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum VIO = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
-            SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum IDO = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.OVERWRITE;
-            SpreadsheetsResource.ValuesResource.AppendRequest request = _service.Spreadsheets.Values.Append(requestBody, _spreadsheetId, _itemDatabaseRange);
-            request.ValueInputOption = VIO;
-            request.InsertDataOption = IDO;
-            Data.AppendValuesResponse response = request.Execute();
-            RefreshItemDatabase();
-            return idx;
         }
 
         public SortedDictionary<string, DropLogEntry> GetDropLog()
@@ -761,7 +635,6 @@ namespace FruitPantry
         {
             // 1 vote for good gob
             VoteResponse voteResponse = QueryGobVotes(1, 0);
-            //voteResponse.message = FruitBotResponses.goodBotResponses[_rand.Next(FruitBotResponses.goodBotResponses.Count())];
 
             return voteResponse;
         }
@@ -769,7 +642,6 @@ namespace FruitPantry
         {
             // 1 votes for bad gob
             VoteResponse voteResponse = QueryGobVotes(0, 1);
-            //voteResponse.message = FruitBotResponses.badBotResponses[_rand.Next(FruitBotResponses.badBotResponses.Count())];
 
             return voteResponse;
         }

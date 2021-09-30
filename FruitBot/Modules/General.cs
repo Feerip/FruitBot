@@ -9,7 +9,6 @@ using Discord.Commands;
 using Discord.WebSocket;
 using FruitPantry;
 using Microsoft.Extensions.Logging;
-using RSAdventurerLogScraper;
 
 namespace FruitBot.Modules
 {
@@ -24,7 +23,6 @@ namespace FruitBot.Modules
         [Command("ping")]
         public async Task PingAsync()
         {
-            //await Context.Channel.SendMessageAsync("ping received");
             await ReplyAsync("ping received");
             _logger.LogInformation($"{Context.User.Username} executed the ping command!");
         }

@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataTypes\DataTypes.csproj" />
-    <ProjectReference Include="..\RSAdventurerLogScraper\RSAdventurerLogScraper.csproj" />
+    <ProjectReference Include="..\RS3APIDropLog\RS3APIDropLog.csproj" />
   </ItemGroup>
 
   <ItemGroup>

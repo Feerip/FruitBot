@@ -45,17 +45,11 @@ namespace FruitBot
                         MessageCacheSize = 1000,
                         GatewayIntents = GatewayIntents.All,
                         LargeThreshold = 1000,
-                       
-                         
-                         
-                        
+                                               
                     };  
                     
                     config.Token = context.Configuration["token"];
 
-
-
-                    
                 })
                 .UseCommandService((context, config) =>
                 {
@@ -66,7 +60,6 @@ namespace FruitBot
                 .ConfigureServices((context, services) =>
                 {
                     services.AddHostedService<CommandHandler>();
-                    //services.AddHostedService<ReliabilityService>();
                 })
                 .UseConsoleLifetime();
 

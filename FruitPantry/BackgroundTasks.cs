@@ -10,32 +10,23 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using RSAdventurerLogScraper;
+using RS3APIDropLog;
 
 namespace FruitPantry
 {
     public class TimedHostedService : IHostedService, IDisposable
     {
-        //private int executionCount = 0;
         private readonly ILogger<TimedHostedService> _logger;
-        //private Timer _timer;
         private System.Timers.Timer _timer2;
         private DiscordSocketClient _client;
 
-        public TimedHostedService(/*ILogger<TimedHostedService> logger,*/ DiscordSocketClient client)
+        public TimedHostedService( DiscordSocketClient client)
         {
-            //_logger = logger;
             _client = client;
         }
 
         public Task StartAsync(CancellationToken stoppingToken)
         {
-            //_logger.LogInformation("FruitPantry Background Tasks Service running.");
-
-            //_timer = new Timer(DoWork, _client, TimeSpan.Zero,
-            //    TimeSpan.FromMinutes(5));
-
-            //original 300000
             _timer2 = new(300000);
             _timer2.Elapsed += DoWork;
             _timer2.AutoReset = true;
@@ -46,8 +37,6 @@ namespace FruitPantry
 
         public Task LeaderboardAtResetStartAsync(CancellationToken stoppingToken, int dailyHourToBroadcast, int hourlyMinuteToBroadcast = 00)
         {
-            //_timer2 = new Timer(SomeMethod, _client, TimeSpan.Zero, TimeSpan.FromMinutes(1));
-
             BroadcastLeaderboardAtDesignatedTimesOfDay(_client, dailyHourToBroadcast, hourlyMinuteToBroadcast);
 
             return Task.CompletedTask;
@@ -55,17 +44,13 @@ namespace FruitPantry
 
         void BroadcastLeaderboardAtDesignatedTimesOfDay(object state, int dailyHourToBroadcast, int hourlyMinuteToBroadcast)
         {
-            //var currentTime = DateTime.Now;
             var targetTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, dailyHourToBroadcast, hourlyMinuteToBroadcast, 00);
             var oneMinute = new TimeSpan(0, 1, 0);
             var zero = new TimeSpan(0, 0, 0);
 
             while (true)
             {
-                //Console.WriteLine("========================Oneminute (REMOVE ME)");
                 Thread.Sleep(45000);
-                //Thread.Sleep(5000);
-                //_client.StopAsync();  //Shot in the dark debug testing for Discord.Net disconnecting bug=========================================
 
                 // This means we've already passed that time today at startup, so we need to compensate for it
                 if (targetTime - DateTime.Now < zero)
@@ -76,7 +61,6 @@ namespace FruitPantry
                 // This means we're at this time now.
                 if (targetTime - DateTime.Now < oneMinute)
                 {
-                    //Console.WriteLine("===========================Task Fired (REMOVE ME)");
                     ShowLeaderboard(state);
                     //Reset timer to do again next day
                     targetTime = targetTime.AddDays(1);
@@ -165,8 +149,6 @@ namespace FruitPantry
 
 
                 var builder = new EmbedBuilder()
-                            //.WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                            //.WithThumbnailUrl(entry._fruitLogo)
                             .WithTitle("Fruit Wars Leaderboard")
                             .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                             .WithColor(leadingColor)
@@ -179,10 +161,6 @@ namespace FruitPantry
                             .AddField("🍑Peaches🍑", $"`{Math.Round(peachPoints)}`", true)
                             .AddField("\u200B", '\u200B', false)
                             .AddField("💩Fruitless Heathens💩", $"`{Math.Round(fruitlessHeathenPoints)}`", false)
-
-                            //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
-                            //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
-                            //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
                             .WithCurrentTimestamp()
                             ;
 
@@ -198,14 +176,6 @@ namespace FruitPantry
 
         private async void DoWork(object state, ElapsedEventArgs e)
         {
-            //var count = Interlocked.Increment(ref executionCount);
-
-            //ICommandContext context = (CommandContext)state;
-
-
-
-
-
             using (_client.GetGuild(769476224363397140).GetTextChannel(862385904719364096).EnterTypingState())
             {
                 FruitPantry thePantry = FruitPantry.GetFruitPantry();
@@ -218,17 +188,10 @@ namespace FruitPantry
                 FruitPantry.NumNewEntries = 0;
 
             }
-
-
-            //_logger.LogInformation("Background scrape fired. Now scraping Runepixels and updating both internal and google sheets databases.");
-           
         }
 
         public Task StopAsync(CancellationToken stoppingToken)
         {
-            //_logger.LogInformation("FruitPantry Background Tasks Service is stopping.");
-
-            //_timer?.Change(Timeout.Infinite, 0);
             _timer2.Stop();
             _timer2.Dispose();
 
@@ -239,7 +202,6 @@ namespace FruitPantry
         {
             _timer2.Stop();
             _timer2.Dispose();
-            //_timer?.Dispose();
         }
     }
 }

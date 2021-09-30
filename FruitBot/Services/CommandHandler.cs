@@ -15,7 +15,6 @@ using Google.Apis.Sheets.v4.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Timers;
-using OpenQA.Selenium.Remote;
 using FruitBot.Modules;
 
 namespace FruitBot.Services
@@ -27,7 +26,6 @@ namespace FruitBot.Services
         private readonly CommandService _service;
         private readonly IConfiguration _config;
         private readonly FruitPantry.FruitPantry _thePantry = FruitPantry.FruitPantry.GetFruitPantry();
-        //private readonly ReliabilityService _reliabilityService;
 
         public CommandHandler(IServiceProvider provider, DiscordSocketClient client, CommandService service, IConfiguration config)
         {
@@ -35,7 +33,6 @@ namespace FruitBot.Services
             _client = client;
             _service = service;
             _config = config;
-            //_reliabilityService = new ReliabilityService(_client);
 
 
         }
@@ -43,11 +40,7 @@ namespace FruitBot.Services
         public override async Task InitializeAsync(CancellationToken cancellationToken)
         {
             _client.MessageReceived += OnMessageReceived;
-
-            // Add LastCommandTypeReader to read type for command "last"
             _service.AddTypeReader(typeof(TypeReaders.LastCommandArguments), new TypeReaders.LastCommandTypeReader());
-
-
 
             _service.CommandExecuted += OnCommandExecuted;
             _client.Ready += SetStatusAsync;
@@ -59,7 +52,6 @@ namespace FruitBot.Services
 
         private async Task SetStatusAsync()
         {
-            //await _client.SetGameAsync($"@FruitBot help", null, ActivityType.Listening);
 #if FRUITWARSMODE
             await _client.SetGameAsync($"Fruit Wars | @FruitBot help", null, ActivityType.Playing);
 #else
@@ -81,21 +73,13 @@ namespace FruitBot.Services
             var timer = new System.Timers.Timer(10000);
             timer.Elapsed += new ElapsedEventHandler(CheckConnection);
             timer.Start();
-            //service.LeaderboardAtResetStartAsync(new CancellationToken(), 23);
-            //service.LeaderboardAtResetStartAsync(new CancellationToken(), 05);
-            //service.LeaderboardAtResetStartAsync(new CancellationToken(), 11);
-            //await service.LeaderboardAtResetStartAsync(new CancellationToken(), 17);
+
 #if FRUITWARSMODE
 
             List<int> intlist = new List<int> { 17, 23, 05, 11 };
 
             Parallel.ForEach(intlist, (i) => service.LeaderboardAtResetStartAsync(new CancellationToken(), i, 02));
 #endif
-
-            //service.LeaderboardAtResetStartAsync(new CancellationToken(), 05, 00);
-            //service.LeaderboardAtResetStartAsync(new CancellationToken(), 04, 58);
-            //service.LeaderboardAtResetStartAsync(new CancellationToken(), 04, 56);
-            //await service.LeaderboardAtResetStartAsync(new CancellationToken(), 04, 54);
 
         }
 
@@ -109,7 +93,6 @@ namespace FruitBot.Services
 
         private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> arg1, ISocketMessageChannel arg2, SocketReaction arg3)
         {
-            //_client.ReactionAdded += OnReactionAdded;
             if (arg3.MessageId != 857061904944988160) return;
             if (arg3.Emote.Name != "✅") return;
             var role = (arg2 as SocketGuildChannel).Guild.Roles.FirstOrDefault(x => x.Id == 856709182514397194);
@@ -120,13 +103,11 @@ namespace FruitBot.Services
 
         private async Task OnJoinedGuild(SocketGuild arg)
         {
-            //_client.JoinedGuild += OnJoinedGuild;
             await arg.DefaultChannel.SendMessageAsync("Bot joined the server");
         }
 
         private async Task OnChannelCreated(SocketChannel arg)
         {
-            //_client.ChannelCreated += OnChannelCreated;
             if ((arg as ITextChannel) == null) return;
             var channel = arg as ITextChannel;
 
@@ -168,7 +149,6 @@ namespace FruitBot.Services
             {
                 FruitPantry.FruitPantry.VoteResponse response = _thePantry.QueryGoodGob();
 
-                //await context.Channel.SendMessageAsync(response.message, messageReference: new(context.Message.Id));
                 await context.Channel.SendMessageAsync($"Upvotes: `{response.goodBot}`, Downvotes: `{response.badBot}`", messageReference: new(context.Message.Id));
                 // This is on purpose, only send the upvote/downvote tally if the user is not being abusive to my poor baby
             }
@@ -178,7 +158,7 @@ namespace FruitBot.Services
                 await context.Channel.SendMessageAsync($"Upvotes: `{response.goodBot}`, Downvotes: `{response.badBot}`", messageReference: new(context.Message.Id));
             }
 
-            if (/*!message.HasStringPrefix(_config["prefix"], ref argPos) &&*/ !message.HasMentionPrefix(_client.CurrentUser, ref argPos)) return;
+            if (!message.HasMentionPrefix(_client.CurrentUser, ref argPos)) return;
 
 
             await _service.ExecuteAsync(context, argPos, _provider);
@@ -259,9 +239,7 @@ namespace FruitBot.Services
                         return;
                     }
 
-                    // ADDROLE NOT WORKING - REPLACE LATER
-                    //SocketRole verifiedRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "RSN Verified");
-                    if (/*userRoles.Contains(verifiedRole) || */thePantry._discordUsers.ContainsKey(userDiscordTag))
+                    if (thePantry._discordUsers.ContainsKey(userDiscordTag))
                     {
                         await context.User.SendMessageAsync($"You have already signed up for fruit wars and will not be added again.");
                         await context.User.SendMessageAsync($"If this is not correct, please let an admin know so we can fix the issue.");
@@ -276,16 +254,12 @@ namespace FruitBot.Services
                     }
 
                     thePantry.RegisterPlayer(RSNInput, userTeam, userDiscordTag);
-                    // ADDROLE NOT WORKING - REPLACE LATER
-                    //await _client.GetGuild(769476224363397140).GetUser(userID).AddRoleAsync(verifiedRole);
                     await context.User.SendMessageAsync($"{userTeamIcon}Signup confirmed. " +
                         $"{context.Message.Author.Mention} added to database with RSN \"{RSNInput}\" for team {userTeam}.{userTeamIcon}");
                     await context.User.SendMessageAsync($"{userTeamIcon}If this is not correct, please let an admin know so we can fix the issue.{userTeamIcon}");
                     await context.User.SendMessageAsync(grapeJob[rand.Next() % grapeJob.Count]);
                 }
-                // ADDROLE NOT WORKING - REPLACE LATER
-                // Refresh user roles
-                //_client.PurgeUserCache();
+
             }
             return;
         }//🍇🍌🍎🍑💩

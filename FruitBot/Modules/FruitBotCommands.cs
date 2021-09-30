@@ -9,7 +9,7 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
-using RSAdventurerLogScraper;
+using RS3APIDropLog;
 
 namespace FruitBot.Modules
 {
@@ -33,7 +33,6 @@ namespace FruitBot.Modules
                         .WithTitle("Usage: ")
                         .WithDescription($"{botMention} **help** - displays this help message. Commands are NOT case-sensitive.\n" +
                                             $"{botMention} **last** <***NumEntries***> - shows the last <*NumEntries*> entries in the drop log. Shows only 1 if number not specified.\n" +
-                                            //$"{botMention} **todo** - shows a list of work to be done on the bot.\n" +
                                             $"{botMention} **refresh db** - updates all of the bot's known information from the database. Use this command to propagate changes made by hand to Google Sheets throughout the system.\n" +
                                             $"{botMention} **purge** - deletes everything in the Google Sheets drop log ONLY. leaves all other sheets intact. Admins only.\n" +
                                             $"{botMention} **scrape** - forces a pull of drop log data from Jagex's Runemetrics API no matter how much time has passed since the last auto-scrape.\n" +
@@ -57,7 +56,6 @@ namespace FruitBot.Modules
                 var embed = builder.Build();
 
                 await VersionHelper(embed);
-                //await Context.Channel.SendMessageAsync(null, false, embed);
 
             }
             _logger.LogInformation($"{Context.User.Username} executed the help command!");
@@ -91,7 +89,6 @@ namespace FruitBot.Modules
 
 
                 _thePantry.RefreshEverything();
-                //FruitPantry.FruitPantry thePantry = FruitPantry.FruitPantry.GetFruitPantry();
                 string botMention = Context.Client.CurrentUser.Mention;
 
                 if (args == null)
@@ -155,9 +152,6 @@ namespace FruitBot.Modules
             {
                 FruitPantry.FruitPantry thePantry = FruitPantry.FruitPantry.GetFruitPantry();
 
-
-                //DropLogEntry lastEntry = thePantry._masterList.Last().Value;
-
                 int idx = 0;
 
                 foreach (KeyValuePair<string, DropLogEntry> entryPair in thePantry.GetDropLog())
@@ -219,25 +213,11 @@ namespace FruitBot.Modules
                 .AddField("Priority 1: ", "Threshold Formula (with variable placeholders)", true)
                 .AddField("Priority 2: ", "Embed Design for Drops: [link](https://robyul.chat/embed-creator)", true)
                 .AddField("Low Priority: ", "Finalize Threshold Formula Variables", true)
-                //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
-                //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
-                //.WithCurrentTimestamp()
                 ;
 
             var embed = builder.Build();
 
             await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
-
-
-
-            // dev todo: 
-
-            // fruit bot status message set to "scraping..." while "typing..." and "playing fruit wars" while idle
-            // thread locking on -last command
-            //  on second thought, change -last command to put everything in one embed
-            // crash detection and recovery in timed scraper code
-
-
         }
 
         [Command("refresh db", RunMode = RunMode.Async)]
@@ -301,18 +281,15 @@ namespace FruitBot.Modules
         public async Task PullWikiImages(SocketGuildUser user = null)
         {
             _logger.LogInformation($"{Context.User.Username} invoked the scrape command. This may take a while...");
-            //await ReplyAsync($"Starting wiki scrape for high-res images. This may take a while...");
 
             using (Context.Channel.EnterTypingState())
             {
 
                 System.Diagnostics.Stopwatch aStopwatch = new();
                 aStopwatch.Start();
-                //int numProcessed = FruitPantry.FruitPantry.GetFruitPantry().PullWikiImages();
                 aStopwatch.Stop();
 
                 await ReplyAsync($"Yo who tf told you you could use this command");
-                //await ReplyAsync($"Scraped wiki for all images. Found and stored `{numProcessed}` images over a total of `{((aStopwatch.ElapsedMilliseconds) / 1000) / 60}` minutes");
 
                 _logger.LogInformation($"{Context.User.Username} executed the pull wiki images command!");
             }
@@ -395,8 +372,6 @@ namespace FruitBot.Modules
 
 
                 var builder = new EmbedBuilder()
-                            //.WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                            //.WithThumbnailUrl(entry._fruitLogo)
                             .WithTitle("Fruit Wars Leaderboard")
                             .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                             .WithColor(leadingColor)
@@ -409,10 +384,6 @@ namespace FruitBot.Modules
                             .AddField("🍑Peaches🍑", $"`{Math.Round(peachPoints)}`", true)
                             .AddField("\u200B", '\u200B', false)
                             .AddField("💩Fruitless Heathens💩", $"`{Math.Round(fruitlessHeathenPoints)}`", false)
-
-                            //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
-                            //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
-                            //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
                             .WithCurrentTimestamp()
                             .WithFooter("Last Update")
                             ;
@@ -517,16 +488,10 @@ namespace FruitBot.Modules
                     thumbnail = FruitResources.Logos.Get(fruit);
 
                     var builder = new EmbedBuilder()
-                    //.WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                    //.WithThumbnailUrl(entry._fruitLogo)
                     .WithDescription($"Fruit Wars contributions for {mention}/RSN {rsn}")
                     .WithColor(color)
                     .WithThumbnailUrl(thumbnail)
                     .AddField($"{emoji}{fruitPlural}{emoji}", $"`{Math.Round(result)}`", true)
-
-                    //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
-                    //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
-                    //.AddField("Roles", string.Join(" ", (Context.User as SocketGuildUser).Roles.Select(x => x.Mention)))
                     .WithCurrentTimestamp()
                     ;
 
@@ -552,41 +517,6 @@ namespace FruitBot.Modules
                 await ReplyAsync($"Read my lips. \"{botMention} points\"");
                 return;
             }
-            using (Context.Channel.EnterTypingState())
-            {
-                _thePantry.RefreshEverything();
-                if (playerName == null)
-                {
-                    await Context.Channel.SendMessageAsync($"Syntax: {botMention} pointsrsn <RSN>", messageReference: new(Context.Message.Id));
-                    return;
-                }
-                float result = FruitPantry.FruitPantry.PointsCalculator.PointsByRSN(playerName);
-                string fruit = _thePantry._runescapePlayers[playerName.ToLower()][0];
-                string fruitPlural = FruitResources.TextPlural.Get(fruit);
-                string emoji = FruitResources.Emojis.Get(fruit);
-                string thumbnail = FruitResources.Logos.Get(fruit);
-                Discord.Color color = FruitResources.Colors.Get(fruit);
-                // TODO: modify code to include discord IDs in database in order to use @mentions in this command.
-                //string discordMention = Context.Guild.GetUsersAsync().Result.FirstOrDefault("")
-
-                var builder = new EmbedBuilder()
-                //.WithImageUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                //.WithThumbnailUrl(entry._fruitLogo)
-                .WithDescription($"Fruit Wars contributions for {playerName}")
-                .WithColor(color)
-                .WithThumbnailUrl(thumbnail)
-                .AddField($"{emoji}{fruitPlural}{emoji}", $"`{Math.Round(result)}`", true)
-
-                //.AddField("Fruit", entry._fruit == "" ? "null" : entry._fruit, true)
-                //.AddField("Drop Timestamp", entry._timestamp ?? "null", true)
-                .WithCurrentTimestamp()
-                ;
-
-                var embed = builder.Build();
-
-                await Context.Channel.SendMessageAsync(null, false, embed);
-            }
-            _logger.LogInformation($"{Context.User.Username} executed the points command: RSN mode for player {playerName}!");
         }
 
         [Command("bugreport")]
@@ -711,7 +641,6 @@ namespace FruitBot.Modules
         public async Task BetaSignup([Remainder] string playerName = null)
         {
             IEmote[] fruits = { new Emoji("🍎"), new Emoji("🍌"), new Emoji("🍇"), new Emoji("🍑") };
-            //IUserMessage embedMessage = await Context.Channel.SendMessageAsync(embed: EmbedGenerator.SignupEmbed(Context.User), messageReference: new(Context.Message.Id));
 
             await Context.Message.AddReactionsAsync(fruits, new());
         }

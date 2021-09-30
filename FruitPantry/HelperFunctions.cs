@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Discord;
-using RSAdventurerLogScraper;
+using RS3APIDropLog;
 using DataTypes;
 using static DataTypes.FruitResources;
 
@@ -19,9 +19,6 @@ namespace FruitPantry
         {
 
             FruitPantry thePantry = FruitPantry.GetFruitPantry();
-
-
-            //DropLogEntry lastEntry = thePantry._masterList.Last().Value;
 
             int idx = 0;
 
@@ -98,9 +95,6 @@ namespace FruitPantry
             }
 
         }
-
-        //public static async Task<EmbedBuilder> BuildEmbedFrom
-
         public static async Task<List<string>> BuildLastDropList(int numDrops, string playerName = null, string fruit = null)
         {
             // List of messages due to max length of 2000 chars
@@ -110,10 +104,6 @@ namespace FruitPantry
             string message = "";
 
             // Headers
-
-
-            //output += "|------------------------------------------------------------------------------|" + "\n";
-
             int idx = 0;
             int linesAdded = 0;
             foreach (KeyValuePair<string, DropLogEntry> entryPair in _thePantry.GetDropLog())
@@ -131,7 +121,6 @@ namespace FruitPantry
                     if (!entry._playerName.ToLower().Equals(playerName.ToLower()))
                     {
                         addLine = false;
-                        //continue;
                     }
                 }
                 if (fruit != null)
@@ -156,7 +145,7 @@ namespace FruitPantry
                     linesAdded++;
                     idx++;
                 }
-                //if (idx % 22 == 0)
+
                 if (lines.Count == 22)
                 {
                     lines.Reverse();
@@ -171,7 +160,6 @@ namespace FruitPantry
                     message = "";
                 }
 
-                //if (idx == numDrops)
                 if ((linesAdded == numDrops) || (entryPair.Key == _thePantry.GetDropLog().Last().Key))
                 {
                     if (!message.Equals(""))
@@ -214,18 +202,6 @@ namespace FruitPantry
             List<string> lines = new();
             List<KeyValuePair<string, float>> sortedByPoints = teamMembers.ToList();
 
-
-            //foreach (KeyValuePair<string, float> teamMember in teamMembers)
-            //    sortedByPoints.Add(new(teamMember.Key, teamMember.Value));
-
-            //IOrderedEnumerable<KeyValuePair<string, float>> query = teamMembers.OrderByDescending(x => x.Value);
-
-            //sortedByPoints.Sort((x, y) => 
-
-            //(y.Value.CompareTo(x.Value)));
-
-            //sortedByPoints.Sort(new MyComparer());
-
             IEnumerable<KeyValuePair<string, float>> query = sortedByPoints.OrderByDescending(x => x.Value);
 
 
@@ -254,7 +230,6 @@ namespace FruitPantry
 
                 if (lines.Count == 60)
                 {
-                    //lines.Reverse();
                     foreach (string line in lines)
                     {
                         message += line;
@@ -270,7 +245,6 @@ namespace FruitPantry
                 {
                     if (!message.Equals(""))
                     {
-                        //lines.Reverse();
                         foreach (string line in lines)
                         {
                             message += line;
@@ -280,13 +254,8 @@ namespace FruitPantry
                     }
                     break;
                 }
-
-
             }
-
-            //messages.Reverse();
             return messages;
-
         }
     }
 }

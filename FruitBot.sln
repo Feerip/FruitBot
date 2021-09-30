@@ -5,15 +5,11 @@ VisualStudioVersion = 17.0.31717.71
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FruitBot", "FruitBot\FruitBot.csproj", "{D74087F5-F8B2-439A-9A7C-D936AAF53E8C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RSAdventurerLogScraper", "RSAdventurerLogScraper\RSAdventurerLogScraper.csproj", "{6B13AA8F-F644-4182-AD7E-074843194DBF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FruitPantry", "FruitPantry\FruitPantry.csproj", "{382D790D-2A68-438B-A11E-7770DFC104C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTypes", "DataTypes\DataTypes.csproj", "{9ED130FC-933A-4CA9-B28A-DBA56E808C3F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FruitPantryServices", "FruitPantryServices\FruitPantryServices.csproj", "{877055B8-B925-4A77-AC14-F0298E5C2645}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RS3APIDropLog", "RunescapeAPITest\RS3APIDropLog.csproj", "{DDB15DD5-B9FC-457E-AD04-431FA3455B4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RS3APIDropLog", "RS3APIDropLog\RS3APIDropLog.csproj", "{D0DFAB75-C8E2-4B96-9A85-EE0DF91A8DB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +21,6 @@ Global
 		{D74087F5-F8B2-439A-9A7C-D936AAF53E8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D74087F5-F8B2-439A-9A7C-D936AAF53E8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D74087F5-F8B2-439A-9A7C-D936AAF53E8C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6B13AA8F-F644-4182-AD7E-074843194DBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6B13AA8F-F644-4182-AD7E-074843194DBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6B13AA8F-F644-4182-AD7E-074843194DBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6B13AA8F-F644-4182-AD7E-074843194DBF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{382D790D-2A68-438B-A11E-7770DFC104C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{382D790D-2A68-438B-A11E-7770DFC104C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{382D790D-2A68-438B-A11E-7770DFC104C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -37,14 +29,10 @@ Global
 		{9ED130FC-933A-4CA9-B28A-DBA56E808C3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9ED130FC-933A-4CA9-B28A-DBA56E808C3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9ED130FC-933A-4CA9-B28A-DBA56E808C3F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{877055B8-B925-4A77-AC14-F0298E5C2645}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{877055B8-B925-4A77-AC14-F0298E5C2645}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{877055B8-B925-4A77-AC14-F0298E5C2645}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{877055B8-B925-4A77-AC14-F0298E5C2645}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DDB15DD5-B9FC-457E-AD04-431FA3455B4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DDB15DD5-B9FC-457E-AD04-431FA3455B4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DDB15DD5-B9FC-457E-AD04-431FA3455B4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DDB15DD5-B9FC-457E-AD04-431FA3455B4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0DFAB75-C8E2-4B96-9A85-EE0DF91A8DB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0DFAB75-C8E2-4B96-9A85-EE0DF91A8DB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0DFAB75-C8E2-4B96-9A85-EE0DF91A8DB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0DFAB75-C8E2-4B96-9A85-EE0DF91A8DB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
