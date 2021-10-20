@@ -42,7 +42,7 @@ namespace FruitBot
                         AlwaysDownloadUsers = true,
                         MessageCacheSize = 1000,
                         GatewayIntents = GatewayIntents.All,
-                        LargeThreshold = 1000,
+                        LargeThreshold = 250,
 
                     };
 

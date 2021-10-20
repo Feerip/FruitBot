@@ -206,13 +206,14 @@ namespace FruitBot.Modules
                         .WithTitle(entry._dropName ?? "null")
                         .WithColor(thePantry._classificationColorList[entry._bossName])
                         .AddField("Player Name", entry._playerName ?? "null", true)
+                        .WithCurrentTimestamp()
                         ;
 
 
 #if FRUITWARSMODE
                     builder.AddField("Points", entry._pointValue, true);
 #endif
-                    builder.AddField("Boss", entry._bossName, true);
+                    builder.AddField("Boss", entry._bossName, true );
                     builder.AddField("Dropped At", entry._timestamp, true);
 
                     Embed embed = builder.Build();
@@ -321,6 +322,8 @@ namespace FruitBot.Modules
         [Alias("lb")]
         public async Task Leaderboard(SocketGuildUser user = null)
         {
+
+            string nickname = Context.Guild.GetUserAsync(1234).Result.Nickname;
 
             using (Context.Channel.EnterTypingState())
             {
