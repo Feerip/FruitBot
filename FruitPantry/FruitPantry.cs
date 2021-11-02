@@ -225,7 +225,7 @@ namespace FruitPantry
         private FruitPantry()
         {
             _applicationName = "FruitBot";
-            _credentialsFile = "credentials.json";
+            _credentialsFile = "Config/credentials.json";
             _spreadsheetId = "1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s";
 
 

@@ -55,6 +55,9 @@
     <None Update="Assets\grapist2_square_smaller.ico">
       <Pack>True</Pack>
     </None>
+    <None Update="Config\credentials.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

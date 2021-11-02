@@ -29,10 +29,4 @@
     </Reference>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="credentials.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
