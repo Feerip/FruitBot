@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 # API/Bot Secrets
 FruitBot/Config/*
+!/Lib/*.nupkg
