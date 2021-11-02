@@ -6,7 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net.Labs" Version="3.1.1" />
+    <Reference Include="Discord.Net.Core">
+      <HintPath>..\Lib\Discord.Net.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Discord.Net.Rest">
+      <HintPath>..\Lib\Discord.Net.Rest.dll</HintPath>
+    </Reference>
+    <Reference Include="Discord.Net.WebSocket">
+      <HintPath>..\Lib\Discord.Net.WebSocket.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

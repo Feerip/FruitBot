@@ -363,6 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # API/Bot Secrets
-FruitBot/appsettings.json
+FruitBot/Config/*
 FruitPantry/credentials.json
-FruitBot/credentials.json

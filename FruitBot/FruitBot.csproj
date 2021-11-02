@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <PackageReference Include="Discord.Addons.Hosting" Version="4.0.2-labs" />
-    <PackageReference Include="Discord.Net.Labs" Version="3.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0-rc.1.21451.13" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-rc.1.21451.13" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0-rc.1.21451.13" />
@@ -33,9 +32,21 @@
     <ProjectReference Include="..\FruitPantry\FruitPantry.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Discord.Net.Core">
+      <HintPath>..\Lib\Discord.Net.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Discord.Net.Rest">
+      <HintPath>..\Lib\Discord.Net.Rest.dll</HintPath>
+    </Reference>
+    <Reference Include="Discord.Net.WebSocket">
+      <HintPath>..\Lib\Discord.Net.WebSocket.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 
   <ItemGroup>
-    <None Update="appsettings.json">
+    <None Update="Config\appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\grapist2_square_smaller.ico">
