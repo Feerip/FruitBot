@@ -364,4 +364,3 @@ FodyWeavers.xsd
 
 # API/Bot Secrets
 FruitBot/Config/*
-FruitPantry/credentials.json
