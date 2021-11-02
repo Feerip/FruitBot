@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="Discord.Addons.Hosting" Version="4.0.2-labs" />
-    <PackageReference Include="Discord.Net.Interactions" Version="3.0.0-dev-Interactions" />
+    <PackageReference Include="Discord.Net.Interactions" Version="3.0.1-dev-Interactions" />
     <PackageReference Include="Discord.Net.Labs.Commands" Version="3.1.7-dev" />
     <PackageReference Include="Discord.Net.Labs.Core" Version="3.1.7-dev" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0-rc.1.21451.13" />
