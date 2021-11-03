@@ -16,4 +16,6 @@ call dotnet pack %labsProjectRoot%\src\Discord.Net.Interactions\Discord.Net.Inte
 
 rem call %nugetPath% pack Lib\Discord.Net.nuspec -BasePath %labsProjectRoot%\src -OutputDirectory %libDir%
 
+call %nugetPath% restore FruitBot.sln
+
 endlocal
