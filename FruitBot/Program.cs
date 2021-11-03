@@ -2,7 +2,7 @@
 #define FRUITWARSMODE
 using Discord;
 using Discord.Addons.Hosting;
-using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using FruitBot.Services;
 using Microsoft.Extensions.Configuration;
@@ -57,11 +57,21 @@ namespace FruitBot
                 {
                     config.CaseSensitiveCommands = false;
                     config.LogLevel = LogSeverity.Debug;
-                    config.DefaultRunMode = RunMode.Sync;
+                    config.DefaultRunMode = Discord.Commands.RunMode.Sync;
                 })
                 .ConfigureServices((context, services) =>
                 {
-                    services.AddHostedService<CommandHandler>();
+                    services
+                    .AddHostedService<CommandHandler>()
+                    .AddSingleton(new InteractionServiceConfig
+                    {
+                        DefaultRunMode = Discord.Interactions.RunMode.Async,
+                        LogLevel = LogSeverity.Debug,
+                        UseCompiledLambda = true,
+                        WildCardExpression = "*"
+                    })
+                    .AddSingleton<InteractionService>()
+                    .AddHostedService<SlashCommandHandler>();
                 })
                 .UseConsoleLifetime();
 
