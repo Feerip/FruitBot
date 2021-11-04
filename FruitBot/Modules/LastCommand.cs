@@ -67,7 +67,8 @@ namespace FruitBot.Modules
                         if (i == 0)
                         {
                             // Reply to the command with the first message
-                            var message = await ReplyAsync(output[i]);
+                            await Context.Interaction.DeferAsync();
+                            var message = await FollowupAsync(output[i]);
                             additionalMessageReferenceMessage = message.Id;
                         }
                         else
