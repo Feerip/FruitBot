@@ -158,70 +158,14 @@ namespace FruitBot.Modules
         {
             using (Context.Channel.EnterTypingState())
             {
-                FruitPantry.FruitPantry thePantry = FruitPantry.FruitPantry.GetFruitPantry();
+                var drops = FruitPantry.HelperFunctions.GetLastNDrops(numDrops, rsn, fruit);
 
-                int idx = 0;
-
-                foreach (KeyValuePair<string, DropLogEntry> entryPair in thePantry.GetDropLog())
+                foreach (DropLogEntry entry in drops)
                 {
-
-
-                    if (idx == numDrops)
-                    {
-                        break;
-                    }
-
-                    DropLogEntry entry = entryPair.Value;
-                    if (rsn != null)
-                    {
-                        if (!entry._playerName.ToLower().Equals(rsn.ToLower()))
-                        {
-                            continue;
-                        }
-                    }
-                    if (fruit != null)
-                    {
-                        if (!entry._fruit.Equals(fruit, StringComparison.OrdinalIgnoreCase))
-                        {
-                            continue;
-                        }
-                    }
-                    //quick and dirty fix, remove later
-                    string dropIconURL;
-                    if (entry._dropIconWEBP == null)
-                    {
-                        dropIconURL = "";
-                    }
-                    else if (entry._dropIconWEBP.Equals("https://runepixels.com/assets/images/runescape/activities/drop.webp"))
-                    {
-                        dropIconURL = "";
-                    }
-                    else
-                    {
-                        dropIconURL = entry._dropIconWEBP;
-                    }
-
-                    EmbedBuilder builder = new EmbedBuilder()
-                        .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                        .WithTitle(entry._dropName ?? "null")
-                        .WithColor(thePantry._classificationColorList[entry._bossName])
-                        .AddField("Player Name", entry._playerName ?? "null", true)
-                        .WithCurrentTimestamp()
-                        ;
-
-
-#if FRUITWARSMODE
-                    builder.AddField("Points", entry._pointValue, true);
-#endif
-                    builder.AddField("Boss", entry._bossName, true );
-                    builder.AddField("Dropped At", entry._timestamp, true);
-
-                    Embed embed = builder.Build();
+                    Embed embed = FruitPantry.HelperFunctions.BuildDropEmbed(entry);
 
                     await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new MessageReference(Context.Message.Id));
-                    idx++;
                 }
-
             }
         }
 

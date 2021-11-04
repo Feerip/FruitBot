@@ -13,93 +13,80 @@ namespace FruitPantry
     {
         private static readonly FruitPantry _thePantry = FruitPantry.GetFruitPantry();
 
+        public static IEnumerable<DropLogEntry> GetLastNDrops(int numDrops, string? rsn = null, string? fruit = null)
+        {
+            return _thePantry.GetDropLog()
+                .Where(p => rsn != null ? p.Value._playerName.Equals(rsn, StringComparison.OrdinalIgnoreCase) : true)
+                .Where(p => fruit != null ? p.Value._fruit.Equals(fruit, StringComparison.OrdinalIgnoreCase) : true)
+                .Take(numDrops)
+                .Select(p => p.Value);
+        }
+
+        public static Embed BuildDropEmbed(DropLogEntry entry)
+        {
+            string fruit = entry._fruit;
+            string emoji = FruitResources.Emojis.Get(fruit);
+            Color color = FruitResources.Colors.Get(fruit);
+            string thumbnail = FruitResources.Logos.Get(fruit);
+
+            //quick and dirty fix, remove later
+            string dropIconURL;
+            if (entry._dropIconWEBP == null)
+            {
+                dropIconURL = "";
+            }
+            else if (entry._dropIconWEBP.Equals("https://runepixels.com/assets/images/runescape/activities/drop.webp"))
+            {
+                dropIconURL = "";
+            }
+            else
+            {
+                dropIconURL = entry._dropIconWEBP;
+            }
+
+            var imageUrl = entry._bossName.Equals("Unknowns", StringComparison.OrdinalIgnoreCase)
+                ? _thePantry._itemDatabase["unknown"]._imageURL
+                : _thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL;
+
+            var builder = new EmbedBuilder()
+                .WithThumbnailUrl(imageUrl)
+                .WithTitle(entry._dropName ?? "null")
+                .WithColor(_thePantry._classificationColorList[entry._bossName])
+                .AddField("Player Name", entry._playerName ?? "null", true);
+#if FRUITWARSMODE
+            builder.AddField("Points", entry._pointValue, true);
+#endif
+            builder.AddField("Boss", entry._bossName, true);
+            builder.AddField("Dropped At", entry._timestamp, true);
+
+            return builder.Build();
+        }
+
         public static async Task LastHelper(int numDrops, DiscordSocketClient discordClient)
         {
+            var drops = GetLastNDrops(numDrops);
 
-            FruitPantry thePantry = FruitPantry.GetFruitPantry();
-
-            int idx = 0;
-
-            foreach (KeyValuePair<string, DropLogEntry> entryPair in thePantry.GetDropLog())
+            foreach (DropLogEntry entry in drops)
             {
-                if (idx == numDrops)
-                {
-                    break;
-                }
-
-                DropLogEntry entry = entryPair.Value;
-
-                string fruit = entry._fruit;
-                string emoji;
-                Color color;
-                string thumbnail;
-
-                //quick and dirty fix, remove later
-                string dropIconURL;
-                if (entry._dropIconWEBP == null)
-                {
-                    dropIconURL = "";
-                }
-                else if (entry._dropIconWEBP.Equals("https://runepixels.com/assets/images/runescape/activities/drop.webp"))
-                {
-                    dropIconURL = "";
-                }
-                else
-                {
-                    dropIconURL = entry._dropIconWEBP;
-                }
-
-                emoji = FruitResources.Emojis.Get(fruit);
-                color = FruitResources.Colors.Get(fruit);
-                thumbnail = FruitResources.Logos.Get(fruit);
-
-                EmbedBuilder builder;
-
-                if (entry._bossName.Equals("Unknowns", StringComparison.OrdinalIgnoreCase))
-                {
-                    builder = new EmbedBuilder()
-                        .WithThumbnailUrl(thePantry._itemDatabase["unknown"]._imageURL)
-                        .WithTitle(entry._dropName ?? "null")
-                        .WithColor(thePantry._classificationColorList[entry._bossName])
-                        .AddField("Player Name", entry._playerName ?? "null", true)
-                        ;
-
-                }
-                else
-                {
-
-                    builder = new EmbedBuilder()
-                        .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                        .WithTitle(entry._dropName ?? "null")
-                        .WithColor(thePantry._classificationColorList[entry._bossName])
-                        .AddField("Player Name", entry._playerName ?? "null", true)
-                        ;
-                }
-#if FRUITWARSMODE
-                builder.AddField("Points", entry._pointValue, true);
-#endif
-                builder.AddField("Boss", entry._bossName, true);
-                builder.AddField("Dropped At", entry._timestamp, true);
-
-
-                Embed embed = builder.Build();
+                var embed = BuildDropEmbed(entry);
 
                 string message = null;
                 ulong channel = 862385904719364096;
 
+                // send to bitching channel if it's unknown
                 if (entry._bossName.Equals("Unknowns", StringComparison.OrdinalIgnoreCase))
                 {
                     message = "<@&856709182514397194> halp <a:MEOW:881462772636995595> I found an unfamiliar item WHAT DO I DOOOOO";
                     channel = 856679881547186196;
                 }
+
                 await discordClient.GetGuild(769476224363397140).GetTextChannel(channel).SendMessageAsync(message, false, embed);
 
+                // if someone gets hsr broadcast in general as well
                 if (entry._bossName.Equals("InsaneRNG", StringComparison.OrdinalIgnoreCase))
                 {
                     await discordClient.GetGuild(769476224363397140).GetTextChannel(769476224363397144).SendMessageAsync(null, false, embed);
                 }
-
-                idx++;
             }
 
         }
