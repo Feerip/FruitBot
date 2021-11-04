@@ -68,6 +68,7 @@ namespace FruitBot
                         DefaultRunMode = Discord.Interactions.RunMode.Async,
                         LogLevel = LogSeverity.Debug,
                         UseCompiledLambda = true,
+                        ThrowOnError = true,
                         WildCardExpression = "*"
                     })
                     .AddSingleton<InteractionService>()

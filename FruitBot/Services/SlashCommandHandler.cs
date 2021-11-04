@@ -1,4 +1,5 @@
-﻿using Discord.Addons.Hosting;
+﻿using Discord;
+using Discord.Addons.Hosting;
 using Discord.Addons.Hosting.Util;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -35,6 +36,10 @@ namespace FruitBot.Services
 
             Client.InteractionCreated += Client_InteractionCreated;
 
+            _commands.ComponentCommandExecuted += ComponentCommandExecuted;
+            _commands.ContextCommandExecuted += ContextCommandExecuted;
+            _commands.SlashCommandExecuted += SlashCommandExecuted;
+
             // Register commands
             foreach (SocketGuild guild in Client.Guilds)
             {
@@ -53,6 +58,33 @@ namespace FruitBot.Services
             catch (Exception ex)
             {
                 await arg.RespondAsync($"Command Failed: {ex}", ephemeral: true);
+            }
+        }
+
+        private async Task SlashCommandExecuted(SlashCommandInfo info, IInteractionCommandContext context, IResult result)
+        {
+            if (!result.IsSuccess)
+            {
+                Logger.LogError($"SlashCommand {info.Name} failed: {result.ErrorReason}");
+                await context.Channel.SendMessageAsync($"{context.User.Mention}", embed: EmbedUtility.FromError("Slash Command Failed", result.ErrorReason, false));
+            }
+        }
+
+        private async Task ContextCommandExecuted(ContextCommandInfo info, IInteractionCommandContext context, IResult result)
+        {
+            if (!result.IsSuccess)
+            {
+                Logger.LogError($"Context Command {info.Name} failed: {result.ErrorReason}");
+                await context.Channel.SendMessageAsync($"{context.User.Mention}", embed: EmbedUtility.FromError("Context Command Failed", result.ErrorReason, false));
+            }
+        }
+
+        private async Task ComponentCommandExecuted(ComponentCommandInfo info, IInteractionCommandContext context, IResult result)
+        {
+            if (!result.IsSuccess)
+            {
+                Logger.LogError($"Component Interaction {info.Name} failed: {result.ErrorReason}");
+                await context.Channel.SendMessageAsync($"{context.User.Mention}", embed: EmbedUtility.FromError("Component Interaction Failed", result.ErrorReason, false));
             }
         }
     }
