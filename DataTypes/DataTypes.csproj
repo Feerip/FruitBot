@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net.Labs.Core" Version="3883.0.0-vaught" />
+    <Reference Include="Discord.Net.Core">
+      <HintPath>..\Lib\Discord.Net.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

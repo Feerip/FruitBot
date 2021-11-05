@@ -1,8 +1,7 @@
 ﻿using Discord;
-using Discord.Addons.Hosting;
-using Discord.Addons.Hosting.Util;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,14 +13,17 @@ using System.Threading.Tasks;
 
 namespace FruitBot.Services
 {
-    internal class SlashCommandHandler : DiscordClientService
+    internal class SlashCommandHandler : BackgroundService
     {
-        IServiceProvider _serviceProvider;
-        InteractionService _commands;
+        private DiscordSocketClient Client;
+        private ILogger<SlashCommandHandler> Logger;
+        private IServiceProvider _serviceProvider;
+        private InteractionService _commands;
 
-        public SlashCommandHandler(DiscordSocketClient client, ILogger<DiscordClientService> logger, IServiceProvider provider, InteractionService interactionService) 
-            : base(client, logger)
+        public SlashCommandHandler(DiscordSocketClient client, ILogger<SlashCommandHandler> logger, IServiceProvider provider, InteractionService interactionService) 
         {
+            Client = client;
+            Logger = logger;
             _serviceProvider = provider;
             _commands = interactionService;
         }
@@ -32,19 +34,28 @@ namespace FruitBot.Services
             await _commands.AddModulesAsync(Assembly.GetExecutingAssembly(), _serviceProvider);
 
             // Wait for ready event to fire.
-            await Client.WaitForReadyAsync(stoppingToken);
-
-            Client.InteractionCreated += Client_InteractionCreated;
-
-            _commands.ComponentCommandExecuted += ComponentCommandExecuted;
-            _commands.ContextCommandExecuted += ContextCommandExecuted;
-            _commands.SlashCommandExecuted += SlashCommandExecuted;
-
-            // Register commands
-            foreach (SocketGuild guild in Client.Guilds)
+            Client.Ready += async () =>
             {
-                await _commands.RegisterCommandsToGuildAsync(guild.Id);
-            }
+
+                Client.InteractionCreated += Client_InteractionCreated;
+
+                _commands.ComponentCommandExecuted += ComponentCommandExecuted;
+                _commands.ContextCommandExecuted += ContextCommandExecuted;
+                _commands.SlashCommandExecuted += SlashCommandExecuted;
+                _commands.Log += _commands_Log;
+
+                // Register commands
+                foreach (SocketGuild guild in Client.Guilds)
+                {
+                    await _commands.RegisterCommandsToGuildAsync(guild.Id);
+                }
+            };
+        }
+
+        private Task _commands_Log(LogMessage arg)
+        {
+            Logger.LogInformation(arg.Message);
+            return Task.CompletedTask;
         }
 
         private async Task Client_InteractionCreated(SocketInteraction arg)

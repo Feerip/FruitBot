@@ -1,11 +1,10 @@
-﻿
-using Discord;
-using Discord.Addons.Hosting;
+﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using FruitBot.Modules;
 using FruitPantry;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +15,7 @@ using System.Timers;
 
 namespace FruitBot.Services
 {
-    public class CommandHandler : InitializedService
+    public class CommandHandler : BackgroundService
     {
         private readonly IServiceProvider _provider;
         private readonly DiscordSocketClient _client;
@@ -34,7 +33,7 @@ namespace FruitBot.Services
 
         }
 
-        public override async Task InitializeAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _client.MessageReceived += OnMessageReceived;
             _service.AddTypeReader(typeof(TypeReaders.LastCommandArguments), new TypeReaders.LastCommandTypeReader());
