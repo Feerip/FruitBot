@@ -63,9 +63,9 @@ namespace FruitBot.Modules
 
             string originalRSN = originalMsg.Embeds.First().Title.Replace("RSN Verification - ", "");
 
-            int? currentPlayerWorld = RunescapePlayerInfoPuller.RunescapePlayerInfoPuller.Instance.QueryWorldOnly(originalRSN);
             try
             {
+                int? currentPlayerWorld = RunescapePlayerInfoPuller.RunescapePlayerInfoPuller.Instance.QueryWorldOnly(originalRSN);
                 if ((currentPlayerWorld != worlds[hopNumber]))
                 {
                     throw new Exception("Hop not detected. Please try again.");
