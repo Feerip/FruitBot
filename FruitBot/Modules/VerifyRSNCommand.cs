@@ -25,7 +25,7 @@ namespace FruitBot.Modules
                     throw new Exception("Verification failed. Please make sure that:\n" +
                         $"> 1. Your Runescape name `{RSN}` is spelled correctly, with exact punctuation.\n" +
                         $"> 2. You are currently logged in (lobby is okay too).\n" +
-                        $"> 3. Your online status in-game is **NOT** set to `Off` or `Friends Only`.\n" +
+                        $"> 3. Your online status in-game is **NOT** set to `Off` or `Friends Only` (hop worlds after you change it to refresh).\n" +
                         $"If all of the above are true, then it's probably a bug and you should cry for help.");
                 }
 
