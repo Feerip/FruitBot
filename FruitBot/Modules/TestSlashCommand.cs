@@ -24,7 +24,7 @@ namespace FruitBot.Modules
         [ComponentInteraction("best-animal:*")]
         public async Task BestAnimalButton(string animal)
         {
-            await RespondAsync($"{Context.User.Mention} thinks {animal} are the best");
+                await RespondAsync($"{Context.User.Mention} thinks {animal} are the best");
         }
 #endif
     }

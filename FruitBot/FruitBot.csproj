@@ -23,6 +23,10 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-rc.1.21451.13" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0-rc.1.21451.13" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0-rc.1.21451.13" />
+    <PackageReference Include="RestSharp" Version="106.13.0" />
+    <PackageReference Include="Selenium.Support" Version="4.0.1" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.0.1" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="95.0.4638.5401" />
     <PackageReference Include="TaskTimer" Version="1.0.0" />
   </ItemGroup>
 
@@ -46,6 +50,9 @@
     </Reference>
     <Reference Include="Discord.Net.WebSocket">
       <HintPath>..\Lib\Discord.Net.WebSocket.dll</HintPath>
+    </Reference>
+    <Reference Include="RunescapePlayerInfoPuller">
+      <HintPath>..\..\RunescapePlayerInfoPuller\bin\Release\net5.0\RunescapePlayerInfoPuller.dll</HintPath>
     </Reference>
   </ItemGroup>
 
