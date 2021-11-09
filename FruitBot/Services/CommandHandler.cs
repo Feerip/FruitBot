@@ -57,9 +57,12 @@ namespace FruitBot.Services
 
         private async Task _client_Ready()
         {
+// When in debug mode we don't want the auto scraper to be firing, 
+// or the test bot will fight with the real FruitBot and crash.
+#if !DEBUG
             TimedHostedService service = new(_client);
             Task backgroundScraper = service.StartAsync(new CancellationToken());
-
+#endif
             // Watchdog event to kill the entire program when the Discord.net API glitches out and disconnects. 
             // Calling powershell script will detect the exit and restart it indefinitely.
             // Issues: Calling Environment.Exit(1) to signal that the script should restart is not working properly. Program always exits with exit code 0.

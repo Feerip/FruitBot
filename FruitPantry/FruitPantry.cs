@@ -505,7 +505,7 @@ namespace FruitPantry
             return _dropLog;
         }
 
-        public void RegisterPlayer(string runescapeName, string fruit, string discordTag)
+        public void RegisterPlayer(string runescapeName, string fruit = null, string discordTag = null, ulong? discordId = null)
         {
             List<IList<object>> newEntries = new();
 
