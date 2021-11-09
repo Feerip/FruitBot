@@ -988,6 +988,9 @@
         <member name="M:Discord.Interactions.InteractionModuleBase`1.OnModuleBuilding(Discord.Interactions.InteractionService,Discord.Interactions.ModuleInfo)">
             <inheritdoc/>
         </member>
+        <member name="M:Discord.Interactions.InteractionModuleBase`1.DeferAsync(System.Boolean,Discord.RequestOptions)">
+            <inheritdoc cref="M:Discord.IDiscordInteraction.DeferAsync(System.Boolean,Discord.RequestOptions)"/>
+        </member>
         <member name="M:Discord.Interactions.InteractionModuleBase`1.RespondAsync(System.String,Discord.Embed[],System.Boolean,System.Boolean,Discord.AllowedMentions,Discord.RequestOptions,Discord.MessageComponent,Discord.Embed)">
             <inheritdoc cref="M:Discord.IDiscordInteraction.RespondAsync(System.String,Discord.Embed[],System.Boolean,System.Boolean,Discord.AllowedMentions,Discord.RequestOptions,Discord.MessageComponent,Discord.Embed)"/>
         </member>
