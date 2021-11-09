@@ -25,8 +25,13 @@ namespace FruitBot.Modules
             [Summary("num-drops", "The number of drops to fetch (1-100).")]
             [InclusiveRange(1, 100)]
             int numDrops = 1,
-            [Summary(description:"The optional user to filter the drops by.")]
+
+            [Summary(description:"The optional user to filter the drops by. This can be used instead of the 'rsn' param.")]
             SocketGuildUser? user = null,
+
+            [Summary(description:"The optional RSN to filter the drops by. This can be used instead of the 'user' param.")]
+            string? rsn = null,
+
             [Summary(description:"The optional team to filter drops by.")]
             FruitResources.Fruit fruit = FruitResources.Fruit.Invalid)
         {
@@ -35,7 +40,7 @@ namespace FruitBot.Modules
                 var fruitPantry = FruitPantry.FruitPantry.GetFruitPantry();
                 fruitPantry.RefreshEverything();
 
-                string? rsn = null;
+                // User param takes precedence over rsn.
                 if (user != null)
                 {
                     rsn = fruitPantry._discordUsers[user.Username + "#" + user.Discriminator][1];
