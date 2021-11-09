@@ -4,7 +4,8 @@ using Discord.Interactions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using RS3APIDropLog;
+using System.Linq;
+using DataTypes;
 
 namespace FruitBot.Modules
 {
@@ -18,7 +19,13 @@ namespace FruitBot.Modules
         }
 
         [SlashCommand("last", "Get the last drops from the drop log")]
-        public async Task Last(int numDrops = 1, SocketGuildUser user = null, string fruit = null)
+        public async Task Last(
+            [Summary("num-drops", "The number of drops to fetch.")]
+            int numDrops = 1,
+            [Summary(description:"The optional user to filter the drops by.")]
+            SocketGuildUser user = null,
+            [Summary(description:"The optional team to filter drops by.")]
+            FruitResources.Fruit fruit = FruitResources.Fruit.Invalid)
         {
             using (Context.Channel.EnterTypingState())
             {
@@ -37,19 +44,23 @@ namespace FruitBot.Modules
                     return;
                 }
 
+                // Defer as the lookup may take some time
+                await Context.Interaction.DeferAsync();
+
+                var fruitName = FruitResources.GetFruitName(fruit);
+
                 if (numDrops == 1)
                 {
-                    var drops = FruitPantry.HelperFunctions.GetLastNDrops(numDrops, rsn, fruit);
-
-                    foreach (DropLogEntry entry in drops)
+                    var drops = FruitPantry.HelperFunctions.GetLastNDrops(numDrops, rsn, fruitName);
+                    if (drops.Count() == 1)
                     {
-                        Embed embed = FruitPantry.HelperFunctions.BuildDropEmbed(entry);
-                        await RespondAsync(embed:embed);
+                        Embed embed = FruitPantry.HelperFunctions.BuildDropEmbed(drops.First());
+                        await FollowupAsync(embed:embed);
                     }
                 }
                 else
                 {
-                    List<string> output = await FruitPantry.HelperFunctions.BuildLastDropList(numDrops, rsn, fruit);
+                    List<string> output = await FruitPantry.HelperFunctions.BuildLastDropList(numDrops, rsn, fruitName);
 
                     int numMessages = output.Count;
 
@@ -67,7 +78,6 @@ namespace FruitBot.Modules
                         if (i == 0)
                         {
                             // Reply to the command with the first message
-                            await Context.Interaction.DeferAsync();
                             var message = await FollowupAsync(output[i]);
                             additionalMessageReferenceMessage = message.Id;
                         }

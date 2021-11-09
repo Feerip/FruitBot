@@ -4,6 +4,34 @@ namespace DataTypes
 {
     public static class FruitResources
     {
+        public enum Fruit
+        {
+            Grape,
+            Banana,
+            Apple,
+            Peach,
+            FruitlessHeathens,
+            Invalid,
+        }
+
+        public static readonly string[] FruitNames = new string[]
+        {
+            Text.grape,
+            Text.banana,
+            Text.apple,
+            Text.peach,
+            Text.fruitlessHeathen
+        };
+
+        public static string GetFruitName(Fruit fruit)
+        {
+            if (fruit != Fruit.Invalid)
+            {
+                return FruitNames[(int)fruit];
+            }
+            return null;
+        }
+
         public static class Colors
         {
             public static Discord.Color Get(string fruit)
