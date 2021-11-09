@@ -3,7 +3,7 @@ using Discord.Interactions;
 using System;
 using System.Threading.Tasks;
 
-namespace FruitBot
+namespace FruitBot.Preconditions
 {
     internal class InclusiveRange : ParameterPreconditionAttribute
     {

@@ -1,6 +1,7 @@
 ﻿using Discord.Interactions;
 using Discord.WebSocket;
 using System.Threading.Tasks;
+using FruitBot.Preconditions;
 
 namespace FruitBot.Modules
 {
@@ -12,6 +13,7 @@ namespace FruitBot.Modules
 
 #if DEBUG
         [SlashCommand("delete-commands", "Delete all commands")]
+        [AdminOnly]
         public async Task DeleteCommands()
         {
             await (Context.Guild as SocketGuild).DeleteApplicationCommandsAsync();
