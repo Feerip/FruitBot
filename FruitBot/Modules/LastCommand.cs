@@ -6,9 +6,11 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using DataTypes;
+using System;
 
 namespace FruitBot.Modules
 {
+#nullable enable
     public class LastCommand : InteractionModuleBase
     {
         private readonly ILogger<LastCommand> _logger;
@@ -20,10 +22,11 @@ namespace FruitBot.Modules
 
         [SlashCommand("last", "Get the last drops from the drop log")]
         public async Task Last(
-            [Summary("num-drops", "The number of drops to fetch.")]
+            [Summary("num-drops", "The number of drops to fetch (1-100).")]
+            [InclusiveRange(1, 100)]
             int numDrops = 1,
             [Summary(description:"The optional user to filter the drops by.")]
-            SocketGuildUser user = null,
+            SocketGuildUser? user = null,
             [Summary(description:"The optional team to filter drops by.")]
             FruitResources.Fruit fruit = FruitResources.Fruit.Invalid)
         {
@@ -49,6 +52,9 @@ namespace FruitBot.Modules
 
                 var fruitName = FruitResources.GetFruitName(fruit);
 
+                // Clamp it just to ensure it's valid
+                numDrops = Math.Clamp(numDrops, 1, 100);
+
                 if (numDrops == 1)
                 {
                     var drops = FruitPantry.HelperFunctions.GetLastNDrops(numDrops, rsn, fruitName);
@@ -56,6 +62,10 @@ namespace FruitBot.Modules
                     {
                         Embed embed = FruitPantry.HelperFunctions.BuildDropEmbed(drops.First());
                         await FollowupAsync(embed:embed);
+                    }
+                    else
+                    {
+                        await FollowupAsync("No drops could be found for this query.");
                     }
                 }
                 else
