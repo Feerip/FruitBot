@@ -132,6 +132,10 @@ namespace FruitBot.Modules
                             // Send it
                             msg.Embed = embedBuilder.Build();
                             msg.Components = new ComponentBuilder().Build();
+
+                            // Register them in the db
+                            FruitPantry.FruitPantry.GetFruitPantry().RegisterPlayer(originalRSN, discordTag: Context.User.Username + "#" + Context.User.Discriminator, discordId: Context.User.Id);
+
                         }
                     });
                 }

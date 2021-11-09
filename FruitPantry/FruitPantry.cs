@@ -69,6 +69,7 @@ namespace FruitPantry
         public readonly int PlayerDB_RSN = 0;
         public readonly int PlayerDB_Fruit = 1;
         public readonly int PlayerDB_DiscordTag = 2;
+        public readonly int PlayerDB_DiscordID = 3;
 
         public readonly int ThresholdValue = 0;
         public readonly int ThresholdMultiplier = 1;
@@ -233,7 +234,7 @@ namespace FruitPantry
             _classificationRange = $"Classifications!A2:C";
             _thresholdValuesRange = $"Classifications!D2:E2";
             _itemDatabaseRange = $"Item Database!A2:G";
-            _playerDatabaseRange = $"Players!A2:C";
+            _playerDatabaseRange = $"Players!A2:D";
             _botVoteTrackerRange = $"Vote Tracker!A2:C";
             _gobVoteTrackerRange = $"Vote Tracker!A2:E";
             _bugReportRange = $"Bug Reports!A2:D";
@@ -379,8 +380,8 @@ namespace FruitPantry
             {
                 foreach (IList<object> row in values)
                 {
-                    discordUsersOutput.Add(row[PlayerDB_DiscordTag].ToString(), new() { row[PlayerDB_Fruit].ToString(), row[PlayerDB_RSN].ToString().ToLower() });
-                    runescapePlayersOutput.Add(row[PlayerDB_RSN].ToString().ToLower(), new() { row[PlayerDB_Fruit].ToString(), row[PlayerDB_DiscordTag].ToString() });
+                    discordUsersOutput.Add(row[PlayerDB_DiscordID].ToString(), new() { row[PlayerDB_Fruit].ToString(), row[PlayerDB_RSN].ToString().ToLower() });
+                    runescapePlayersOutput.Add(row[PlayerDB_RSN].ToString().ToLower(), new() { row[PlayerDB_Fruit].ToString(), row[PlayerDB_DiscordID].ToString() });
                 }
             }
             _discordUsers = discordUsersOutput;
@@ -514,6 +515,7 @@ namespace FruitPantry
             rowToAppend.Add(runescapeName);
             rowToAppend.Add(fruit);
             rowToAppend.Add(discordTag);
+            rowToAppend.Add(discordId);
 
             newEntries.Add(rowToAppend);
 
