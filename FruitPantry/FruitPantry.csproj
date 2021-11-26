@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Discord.Net.Labs.Core" Version="3.4.0" />
+    <PackageReference Include="Discord.Net.Labs.Rest" Version="3.4.0" />
+    <PackageReference Include="Discord.Net.Labs.WebSocket" Version="3.4.0" />
     <PackageReference Include="Google.Apis.Sheets.v4" Version="1.55.0.2371" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0-rc.1.21451.13" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0-rc.1.21451.13" />
@@ -15,18 +18,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DataTypes\DataTypes.csproj" />
     <ProjectReference Include="..\RS3APIDropLog\RS3APIDropLog.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Discord.Net.Core">
-      <HintPath>..\Lib\Discord.Net.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Discord.Net.Rest">
-      <HintPath>..\Lib\Discord.Net.Rest.dll</HintPath>
-    </Reference>
-    <Reference Include="Discord.Net.WebSocket">
-      <HintPath>..\Lib\Discord.Net.WebSocket.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

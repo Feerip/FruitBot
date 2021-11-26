@@ -16,7 +16,7 @@ namespace FruitBot.Preconditions
             UpperBoundry = upperBoundry;
         }
 
-        public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionCommandContext context, IParameterInfo parameterInfo, object value, IServiceProvider services)
+        public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, IParameterInfo parameterInfo, object value, IServiceProvider services)
         {
             if (value is int intValue)
             {

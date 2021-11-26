@@ -60,7 +60,7 @@ namespace FruitBot.Services
 
         private async Task Client_InteractionCreated(SocketInteraction arg)
         {
-            var context = new SocketInteractionCommandContext(Client, arg);
+            var context = new SocketInteractionContext(Client, arg);
 
             try
             {
@@ -72,7 +72,7 @@ namespace FruitBot.Services
             }
         }
 
-        private async Task SlashCommandExecuted(SlashCommandInfo info, IInteractionCommandContext context, IResult result)
+        private async Task SlashCommandExecuted(SlashCommandInfo info, IInteractionContext context, IResult result)
         {
             if (!result.IsSuccess)
             {
@@ -81,7 +81,7 @@ namespace FruitBot.Services
             }
         }
 
-        private async Task ContextCommandExecuted(ContextCommandInfo info, IInteractionCommandContext context, IResult result)
+        private async Task ContextCommandExecuted(ContextCommandInfo info, IInteractionContext context, IResult result)
         {
             if (!result.IsSuccess)
             {
@@ -90,7 +90,7 @@ namespace FruitBot.Services
             }
         }
 
-        private async Task ComponentCommandExecuted(ComponentCommandInfo info, IInteractionCommandContext context, IResult result)
+        private async Task ComponentCommandExecuted(ComponentCommandInfo info, IInteractionContext context, IResult result)
         {
             if (!result.IsSuccess)
             {

@@ -19,6 +19,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Discord.Net.Labs" Version="3.4.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0-rc.1.21451.13" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0-rc.1.21451.13" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0-rc.1.21451.13" />
@@ -36,21 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Discord.Net.Commands">
-      <HintPath>..\Lib\Discord.Net.Commands.dll</HintPath>
-    </Reference>
-    <Reference Include="Discord.Net.Core">
-      <HintPath>..\Lib\Discord.Net.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Discord.Net.Interactions">
-      <HintPath>..\Lib\Discord.Net.Interactions.dll</HintPath>
-    </Reference>
-    <Reference Include="Discord.Net.Rest">
-      <HintPath>..\Lib\Discord.Net.Rest.dll</HintPath>
-    </Reference>
-    <Reference Include="Discord.Net.WebSocket">
-      <HintPath>..\Lib\Discord.Net.WebSocket.dll</HintPath>
-    </Reference>
     <Reference Include="RunescapePlayerInfoPuller">
       <HintPath>..\..\RunescapePlayerInfoPuller\bin\Release\net5.0\RunescapePlayerInfoPuller.dll</HintPath>
     </Reference>
