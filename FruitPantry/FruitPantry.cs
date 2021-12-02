@@ -79,6 +79,7 @@ namespace FruitPantry
         public readonly int ItemDBWikiLink = 4;
         public readonly int ItemDBImageURL = 5;
         public readonly int ItemDBActiveFlag = 6;
+        public readonly int ItemDBPriceOverride = 8;
 
         public readonly int Version = 0;
         public readonly int GoodBotVotes = 1;
@@ -233,7 +234,7 @@ namespace FruitPantry
             _dropLogRange = "Drop Log!A2:J";
             _classificationRange = $"Classifications!A2:C";
             _thresholdValuesRange = $"Classifications!D2:E2";
-            _itemDatabaseRange = $"Item Database!A2:G";
+            _itemDatabaseRange = $"Item Database!A2:I";
             _playerDatabaseRange = $"Players!A2:D";
             _botVoteTrackerRange = $"Vote Tracker!A2:C";
             _gobVoteTrackerRange = $"Vote Tracker!A2:E";
@@ -343,6 +344,15 @@ namespace FruitPantry
                         newItem._monitored = false;
                     }
 
+                    if (ItemDBPriceOverride < row.Count && row[ItemDBPriceOverride] != null)
+                    {
+                        newItem._priceOverride = int.Parse(row[ItemDBPriceOverride].ToString(), NumberStyles.AllowThousands);
+                    }
+                    else
+                    {
+                        newItem._priceOverride = null;
+                    }
+
                     output.Add(row[ItemDBItemName].ToString().ToLower(), newItem);
                 }
             }
@@ -400,6 +410,7 @@ namespace FruitPantry
 
             SpreadsheetsResource.ValuesResource.GetRequest request = _service.Spreadsheets.Values.Get(_spreadsheetId, _dropLogRange);
 
+            // TODO: can wait wait on something instead of doing this sleep?
             // Add() function is too stupid fast, we need time for google to process the new entry before we can pull it. 
             Thread.Sleep(1000);
             ValueRange response = request.Execute();

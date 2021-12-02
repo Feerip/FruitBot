@@ -22,7 +22,30 @@ namespace FruitPantry
                 .Select(p => p.Value);
         }
 
-        public static Embed BuildDropEmbed(DropLogEntry entry)
+        private static async Task<int?> GetItemPrice(DropLogEntry entry)
+        {
+            ItemDatabaseEntry dbEntry;
+            if (_thePantry._itemDatabase.TryGetValue(entry._dropName.ToLower(), out dbEntry))
+            {
+                if (dbEntry._priceOverride != null)
+                {
+                    return dbEntry._priceOverride;
+                }
+            }
+
+            string wikiName = await WikiHelpers.GetWikiItemName(entry._dropName);
+            if (wikiName != null)
+            {
+                int price = await WikiHelpers.GetItemPrice(wikiName);
+                if (price != -1)
+                {
+                    return price;
+                }
+            }
+            return null;
+        }
+
+        public static async Task<Embed> BuildDropEmbed(DropLogEntry entry)
         {
             string fruit = entry._fruit;
             string emoji = FruitResources.Emojis.Get(fruit);
@@ -59,6 +82,16 @@ namespace FruitPantry
             builder.AddField("Boss", entry._bossName, true);
             builder.AddField("Dropped At", entry._timestamp, true);
 
+            var price = await GetItemPrice(entry);
+            if (price != null)
+            {
+                builder.AddField("Price", $"{price:n0}");
+            }
+            else
+            {
+                builder.AddField("Price", "Unknown");
+            }
+
             return builder.Build();
         }
 
@@ -68,7 +101,7 @@ namespace FruitPantry
 
             foreach (DropLogEntry entry in drops)
             {
-                var embed = BuildDropEmbed(entry);
+                var embed = await BuildDropEmbed(entry);
 
                 string message = null;
                 ulong channel = 862385904719364096;
@@ -98,6 +131,8 @@ namespace FruitPantry
             // Code box entry
             string message = "";
 
+            string line = "-------------------------------------------------------------------------------------------";
+
             // Headers
             int idx = 0;
             int linesAdded = 0;
@@ -107,8 +142,8 @@ namespace FruitPantry
                 if (idx % 22 == 0)
                 {
                     message = "```\n";
-                    message += "-------------------------------------------------------------------------" + "\n";
-                    message += $"| {FruitResources.Emojis.fruitlessHeathen}Name         | Drop            | Boss   |  Pts   |    Timestamp     |" + "\n";
+                    message += line + "\n";
+                    message += $"| {FruitResources.Emojis.fruitlessHeathen}Name         | Drop            | Boss   |  Pts   |    Timestamp     |    Price        |" + "\n";
                 }
                 DropLogEntry entry = entryPair.Value;
                 if ((playerName != null))
@@ -128,13 +163,21 @@ namespace FruitPantry
 
                 if (addLine)
                 {
+                    var price = await GetItemPrice(entry);
+                    string priceString = "Unknown";
+                    if (price != null)
+                    {
+                        priceString = $"{price:n0}";
+                    }
+
                     lines.Add(string.Format(
-                        "| {0,-14} | {1,-15} | {2,-6} | {3,6} | {4,16} |",
+                        "| {0,-14} | {1,-15} | {2,-6} | {3,6} | {4,16} | {5, 15} |",
                         FruitResources.Emojis.Get(entry._fruit) + entry._playerName,
                         entry._dropName.Substring(0, Math.Min(entry._dropName.Length, 15)),
                         entry._bossName.Substring(0, Math.Min(entry._bossName.Length, 6)),
                         float.Parse(entry._pointValue).ToString("0.00"),
-                        entry._timestamp
+                        entry._timestamp,
+                        priceString
                         ) + "\n");
 
                     linesAdded++;
@@ -144,12 +187,12 @@ namespace FruitPantry
                 if (lines.Count == 22)
                 {
                     lines.Reverse();
-                    foreach (string line in lines)
+                    foreach (string currentLine in lines)
                     {
-                        message += line;
+                        message += currentLine;
                     }
 
-                    message += "-------------------------------------------------------------------------```";
+                    message += $"{line}```";
                     messages.Add(message);
                     lines = new();
                     message = "";
@@ -160,11 +203,11 @@ namespace FruitPantry
                     if (!message.Equals(""))
                     {
                         lines.Reverse();
-                        foreach (string line in lines)
+                        foreach (string currentLine in lines)
                         {
-                            message += line;
+                            message += currentLine;
                         }
-                        message += "-------------------------------------------------------------------------```";
+                        message += $"{line}```";
                         messages.Add(message);
                     }
                     break;
