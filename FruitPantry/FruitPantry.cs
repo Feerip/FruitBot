@@ -11,6 +11,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.Caching;
 using Data = Google.Apis.Sheets.v4.Data;
 
 namespace FruitPantry
@@ -62,6 +63,7 @@ namespace FruitPantry
         public readonly int BossName = 7;
         public readonly int PointValue = 8;
         public readonly int EntryKey = 9;
+        public readonly int PriceKey = 10;
 
         public readonly int Classification = 0;
         public readonly int PointsPerDrop = 1;
@@ -100,6 +102,7 @@ namespace FruitPantry
             // Calculates the point value of a single drop entry with all variables considered
             public static float CalculatePoints(DropLogEntry drop)
             {
+                // TODO(Tyler): include price in calculation
                 float basePoints = _thePantry._classificationList[drop._bossName];
                 float thresholdMultiplier = _thePantry._thresholdMultiplier;
 
@@ -232,7 +235,7 @@ namespace FruitPantry
             _spreadsheetId = "1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s";
 
 
-            _dropLogRange = "Drop Log!A2:J";
+            _dropLogRange = "Drop Log!A2:K";
             _classificationRange = $"Classifications!A2:C";
             _thresholdValuesRange = $"Classifications!D2:E2";
             _itemDatabaseRange = $"Item Database!A2:I";
@@ -345,13 +348,10 @@ namespace FruitPantry
                         newItem._monitored = false;
                     }
 
+                    newItem._priceOverride = null;
                     if (ItemDBPriceOverride < row.Count && row[ItemDBPriceOverride] != null)
                     {
                         newItem._priceOverride = int.Parse(row[ItemDBPriceOverride].ToString(), NumberStyles.AllowThousands);
-                    }
-                    else
-                    {
-                        newItem._priceOverride = null;
                     }
 
                     output.Add(row[ItemDBItemName].ToString().ToLower(), newItem);
@@ -422,17 +422,23 @@ namespace FruitPantry
             {
                 foreach (IList<object> row in values)
                 {
-                    output.Add(row[EntryKey].ToString(), new(
-                                                playerName: row[RSN],
-                                                fruit: row[Fruit],
-                                                dropName: row[Drop],
-                                                timestamp: row[Timestamp],
-                                                playerAvatarPNG: row[PlayerAvatarLink],
-                                                dropIconWEBP: row[DropIconLink],
-                                                bossName: row[BossName],
-                                                runemetricsDropID: row[RuneMetricsID],
-                                                pointValue: row[PointValue],
-                                                entryKey: row[EntryKey]));
+                    // Get the price of the item as it was when the drop was first logged.
+                    object price = PriceKey < row.Count ? row[PriceKey] : null;
+
+                    DropLogEntry entry = new(
+                        playerName: row[RSN],
+                        fruit: row[Fruit],
+                        dropName: row[Drop],
+                        timestamp: row[Timestamp],
+                        playerAvatarPNG: row[PlayerAvatarLink],
+                        dropIconWEBP: row[DropIconLink],
+                        bossName: row[BossName],
+                        runemetricsDropID: row[RuneMetricsID],
+                        pointValue: row[PointValue],
+                        entryKey: row[EntryKey],
+                        price: price);
+
+                    output.Add(row[EntryKey].ToString(), entry);
                 }
 
             }
@@ -499,6 +505,7 @@ namespace FruitPantry
             rowToAppend.Add(entry._bossName);
             rowToAppend.Add(entry._pointValue);
             rowToAppend.Add(entry._entryKey);
+            rowToAppend.Add(entry._dropPrice);
 
             newEntries.Add(rowToAppend);
 
@@ -566,6 +573,8 @@ namespace FruitPantry
                         continue;
 #endif
                     }
+
+                    entry._dropPrice = await GetItemPrice(entry._dropName);
                     entry._bossName = _itemDatabase[entry._dropName.ToLower()]._classification;
                     entry._pointValue = PointsCalculator.CalculatePoints(entry).ToString();
                     await Add(entry);
@@ -588,6 +597,7 @@ namespace FruitPantry
                         //continue;
 #endif
                     }
+                    entry._dropPrice = await GetItemPrice(entry._dropName);
                     entry._bossName = "Unknowns";
                     entry._pointValue = "0";
                     await Add(entry);
@@ -806,6 +816,44 @@ namespace FruitPantry
             }
 
             return output;
+        }
+
+        private MemoryCache _itemPriceCache = new MemoryCache("ItemPriceCache");
+
+        private async Task<int> GetItemPrice(string itemName)
+        {
+            var lowerName = itemName.ToLower();
+
+            ItemDatabaseEntry dbEntry;
+            if (_itemDatabase.TryGetValue(lowerName, out dbEntry))
+            {
+                if (dbEntry._priceOverride != null)
+                {
+                    return dbEntry._priceOverride.Value;
+                }
+            }
+
+            var cached = _itemPriceCache.Get(lowerName);
+            if (cached != null)
+            {
+                return (int)cached;
+            }
+
+            string wikiName = await WikiHelpers.GetWikiItemName(lowerName);
+            if (wikiName != null)
+            {
+                int price = await WikiHelpers.GetItemPrice(wikiName);
+                if (price != -1)
+                {
+                    _itemPriceCache.Add(lowerName, price, new CacheItemPolicy()
+                    {
+                        SlidingExpiration = TimeSpan.FromDays(1)
+                    });
+
+                    return price;
+                }
+            }
+            return 0;
         }
     }
 

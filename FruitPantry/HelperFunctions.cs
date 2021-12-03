@@ -22,29 +22,6 @@ namespace FruitPantry
                 .Select(p => p.Value);
         }
 
-        private static async Task<int?> GetItemPrice(DropLogEntry entry)
-        {
-            ItemDatabaseEntry dbEntry;
-            if (_thePantry._itemDatabase.TryGetValue(entry._dropName.ToLower(), out dbEntry))
-            {
-                if (dbEntry._priceOverride != null)
-                {
-                    return dbEntry._priceOverride;
-                }
-            }
-
-            string wikiName = await WikiHelpers.GetWikiItemName(entry._dropName);
-            if (wikiName != null)
-            {
-                int price = await WikiHelpers.GetItemPrice(wikiName);
-                if (price != -1)
-                {
-                    return price;
-                }
-            }
-            return null;
-        }
-
         public static async Task<Embed> BuildDropEmbed(DropLogEntry entry)
         {
             string fruit = entry._fruit;
@@ -81,16 +58,7 @@ namespace FruitPantry
 #endif
             builder.AddField("Boss", entry._bossName, true);
             builder.AddField("Dropped At", entry._timestamp, true);
-
-            var price = await GetItemPrice(entry);
-            if (price != null)
-            {
-                builder.AddField("Price", $"{price:n0}");
-            }
-            else
-            {
-                builder.AddField("Price", "Unknown");
-            }
+            builder.AddField("Price", $"{entry._dropPrice:n0}");
 
             return builder.Build();
         }
@@ -163,13 +131,6 @@ namespace FruitPantry
 
                 if (addLine)
                 {
-                    var price = await GetItemPrice(entry);
-                    string priceString = "Unknown";
-                    if (price != null)
-                    {
-                        priceString = $"{price:n0}";
-                    }
-
                     lines.Add(string.Format(
                         "| {0,-14} | {1,-15} | {2,-6} | {3,6} | {4,16} | {5, 15} |",
                         FruitResources.Emojis.Get(entry._fruit) + entry._playerName,
@@ -177,7 +138,7 @@ namespace FruitPantry
                         entry._bossName.Substring(0, Math.Min(entry._bossName.Length, 6)),
                         float.Parse(entry._pointValue).ToString("0.00"),
                         entry._timestamp,
-                        priceString
+                        $"{entry._dropPrice:n0}"
                         ) + "\n");
 
                     linesAdded++;

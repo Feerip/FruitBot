@@ -38,6 +38,9 @@ namespace FruitBot.Modules
         {
             using (Context.Channel.EnterTypingState())
             {
+                // Defer as the lookup may take some time
+                await Context.Interaction.DeferAsync();
+
                 var fruitPantry = FruitPantry.FruitPantry.GetFruitPantry();
                 fruitPantry.RefreshEverything();
 
@@ -52,9 +55,6 @@ namespace FruitBot.Modules
                     await ReplyAsync($"There are currently no entries in the drop log to display.");
                     return;
                 }
-
-                // Defer as the lookup may take some time
-                await Context.Interaction.DeferAsync();
 
                 var fruitName = FruitResources.GetFruitName(fruit);
 
