@@ -8,10 +8,6 @@ namespace RS3APIDropLog
 {
     public class DropLogEntry
     {
-
-
-
-
         public string _playerName { get; }
         public string _fruit { get; set; }
         public string _dropName { get; }
@@ -21,6 +17,7 @@ namespace RS3APIDropLog
         public string _bossName { get; set; }
         public string _runemetricsDropID { get; set; }
         public string _pointValue { get; set; }
+        public int _dropPrice { get; set; }
 
         public string _fruitLogo
         {
@@ -59,9 +56,18 @@ namespace RS3APIDropLog
 
 
         // Standard ctor
-        public DropLogEntry(object playerName, object fruit, object dropName, object timestamp,
-                            object playerAvatarPNG = null, object dropIconWEBP = null,
-                            object bossName = null, object runemetricsDropID = null, object pointValue = null, object entryKey = null)
+        public DropLogEntry(
+            object playerName,
+            object fruit,
+            object dropName,
+            object timestamp,
+            object playerAvatarPNG = null,
+            object dropIconWEBP = null,
+            object bossName = null,
+            object runemetricsDropID = null,
+            object pointValue = null,
+            object entryKey = null,
+            object price = null)
         {
             // Required
             _playerName = playerName.ToString();
@@ -115,6 +121,16 @@ namespace RS3APIDropLog
             else
             {
                 _pointValue = null;
+            }
+
+            _dropPrice = 0;
+            if (price != null)
+            {
+                int parsedPrice = 0;
+                if (int.TryParse(price.ToString(), NumberStyles.AllowThousands, null, out parsedPrice))
+                {
+                    _dropPrice = parsedPrice;
+                }
             }
 
             // Calculate unique ID to ensure no duplicates

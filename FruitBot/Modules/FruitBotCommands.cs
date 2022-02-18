@@ -162,7 +162,7 @@ namespace FruitBot.Modules
 
                 foreach (DropLogEntry entry in drops)
                 {
-                    Embed embed = FruitPantry.HelperFunctions.BuildDropEmbed(entry);
+                    Embed embed = await FruitPantry.HelperFunctions.BuildDropEmbed(entry);
 
                     await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new MessageReference(Context.Message.Id));
                 }

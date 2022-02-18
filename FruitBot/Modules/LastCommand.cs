@@ -38,13 +38,16 @@ namespace FruitBot.Modules
         {
             using (Context.Channel.EnterTypingState())
             {
+                // Defer as the lookup may take some time
+                await Context.Interaction.DeferAsync();
+
                 var fruitPantry = FruitPantry.FruitPantry.GetFruitPantry();
                 fruitPantry.RefreshEverything();
 
                 // User param takes precedence over rsn.
                 if (user != null)
                 {
-                    rsn = fruitPantry._discordUsers[user.Username + "#" + user.Discriminator][1];
+                    rsn = fruitPantry._discordUsers[user.Id.ToString()][1];
                 }
 
                 if (fruitPantry.GetDropLog().Count < 1)
@@ -52,9 +55,6 @@ namespace FruitBot.Modules
                     await ReplyAsync($"There are currently no entries in the drop log to display.");
                     return;
                 }
-
-                // Defer as the lookup may take some time
-                await Context.Interaction.DeferAsync();
 
                 var fruitName = FruitResources.GetFruitName(fruit);
 
@@ -66,7 +66,7 @@ namespace FruitBot.Modules
                     var drops = FruitPantry.HelperFunctions.GetLastNDrops(numDrops, rsn, fruitName);
                     if (drops.Count() == 1)
                     {
-                        Embed embed = FruitPantry.HelperFunctions.BuildDropEmbed(drops.First());
+                        Embed embed = await FruitPantry.HelperFunctions.BuildDropEmbed(drops.First());
                         await FollowupAsync(embed:embed);
                     }
                     else

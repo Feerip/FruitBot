@@ -9,7 +9,7 @@ namespace FruitBot.Preconditions
 {
     internal class AdminOnly : PreconditionAttribute
     {
-        public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionCommandContext context, ICommandInfo commandInfo, IServiceProvider services)
+        public override Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
         {
             if (context.User is SocketGuildUser guildUser)
             {
