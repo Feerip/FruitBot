@@ -615,7 +615,9 @@ namespace FruitBot.Modules
 
                 } while (splitUrl.Last().Count() > 5);
 
+                //Discord.FileAttachment attachment = new(stream, $"nsfw.{splitUrl.Last()}", isSpoiler: true);
                 await Context.Channel.SendFileAsync(stream, $"nsfw.{splitUrl.Last()}", isSpoiler: true, messageReference: new(Context.Message.Id));
+                //await Context.Channel.SendFilesAsync(new FileAttachment[] { attachment }, messageReference: new(Context.Message.Id));
             }
             _logger.LogInformation($"{Context.User.Username} executed the nsfw command!");
         }

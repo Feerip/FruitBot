@@ -18,6 +18,9 @@ namespace FruitBot.Modules
         [SlashCommand("verify-rsn", "register and verify your in-game name")]
         public async Task VerifyRSN(string RSN)
         {
+            // Disabling this command until I can fix it, it's broken in RunescapePlayerInfoPuller (separate solution)
+            await RespondAsync("Sorry, this command is not available right now.", ephemeral: true);
+            return;
             // Needs to be deferred because if the token needs to be refreshed it could take up to 30 seconds to get a response
             await Context.Interaction.DeferAsync(ephemeral: _ephemeral);
 
@@ -56,7 +59,7 @@ namespace FruitBot.Modules
                     .WithButton($"I have hopped to World {worlds[0]}", $"confirm-hop:0:{worlds[0]}:{worlds[1]}:{worlds[2]}");
 
                 // Sends the interaction
-                await FollowupAsync(embed: embedBuilder.Build(), component: componentBuilder.Build(), ephemeral: true);
+                await FollowupAsync(embed: embedBuilder.Build(), components: componentBuilder.Build(), ephemeral: true);
             }
             catch (Exception e)
             {

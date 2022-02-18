@@ -44,11 +44,13 @@ namespace FruitBot.Services
                 _commands.SlashCommandExecuted += SlashCommandExecuted;
                 _commands.Log += _commands_Log;
 
+                await _commands.RegisterCommandsToGuildAsync(769476224363397140);
                 // Register commands
                 foreach (SocketGuild guild in Client.Guilds)
                 {
                     await _commands.RegisterCommandsToGuildAsync(guild.Id);
                 }
+                await _commands.RegisterCommandsToGuildAsync(769476224363397140);
             };
         }
 
