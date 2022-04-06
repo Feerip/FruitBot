@@ -131,7 +131,7 @@ namespace RS3APIDropLog
                 {
                     foreach (RSActivity activity in activities)
                     {
-                        if (activity.text.Contains("found", StringComparison.OrdinalIgnoreCase) || activity.text.Contains("challenged by", StringComparison.OrdinalIgnoreCase))
+                        if (activity.text.Contains("found", StringComparison.OrdinalIgnoreCase) /*|| activity.text.Contains("challenged by", StringComparison.OrdinalIgnoreCase)*/)
                         {
                             SanitizedDrop drop = new();
                             drop._dropname = activity.text;
