@@ -155,6 +155,7 @@ namespace RS3APIDropLog
                         .Replace("I found ", "")
                         .Replace("Found an ", "")
                         .Replace("Found a ", "")
+                        .Replace("Found ", "")
                         .Replace("Challenged By ", "")
                         .Replace(".", ""));
                 }
