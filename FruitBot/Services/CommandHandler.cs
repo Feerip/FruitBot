@@ -6,6 +6,8 @@ using Discord.WebSocket;
 using FruitBot.Modules;
 using FruitPantry;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +18,7 @@ using System.Timers;
 
 namespace FruitBot.Services
 {
-    public class CommandHandler : InitializedService
+    public class CommandHandler : DiscordClientService
     {
         private readonly IServiceProvider _provider;
         private readonly DiscordSocketClient _client;
@@ -24,7 +26,7 @@ namespace FruitBot.Services
         private readonly IConfiguration _config;
         private readonly FruitPantry.FruitPantry _thePantry = FruitPantry.FruitPantry.GetFruitPantry();
 
-        public CommandHandler(IServiceProvider provider, DiscordSocketClient client, CommandService service, IConfiguration config)
+        public CommandHandler(DiscordSocketClient client, ILogger<CommandHandler> logger, IServiceProvider provider, CommandService service, IConfiguration config) : base(client, logger)
         {
             _provider = provider;
             _client = client;
@@ -34,7 +36,7 @@ namespace FruitBot.Services
 
         }
 
-        public override async Task InitializeAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             _client.MessageReceived += OnMessageReceived;
             _service.AddTypeReader(typeof(TypeReaders.LastCommandArguments), new TypeReaders.LastCommandTypeReader());
