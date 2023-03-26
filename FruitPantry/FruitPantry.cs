@@ -539,6 +539,7 @@ namespace FruitPantry
         {
             foreach (DropLogEntry entry in entries)
             {
+                bool fruitlessHeathen = false;
                 if (!AlreadyExists(entry) && IsBeingMonitored(entry))
                 {
                     NumNewEntries++;
@@ -549,14 +550,16 @@ namespace FruitPantry
                     catch (KeyNotFoundException e)
                     {
 #if FRUITWARSMODE
-                        Console.WriteLine(e.Message);
-                        await discordClient.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(
-                            $"Warning: Found a fruitless heathen ({entry._playerName}) in scraped Runepixels data. This drop will not be added to the drop log.");
-                        continue;
+                        //Console.WriteLine(e.Message);
+                        //await discordClient.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(
+                        //$"Warning: Found a fruitless heathen ({entry._playerName}) in scraped Runepixels data. This drop will not be added to the drop log.");
+                        //continue;
+                        fruitlessHeathen = true;
 #endif
                     }
                     entry._bossName = _itemDatabase[entry._dropName.ToLower()]._classification;
-                    entry._pointValue = PointsCalculator.CalculatePoints(entry).ToString();
+                    // Drops gotten by people who haven't signed up yet must not be assigned a point value
+                    entry._pointValue = fruitlessHeathen ? "0" : PointsCalculator.CalculatePoints(entry).ToString();
                     await Add(entry);
 
                 }

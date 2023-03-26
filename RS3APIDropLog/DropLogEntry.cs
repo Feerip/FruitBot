@@ -119,12 +119,12 @@ namespace RS3APIDropLog
 
             // Calculate unique ID to ensure no duplicates
             // playerName + timestamp is an easy way to get a unique ID for each drop
-            _entryKey = _timestamp + " " + _playerName;
+            _entryKey = _timestamp + " " + _playerName + " " + _dropName;
 
 
             if (entryKey != null)
             {
-                if (!string.Equals((_timestamp + " " + _playerName), _entryKey))
+                if (!string.Equals((_timestamp + " " + _playerName + " " + _dropName), _entryKey))
                 {
                     throw new DataException("DropLogEntry data corrupted: entry key verification error while downloading entry");
                 }
@@ -196,7 +196,7 @@ namespace RS3APIDropLog
             return output;
         }
 
-        public bool EntryKeyCorrupted => !string.Equals((_timestamp + " " + _playerName), _entryKey);
+        public bool EntryKeyCorrupted => !string.Equals((_timestamp + " " + _playerName + " " + _dropName), _entryKey);
 
         // sanitization taken care of internally, pass DropLogEntry the drop name as is. 
         private string SanitizeDropName(string dropName)
