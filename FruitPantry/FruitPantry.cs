@@ -205,9 +205,9 @@ namespace FruitPantry
             }
 
             // Calculates and returns the point value contributions of a given player - by Discord tag
-            public static float PointsByDiscordTag(string discordTag)
+            public static float PointsByDiscordID(ulong discordID)
             {
-                return PointsByRSN(_thePantry._discordUsers[discordTag][1].ToLower());
+                return PointsByRSN(_thePantry._discordUsers[discordID.ToString()][1].ToLower());
             }
 
             // Totals up and returns the point value for all drops in a given list.

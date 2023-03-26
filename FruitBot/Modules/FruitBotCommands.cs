@@ -101,7 +101,7 @@ namespace FruitBot.Modules
 
                 if (args.DiscordUserFound)
                 {
-                    args.RSN = _thePantry._discordUsers[args.DiscordUser.Username + "#" + args.DiscordUser.Discriminator][1];
+                    args.RSN = _thePantry._discordUsers[args.DiscordUser.Id.ToString()][1];
                 }
 
                 if (_thePantry.GetDropLog().Count < 1)
@@ -446,7 +446,7 @@ namespace FruitBot.Modules
             using (Context.Channel.EnterTypingState())
             {
                 _thePantry.RefreshEverything();
-                string discordTag = $"{Context.Message.Author.Username}#{Context.Message.Author.Discriminator}";
+                ulong discordID = Context.Message.Author.Id;
                 mention = Context.Message.Author.Mention;
                 float result = 0;
 
@@ -466,12 +466,12 @@ namespace FruitBot.Modules
                 }
                 else if (args.DiscordUserFound)
                 {
-                    discordTag = $"{args.DiscordUser.Username}#{args.DiscordUser.Discriminator}";
+                    discordID = args.DiscordUser.Id;
                     mention = args.DiscordUser.Mention;
                 }
                 else if (args.RSNFound)
                 {
-                    discordTag = _thePantry._runescapePlayers[args.RSN][1];
+                    discordID = ulong.Parse(_thePantry._runescapePlayers[args.RSN][1]);
                     mention = null;
                 }
                 else if (args.FruitFound)
@@ -518,9 +518,9 @@ namespace FruitBot.Modules
                 }
                 else
                 {
-                    result = FruitPantry.FruitPantry.PointsCalculator.PointsByDiscordTag(discordTag);
-                    rsn = _thePantry._discordUsers[discordTag][1];
-                    fruit = _thePantry._discordUsers[discordTag][0];
+                    result = FruitPantry.FruitPantry.PointsCalculator.PointsByDiscordID(discordID);
+                    rsn = _thePantry._discordUsers[discordID.ToString()][1];
+                    fruit = _thePantry._discordUsers[discordID.ToString()][0];
                     fruitPlural = FruitResources.TextPlural.Get(fruit);
                     emoji = FruitResources.Emojis.Get(fruit);
                     color = FruitResources.Colors.Get(fruit);

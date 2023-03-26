@@ -265,23 +265,25 @@ namespace FruitBot.Services
                         return;
                     }
 
-                    if (thePantry._discordUsers.ContainsKey(userDiscordTag))
+                    if (thePantry._discordUsers.ContainsKey(userID.ToString()))
                     {
                         await context.User.SendMessageAsync($"You have already signed up for fruit wars and will not be added again.");
                         await context.User.SendMessageAsync($"If this is not correct, please let an admin know so we can fix the issue.");
                         return;
                     }
 
-                    if (thePantry._runescapePlayers.ContainsKey(RSNInput))
+                    if (thePantry._runescapePlayers.ContainsKey(RSNInput.ToLower()))
                     {
-                        await context.User.SendMessageAsync($"RSN {RSNInput} has already been claimed and registered to {thePantry._runescapePlayers[buffer.Last()][1]} and will not be added again.");
+                        await context.User.SendMessageAsync($"RSN `{RSNInput}` has already been claimed and registered to " +
+                            $"{_client.GetGuild(769476224363397140).GetUser(ulong.Parse(thePantry._runescapePlayers[RSNInput.ToLower()][1])).Mention} " +
+                            $"and will not be added again.");
                         await context.User.SendMessageAsync($"If this is not correct, please let an admin know so we can fix the issue.");
                         return;
                     }
 
-                    thePantry.RegisterPlayer(RSNInput, userTeam, userDiscordTag);
+                    thePantry.RegisterPlayer(RSNInput, userTeam, userID.ToString());
                     await context.User.SendMessageAsync($"{userTeamIcon}Signup confirmed. " +
-                        $"{context.Message.Author.Mention} added to database with RSN \"{RSNInput}\" for team {userTeam}.{userTeamIcon}");
+                        $"{context.Message.Author.Mention} added to database with RSN `{RSNInput}` for team {userTeam}.{userTeamIcon}");
                     await context.User.SendMessageAsync($"{userTeamIcon}If this is not correct, please let an admin know so we can fix the issue.{userTeamIcon}");
                     await context.User.SendMessageAsync(grapeJob[rand.Next() % grapeJob.Count]);
                 }

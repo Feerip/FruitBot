@@ -14,6 +14,7 @@ namespace FruitBot.Modules
             public string RSN = null;
             public SocketGuildUser DiscordUser = null;
             public string Fruit = null;
+           
 
 
             public bool NumDropsFound = false;
