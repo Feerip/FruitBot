@@ -226,8 +226,11 @@ namespace FruitPantry
         {
             _applicationName = "FruitBot";
             _credentialsFile = "Config/credentials.json";
+#if DEBUG
+            _spreadsheetId = "1LikB-UIZcwhaAhze7J9xe1VYEXWQBS9eUReHehMxN9A";
+#else
             _spreadsheetId = "1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s";
-
+#endif
 
             _dropLogRange = "Drop Log!A2:J";
             _classificationRange = $"Classifications!A2:C";

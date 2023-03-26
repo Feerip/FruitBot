@@ -85,18 +85,34 @@ namespace FruitPantry
                 Embed embed = builder.Build();
 
                 string message = null;
+#if DEBUG
+                ulong channel = 1088984348549713961;
+#else
                 ulong channel = 862385904719364096;
+#endif
 
                 if (entry._bossName.Equals("Unknowns", StringComparison.OrdinalIgnoreCase))
                 {
                     message = "<@&856709182514397194> halp <a:MEOW:881462772636995595> I found an unfamiliar item WHAT DO I DOOOOO";
+#if DEBUG
+                    channel = 1088977336805888215;
+#else
                     channel = 856679881547186196;
+#endif
                 }
+#if DEBUG
+                await discordClient.GetGuild(1088977050750173207).GetTextChannel(channel).SendMessageAsync(message, false, embed);
+#else
                 await discordClient.GetGuild(769476224363397140).GetTextChannel(channel).SendMessageAsync(message, false, embed);
+#endif
 
                 if (entry._bossName.Equals("InsaneRNG", StringComparison.OrdinalIgnoreCase))
                 {
+#if DEBUG
+                    await discordClient.GetGuild(1088977050750173207).GetTextChannel(1088977051945545770).SendMessageAsync(null, false, embed);
+#else
                     await discordClient.GetGuild(769476224363397140).GetTextChannel(769476224363397144).SendMessageAsync(null, false, embed);
+#endif
                 }
 
                 idx++;

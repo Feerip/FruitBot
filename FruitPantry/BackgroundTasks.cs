@@ -69,7 +69,11 @@ namespace FruitPantry
 
         private void ShowLeaderboard(object state)
         {
+#if DEBUG
+            using (_client.GetGuild(1088977050750173207).GetTextChannel(1088984348549713961).EnterTypingState())
+#else
             using (_client.GetGuild(769476224363397140).GetTextChannel(862385904719364096).EnterTypingState())
+#endif
             {
 
 
@@ -171,8 +175,11 @@ namespace FruitPantry
                             ;
 
                 Embed embed = builder.Build();
-
+#if DEBUG
+                _client.GetGuild(1088977050750173207).GetTextChannel(1088984348549713961).SendMessageAsync(null, false, embed);
+#else
                 _client.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(null, false, embed);
+#endif
 
                 //🍇🍌🍎🍑💩
 
@@ -182,7 +189,11 @@ namespace FruitPantry
 
         private async void DoWork(object state, ElapsedEventArgs e)
         {
+#if DEBUG
+            using (_client.GetGuild(1088977050750173207).GetTextChannel(1088984348549713961).EnterTypingState())
+#else
             using (_client.GetGuild(769476224363397140).GetTextChannel(862385904719364096).EnterTypingState())
+#endif
             {
                 FruitPantry thePantry = FruitPantry.GetFruitPantry();
 
