@@ -546,7 +546,7 @@ namespace FruitPantry
                     {
                         entry._fruit = _runescapePlayers[entry._playerName.ToLower()][0];
                     }
-                    catch (KeyNotFoundException)
+                    catch (KeyNotFoundException e)
                     {
 #if FRUITWARSMODE
                         Console.WriteLine(e.Message);
@@ -568,12 +568,12 @@ namespace FruitPantry
                     {
                         entry._fruit = _runescapePlayers[entry._playerName.ToLower()][0];
                     }
-                    catch (KeyNotFoundException)
+                    catch (KeyNotFoundException e)
                     {
 #if FRUITWARSMODE
                         //Console.WriteLine(e.Message);
                         //await discordClient.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(
-                        //    $"Warning: Found a fruitless heathen ({entry._playerName}) in scraped Runepixels data. This drop will not be added to the drop log.");
+                            //$"Warning: Found a fruitless heathen ({entry._playerName}) in scraped Runepixels data. This drop will not be added to the drop log.");
                         //continue;
 #endif
                     }

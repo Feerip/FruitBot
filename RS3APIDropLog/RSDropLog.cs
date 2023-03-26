@@ -19,7 +19,9 @@ namespace RS3APIDropLog
             List<RSDropLog> output = new();
             ConcurrentQueue<RSDropLog> fastContainer = new();
 
-            @Parallel.ForEach(playerNames, (playerName) => FastConstructor(playerName, fastContainer));
+            var opts = new ParallelOptions() { MaxDegreeOfParallelism = 4 };
+
+            @Parallel.ForEach(parallelOptions: new ParallelOptions { MaxDegreeOfParallelism = 4 }, source: playerNames, body: (playerName) => FastConstructor(playerName, fastContainer));
 
             output = fastContainer.ToList();
 

@@ -52,7 +52,7 @@ namespace FruitBot.Services
         private async Task SetStatusAsync()
         {
 #if FRUITWARSMODE
-            await _client.SetGameAsync($"Fruit Wars | @FruitBot help", null, ActivityType.Playing);
+            await _client.SetGameAsync($"Fruit Wars!! | @FruitBot help", null, ActivityType.Playing);
 #else
             await _client.SetGameAsync($"@FruitBot help", null, ActivityType.Listening);
 #endif
@@ -193,10 +193,11 @@ namespace FruitBot.Services
             _thePantry.RefreshEverything();
             Random rand = new(DateTime.Now.Millisecond);
             List<string> grapeJob = new();
-            grapeJob.Add("Also 🍇Grape🍇 is the superior fruit.");
-            grapeJob.Add("Also 🍇Grape🍇#1");
-            grapeJob.Add("Also if 🍇Grapes🍇 don't win it's rigged.");
-            grapeJob.Add("Also 🍇Grapes🍇 control the bot, just sayin.");
+            grapeJob.Add("Also, 🍇Grape🍇 is the superior fruit.");
+            grapeJob.Add("Also, 🍇Grape🍇#1");
+            grapeJob.Add("Also, if 🍇Grapes🍇 don't win it's rigged.");
+            grapeJob.Add("Also, 🍇Grapes🍇 control the bot, just sayin.");
+            grapeJob.Add("Also, 🍇Grapes🍇 shall inherit the earth.");
 
 
             if (!message.HasMentionPrefix(_client.CurrentUser, ref argPos))
