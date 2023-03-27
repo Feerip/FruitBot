@@ -433,10 +433,11 @@ namespace FruitBot.Modules
         [Command("signup", RunMode = RunMode.Async)]
         public async Task Signup([Remainder] string throwaway = null)
         {
+            await Context.Channel.TriggerTypingAsync();
+            await Context.Message.ReplyAsync(text: "Check your DMs <:doge:774545768564391947>"); 
+
             await Context.User.SendMessageAsync($"Hello {Context.User.Mention}, you've requested to sign up for Fruit Wars. " +
                 $"Please confirm by responding with your Runescape Player Name below in this format (with exact capitalization and any spaces): {Context.Client.CurrentUser.Mention} RSN");
-            await Context.Channel.TriggerTypingAsync();
-            await Context.Message.ReplyAsync(text: "Check your DMs <:doge:774545768564391947>");
         }
 
         [Command("points", RunMode = RunMode.Async)]
