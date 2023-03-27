@@ -571,7 +571,7 @@ namespace FruitPantry
                     entry._pointValue = "0";
 
                 }
-                if (IsBeingMonitored(entry))
+                if (!AlreadyExists(entry) && IsBeingMonitored(entry))
                 {
                     rowToAppend.Add(entry._playerName);
                     rowToAppend.Add(entry._fruit);
