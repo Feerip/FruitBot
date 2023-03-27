@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualBasic.FileIO;
+
 using Newtonsoft.Json;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -7,6 +9,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,15 +19,38 @@ namespace RS3APIDropLog
 {
     public class RSDropLog
     {
+
+        public static HttpClient httpClient = new();
+
         public static List<RSDropLog> PullParallelFromJagexAPI(List<string> playerNames)
         {
             List<RSDropLog> output = new();
-            ConcurrentQueue<RSDropLog> fastContainer = new();
+            //ConcurrentQueue<RSDropLog> fastContainer = new();
 
 
-            @Parallel.ForEach(parallelOptions: new ParallelOptions { MaxDegreeOfParallelism = 4 }, source: playerNames, body: (playerName) => FastConstructor(playerName, fastContainer));
+            //@Parallel.ForEach(parallelOptions: new ParallelOptions { MaxDegreeOfParallelism = 4 }, source: playerNames, body: (playerName) => FastConstructor(playerName, fastContainer));
 
-            output = fastContainer.ToList();
+            //output = fastContainer.ToList();
+
+            ConcurrentQueue<RSDropLog> allClanLogs = new();
+            foreach (string playerName in playerNames)
+            {
+                string RSN = playerName.Replace(" ", "%20");
+                try
+                {
+                    Console.WriteLine($"Pulling ALog for {playerName}...");
+                    var json = httpClient.GetStringAsync($"https://apps.runescape.com/runemetrics/profile/profile?user={RSN}&activities=20").Result;
+                    RSProfile aDropLog = JsonConvert.DeserializeObject<RSProfile>(json);
+                    allClanLogs.Enqueue(new(RSN, aDropLog));
+
+                }
+
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Failed to pull ALog for RSN {playerName}.");
+                    Console.WriteLine(e.Message + "\n");
+                }
+            }
 
             return output;
         }
@@ -59,6 +86,20 @@ namespace RS3APIDropLog
                 }
             }
         }
+
+        public RSDropLog(string RSN, RSProfile aDropLog)
+        {
+            if (aDropLog.name == null)
+            {
+                throw new WebException($"Jagex API returned null: player \"{RSN}\" not found.");
+            }
+            else
+            {
+                _name = aDropLog.name;
+                _sanitizedDropLog = aDropLog.ProcessAndGetDrops();
+            }
+        }
+
         public static async Task<List<string>> GetAllVoughtPlayerNames()
         {
             List<string> playerNames = new();
@@ -82,7 +123,7 @@ namespace RS3APIDropLog
                 string[] fields = parser.ReadFields();
 #if DEBUG
                 //if (!fields[0].ToLower().Equals("tygogo"))
-                    //continue;
+                //continue;
 #endif
                 playerNames.Add(fields[0]);
                 numPlayers++;
