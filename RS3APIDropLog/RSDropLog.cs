@@ -7,6 +7,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -79,10 +80,14 @@ namespace RS3APIDropLog
             while (!parser.EndOfData)
             {
                 string[] fields = parser.ReadFields();
+#if DEBUG
+                //if (!fields[0].ToLower().Equals("tygogo"))
+                    //continue;
+#endif
                 playerNames.Add(fields[0]);
                 numPlayers++;
 #if DEBUG
-                if (numPlayers > 20) break;
+                //if (numPlayers > 20) break;
 #endif
             }
             return playerNames;
