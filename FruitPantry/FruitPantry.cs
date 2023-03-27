@@ -473,24 +473,8 @@ namespace FruitPantry
 
 
         // Adds an entry to the drop log, sending it to google sheets. Refreshes _masterList and returns it. 
-        public async Task<SortedDictionary<string, DropLogEntry>> Add(DropLogEntry entry)
+        public async Task<SortedDictionary<string, DropLogEntry>> Add(List<IList<object>> newEntries)
         {
-            List<IList<object>> newEntries = new();
-
-
-            List<object> rowToAppend = new();
-            rowToAppend.Add(entry._playerName);
-            rowToAppend.Add(entry._fruit);
-            rowToAppend.Add(entry._dropName);
-            rowToAppend.Add(entry._timestamp);
-            rowToAppend.Add(entry._runemetricsDropID);
-            rowToAppend.Add(entry._playerAvatarPNG);
-            rowToAppend.Add(entry._dropIconWEBP);
-            rowToAppend.Add(entry._bossName);
-            rowToAppend.Add(entry._pointValue);
-            rowToAppend.Add(entry._entryKey);
-
-            newEntries.Add(rowToAppend);
 
             ValueRange requestBody = new();
             requestBody.Values = newEntries;
@@ -537,8 +521,12 @@ namespace FruitPantry
 
         public async Task<SortedDictionary<string, DropLogEntry>> Add(List<DropLogEntry> entries, DiscordSocketClient discordClient)
         {
+            List<IList<object>> newEntries = new();
+
             foreach (DropLogEntry entry in entries)
             {
+                List<object> rowToAppend = new();
+
                 bool fruitlessHeathen = false;
                 if (!AlreadyExists(entry) && IsBeingMonitored(entry))
                 {
@@ -560,7 +548,6 @@ namespace FruitPantry
                     entry._bossName = _itemDatabase[entry._dropName.ToLower()]._classification;
                     // Drops gotten by people who haven't signed up yet must not be assigned a point value
                     entry._pointValue = fruitlessHeathen ? "0" : PointsCalculator.CalculatePoints(entry).ToString();
-                    await Add(entry);
 
                 }
                 //If unknown item
@@ -582,10 +569,25 @@ namespace FruitPantry
                     }
                     entry._bossName = "Unknowns";
                     entry._pointValue = "0";
-                    await Add(entry);
 
                 }
+                if (IsBeingMonitored(entry))
+                {
+                    rowToAppend.Add(entry._playerName);
+                    rowToAppend.Add(entry._fruit);
+                    rowToAppend.Add(entry._dropName);
+                    rowToAppend.Add(entry._timestamp);
+                    rowToAppend.Add(entry._runemetricsDropID);
+                    rowToAppend.Add(entry._playerAvatarPNG);
+                    rowToAppend.Add(entry._dropIconWEBP);
+                    rowToAppend.Add(entry._bossName);
+                    rowToAppend.Add(entry._pointValue);
+                    rowToAppend.Add(entry._entryKey);
+
+                    newEntries.Add(rowToAppend);
+                }
             }
+            await Add(newEntries);
             return _dropLog;
         }
 

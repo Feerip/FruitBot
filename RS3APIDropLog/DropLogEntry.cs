@@ -171,7 +171,7 @@ namespace RS3APIDropLog
 
             // Calculate unique ID to ensure no duplicates
             // playerName + timestamp is an easy way to get a unique ID for each drop
-            _entryKey = _timestamp + " " + _playerName;
+            _entryKey = _timestamp + " " + _playerName + " " + _dropName;
 
             if (EntryKeyCorrupted)
             {

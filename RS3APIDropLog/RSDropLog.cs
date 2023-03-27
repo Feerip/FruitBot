@@ -19,7 +19,6 @@ namespace RS3APIDropLog
             List<RSDropLog> output = new();
             ConcurrentQueue<RSDropLog> fastContainer = new();
 
-            var opts = new ParallelOptions() { MaxDegreeOfParallelism = 4 };
 
             @Parallel.ForEach(parallelOptions: new ParallelOptions { MaxDegreeOfParallelism = 4 }, source: playerNames, body: (playerName) => FastConstructor(playerName, fastContainer));
 
@@ -76,10 +75,15 @@ namespace RS3APIDropLog
                 parser.ReadFields();
             }
 
+            int numPlayers = 0;
             while (!parser.EndOfData)
             {
                 string[] fields = parser.ReadFields();
                 playerNames.Add(fields[0]);
+                numPlayers++;
+#if DEBUG
+                if (numPlayers > 20) break;
+#endif
             }
             return playerNames;
 
