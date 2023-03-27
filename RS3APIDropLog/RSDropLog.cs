@@ -54,6 +54,7 @@ namespace RS3APIDropLog
 
             return output;
         }
+        [Obsolete]
         private static void FastConstructor(string playerName, ConcurrentQueue<RSDropLog> list)
         {
             try
@@ -64,6 +65,7 @@ namespace RS3APIDropLog
             {
             }
         }
+        [Obsolete]
         public RSDropLog(string playerName)
         {
             string test = playerName.Replace(" ", "%20");
