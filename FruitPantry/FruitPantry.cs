@@ -85,7 +85,7 @@ namespace FruitPantry
         public readonly int GoodGobVotes = 3;
         public readonly int BadGobVotes = 4;
 
-
+        [Obsolete]
         public static int NumNewEntries = 0;
 
         public Random _rand;
@@ -287,12 +287,16 @@ namespace FruitPantry
             return _dropLog;
         }
 
-        public async Task<int> ScrapeGameData(IDiscordClient discordClient)
+        public async Task<int> ScrapeGameData(DiscordSocketClient discordClient)
         {
             RefreshEverything();
 
-            await Add(DropLogEntry.CreateListFullAuto().Result, (DiscordSocketClient)discordClient);
+            var newEntries = await Add(DropLogEntry.CreateListFullAuto().Result, (DiscordSocketClient)discordClient);
 
+            foreach (var entry in newEntries)
+            {
+                await HelperFunctions.DropAnnouncementAsync(new KeyValuePair<string, DropLogEntry>(entry._entryKey,  entry), discordClient);
+            }
 
             return RefreshEverything().Count;
         }
@@ -519,9 +523,10 @@ namespace FruitPantry
             return;
         }
 
-        public async Task<SortedDictionary<string, DropLogEntry>> Add(List<DropLogEntry> entries, DiscordSocketClient discordClient)
+        public async Task<List<DropLogEntry>> Add(List<DropLogEntry> entries, DiscordSocketClient discordClient)
         {
-            List<IList<object>> newEntries = new();
+            List<IList<object>> newSpreadsheetEntries = new();
+            List<DropLogEntry> newDropLogEntries = new();
 
             foreach (DropLogEntry entry in entries)
             {
@@ -584,11 +589,13 @@ namespace FruitPantry
                     rowToAppend.Add(entry._pointValue);
                     rowToAppend.Add(entry._entryKey);
 
-                    newEntries.Add(rowToAppend);
+                    newSpreadsheetEntries.Add(rowToAppend);
+                    newDropLogEntries.Add(entry);
                 }
             }
-            await Add(newEntries);
-            return _dropLog;
+            await Add(newSpreadsheetEntries);
+            return newDropLogEntries;
+            //return _dropLog;
         }
 
         public SortedDictionary<string, DropLogEntry> GetDropLog()

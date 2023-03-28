@@ -198,11 +198,11 @@ namespace FruitPantry
                 FruitPantry thePantry = FruitPantry.GetFruitPantry();
 
 
-                int numTotalEntries = thePantry.ScrapeGameData(_client).Result;
+                int numTotalEntries = await thePantry.ScrapeGameData(_client);
 
-                await HelperFunctions.LastHelper(FruitPantry.NumNewEntries, _client);
+                //await HelperFunctions.LastHelper(FruitPantry.NumNewEntries, _client);
 
-                FruitPantry.NumNewEntries = 0;
+                //FruitPantry.NumNewEntries = 0;
 
             }
         }

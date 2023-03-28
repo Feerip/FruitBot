@@ -8,6 +8,10 @@ namespace DataTypes
         {
             public static Discord.Color Get(string fruit)
             {
+                if (fruit is null)
+                {
+                    return fruitlessHeathen;
+                }
                 if (fruit.Equals(Text.grape))
                 {
                     return grape;
@@ -42,6 +46,10 @@ namespace DataTypes
         {
             public static string Get(string fruit)
             {
+                if (fruit is null)
+                {
+                    return fruitlessHeathen;
+                }
                 if (fruit.Equals(grape))
                 {
                     return grape;
@@ -74,7 +82,7 @@ namespace DataTypes
 
             public static bool TryParse(string input, out string fruit)
             {
-                if (input == null)
+                if (input is null)
                 {
                     fruit = null;
                     return false;
@@ -116,6 +124,10 @@ namespace DataTypes
         {
             public static string Get(string fruit)
             {
+                if (fruit is null)
+                {
+                    return fruitlessHeathen;
+                }
                 if (fruit.Equals(Text.grape))
                 {
                     return grape;
@@ -153,6 +165,10 @@ namespace DataTypes
         {
             public static string Get(string fruit)
             {
+                if (fruit is null)
+                {
+                    return fruitlessHeathen;
+                }
                 if (fruit.Equals(Text.grape))
                 {
                     return grape;
@@ -196,22 +212,26 @@ namespace DataTypes
         {
             public static string Get(string fruit)
             {
-                if (fruit.Equals(Text.grape))
+                if (fruit is null)
+                {
+                    return fruitlessHeathen;
+                }
+                else if (fruit.Equals(Text.grape))
                 {
                     return grape;
                 }
 
-                if (fruit.Equals(Text.banana))
+                else if (fruit.Equals(Text.banana))
                 {
                     return banana;
                 }
 
-                if (fruit.Equals(Text.apple))
+                else if (fruit.Equals(Text.apple))
                 {
                     return apple;
                 }
 
-                if (fruit.Equals(Text.peach))
+                else if (fruit.Equals(Text.peach))
                 {
                     return peach;
                 }
@@ -219,6 +239,7 @@ namespace DataTypes
                 {
                     return fruitlessHeathen;
                 }
+
             }
             public static string grape { get; } = "🍇";
 

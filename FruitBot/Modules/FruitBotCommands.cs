@@ -288,7 +288,7 @@ namespace FruitBot.Modules
             {
                 FruitPantry.FruitPantry thePantry = FruitPantry.FruitPantry.GetFruitPantry();
 
-                int numEntries = thePantry.ScrapeGameData(Context.Client).Result;
+                int numEntries = thePantry.ScrapeGameData((DiscordSocketClient)Context.Client).Result;
 
 
                 await ReplyAsync($"Scrape was successful. There are now `{numEntries}` entries in the drop log.", messageReference: new(Context.Message.Id));
