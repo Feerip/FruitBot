@@ -53,6 +53,8 @@ namespace FruitBot.Services
         {
 #if FRUITWARSMODE
             await _client.SetGameAsync($"Fruit Wars!! | @FruitBot help", null, ActivityType.Playing);
+            
+            await _client.SetStatusAsync(UserStatus.Online);
 #else
             await _client.SetGameAsync($"@FruitBot help", null, ActivityType.Listening);
 #endif

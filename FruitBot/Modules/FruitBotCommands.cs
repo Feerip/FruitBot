@@ -767,6 +767,10 @@ namespace FruitBot.Modules
         {
             _logger.LogInformation($"{Context.User.Username} executed the stop command! Exiting now.");
             await Context.Channel.SendMessageAsync("Stop command acknowledged. Restarting now. If I'm not back within 30 seconds, cry for help.", messageReference: new(Context.Message.Id));
+
+            DiscordSocketClient client = (DiscordSocketClient)Context.Client;
+            await client.SetGameAsync($"Be Right Back...", type: ActivityType.Playing);
+            await client.SetStatusAsync(UserStatus.DoNotDisturb);
             Environment.Exit(0);
         }
 
