@@ -323,7 +323,8 @@ namespace FruitBot.Modules
         public async Task Leaderboard(SocketGuildUser user = null)
         {
 
-            string nickname = Context.Guild.GetUserAsync(1234).Result.Nickname;
+            //string nickname = Context.Guild.GetUserAsync(1234).Result.Nickname;
+
 
             using (Context.Channel.EnterTypingState())
             {
