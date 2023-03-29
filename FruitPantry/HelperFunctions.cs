@@ -90,6 +90,7 @@ namespace FruitPantry
 
                 builder = new EmbedBuilder()
                     .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
+                    .WithUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._wikiLink)
                     .WithTitle(entry._dropName ?? "null")
                     .WithColor(thePantry._classificationColorList[entry._bossName])
                     .AddField("RSN", entry._playerName ?? "null", true)
