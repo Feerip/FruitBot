@@ -289,6 +289,8 @@ namespace FruitPantry
 
         public async Task<int> ScrapeGameData(DiscordSocketClient discordClient)
         {
+            await discordClient.SetGameAsync($"Scraping Runemetrics...", type: ActivityType.Playing);
+
             RefreshEverything();
 
             var newEntries = await Add(DropLogEntry.CreateListFullAuto().Result, (DiscordSocketClient)discordClient);
@@ -298,7 +300,9 @@ namespace FruitPantry
                 await HelperFunctions.DropAnnouncementAsync(new KeyValuePair<string, DropLogEntry>(entry._entryKey,  entry), discordClient);
             }
 
-            return RefreshEverything().Count;
+            int count = RefreshEverything().Count;
+
+            return count;
         }
 
         public void RefreshClassifications()
