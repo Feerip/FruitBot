@@ -109,7 +109,7 @@ namespace FruitPantry
 #if FRUITWARSMODE
             try
             {
-                message = $"{entry._pointValue} points awarded to <@{thePantry._runescapePlayers[entry._playerName.ToLower()][1]}>!";
+                message = $"`{entry._pointValue}` points awarded to <@{thePantry._runescapePlayers[entry._playerName.ToLower()][1]}>!";
             }
             catch (Exception e)
             {
