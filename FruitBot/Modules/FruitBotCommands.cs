@@ -563,7 +563,7 @@ namespace FruitBot.Modules
             string botMention = Context.Client.CurrentUser.Mention;
             if (true)
             {
-                await ReplyAsync($"Read my lips. \"{botMention} points\"", messageReference: new(Context.Message.Id));
+                await ReplyAsync($"Read. my. lips. \"{botMention} points\"", messageReference: new(Context.Message.Id));
                 return;
             }
         }
