@@ -37,6 +37,15 @@ namespace FruitPantry
         }
         public static async Task DropAnnouncementAsync(KeyValuePair<string, DropLogEntry> entryPair, DiscordSocketClient discordClient)
         {
+#if DEBUG
+            ulong guild = 1088977050750173207;
+            ulong dropsChannel = 1088984348549713961;
+            ulong generalChannel = 1088977051945545770;
+#else
+            ulong guild = 769476224363397140;
+            ulong dropsChannel = 862385904719364096;
+            ulong generalChannel = 769476224363397144;
+#endif
             FruitPantry thePantry = FruitPantry.GetFruitPantry();
             DropLogEntry entry = entryPair.Value;
 
@@ -83,7 +92,7 @@ namespace FruitPantry
                     .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
                     .WithTitle(entry._dropName ?? "null")
                     .WithColor(thePantry._classificationColorList[entry._bossName])
-                    .AddField("Player Name", entry._playerName ?? "null", true)
+                    .AddField("RSN", entry._playerName ?? "null", true)
                     ;
             }
 #if FRUITWARSMODE
@@ -91,39 +100,36 @@ namespace FruitPantry
 #endif
             builder.AddField("Boss", entry._bossName, true);
             builder.AddField("Dropped At", entry._timestamp, true);
-
+#if FRUITWARSMODE
+            builder.AddField("Team", entry.GetFruitMention(discordClient.GetGuild(guild)) ?? "Fruitless Heathens", true);
+#endif
 
             Embed embed = builder.Build();
-
             string message = null;
-#if DEBUG
-            ulong channel = 1088984348549713961;
-#else
-                ulong channel = 862385904719364096;
+#if FRUITWARSMODE
+            try
+            {
+                message = $"{entry._pointValue} points awarded to <@{thePantry._runescapePlayers[entry._playerName.ToLower()][1]}>!";
+            }
+            catch (Exception e)
+            {
+                // If the Discord ID is not in the database, then nothing to worry about, just leave the message as null
+                if (!e.Message.Contains("was not present in the dictionary"))
+                    throw new Exception(e.Message);
+            }
 #endif
 
             if (entry._bossName.Equals("Unknowns", StringComparison.OrdinalIgnoreCase))
             {
                 message = "<@&856709182514397194> halp <a:MEOW:881462772636995595> I found an unfamiliar item WHAT DO I DOOOOO";
-#if DEBUG
-                channel = 1088977336805888215;
-#else
-                    channel = 856679881547186196;
-#endif
             }
-#if DEBUG
-            await discordClient.GetGuild(1088977050750173207).GetTextChannel(channel).SendMessageAsync(message, false, embed);
-#else
-                await discordClient.GetGuild(769476224363397140).GetTextChannel(channel).SendMessageAsync(message, false, embed);
-#endif
+
+            await discordClient.GetGuild(guild).GetTextChannel(dropsChannel).SendMessageAsync(message, false, embed);
+
 
             if (entry._bossName.Equals("InsaneRNG", StringComparison.OrdinalIgnoreCase))
             {
-#if DEBUG
-                await discordClient.GetGuild(1088977050750173207).GetTextChannel(1088977051945545770).SendMessageAsync(null, false, embed);
-#else
-                    await discordClient.GetGuild(769476224363397140).GetTextChannel(769476224363397144).SendMessageAsync(null, false, embed);
-#endif
+                await discordClient.GetGuild(guild).GetTextChannel(generalChannel).SendMessageAsync(null, false, embed);
             }
         }
 

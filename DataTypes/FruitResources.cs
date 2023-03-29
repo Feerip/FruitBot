@@ -1,9 +1,29 @@
-﻿using System;
+﻿using Discord;
+using Discord.WebSocket;
+
+using System;
+using System.Linq;
 
 namespace DataTypes
 {
     public static class FruitResources
     {
+        public static class Mention
+        {
+            public static string Get(string fruit, SocketGuild guild)
+            {
+                if (fruit is null)
+                    return null;
+                else
+                {
+                    IRole role = guild.Roles.FirstOrDefault(x => x.Name == fruit);
+                    if (role is not null)
+                        return role.Mention;
+                    else
+                        return null;
+                }
+            }
+        }
         public static class Colors
         {
             public static Discord.Color Get(string fruit)
@@ -79,6 +99,7 @@ namespace DataTypes
             public static string apple { get; } = "Apple";
             public static string peach { get; } = "Peach";
             public static string fruitlessHeathen { get; } = "Fruitless Heathen";
+
 
             public static bool TryParse(string input, out string fruit)
             {

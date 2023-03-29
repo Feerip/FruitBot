@@ -1,4 +1,7 @@
 ﻿using DataTypes;
+
+using Discord.WebSocket;
+
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -21,6 +24,7 @@ namespace RS3APIDropLog
         public string _bossName { get; set; }
         public string _runemetricsDropID { get; set; }
         public string _pointValue { get; set; }
+        public ulong _discordUserID { get; set; }
 
         public string _fruitLogo
         {
@@ -52,6 +56,13 @@ namespace RS3APIDropLog
                 //placeholder for "fruitless heathen"
             }
         }
+        public string GetFruitMention(SocketGuild guild)
+        {
+            string mention = FruitResources.Mention.Get(_fruit, guild);
+            if (mention is null)
+                mention = FruitResources.Mention.Get(FruitResources.TextPlural.Get(_fruit), guild);
+            return mention;
+        }
 
 
         public string _entryKey { get; }
@@ -61,8 +72,17 @@ namespace RS3APIDropLog
         // Standard ctor
         public DropLogEntry(object playerName, object fruit, object dropName, object timestamp,
                             object playerAvatarPNG = null, object dropIconWEBP = null,
-                            object bossName = null, object runemetricsDropID = null, object pointValue = null, object entryKey = null)
+                            object bossName = null, object runemetricsDropID = null, object pointValue = null,
+                            object entryKey = null, object discordID = null)
         {
+            // Late addition - Discord ID (optional)
+            if (discordID is not null)
+            {
+                ulong parsedDiscordID;
+                bool IDParseSuccess = ulong.TryParse(discordID.ToString(), out parsedDiscordID);
+                if (IDParseSuccess)
+                    _discordUserID = parsedDiscordID;
+            }
             // Required
             _playerName = playerName.ToString();
             _fruit = fruit.ToString();
@@ -136,7 +156,6 @@ namespace RS3APIDropLog
             }
         }
 
-        // Automatic ctor (pass in an instance of the javascript class "activity" on runepixels)
 
 
         public static bool operator ==(DropLogEntry lhs, DropLogEntry rhs)

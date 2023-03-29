@@ -293,7 +293,7 @@ namespace FruitPantry
 
             RefreshEverything();
 
-            var newEntries = await Add(DropLogEntry.CreateListFullAuto().Result, (DiscordSocketClient)discordClient);
+            var newEntries = await Add(DropLogEntry.CreateListFullAuto().Result, discordClient);
 
             foreach (var entry in newEntries)
             {
