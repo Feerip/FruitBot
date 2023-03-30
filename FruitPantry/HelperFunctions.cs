@@ -88,7 +88,6 @@ namespace FruitPantry
                     .WithThumbnailUrl(thePantry._itemDatabase["unknown"]._imageURL)
                     .WithTitle(entry._dropName ?? "null")
                     .WithColor(thePantry._classificationColorList[entry._bossName])
-                    .AddField("Player Name", entry._playerName ?? "null", true)
                     ;
 
             }
@@ -97,19 +96,36 @@ namespace FruitPantry
 
                 builder = new EmbedBuilder()
                     .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                    .WithUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._wikiLink)
                     .WithTitle(entry._dropName ?? "null")
-                    .WithColor(thePantry._classificationColorList[entry._bossName])
-                    .AddField("RSN", entry._playerName ?? "null", true)                    
+                    .WithColor(thePantry._classificationColorList[entry._bossName])                
                     ;
 
             }
+            EmbedAuthorBuilder authorBuilder = new();
+            authorBuilder.WithName(entry._playerName);
+            string urlPlayerName = entry._playerName.Replace(' ', '+');
+            authorBuilder.WithUrl($"https://apps.runescape.com/runemetrics/app/overview/player/{urlPlayerName}");
+            authorBuilder.WithIconUrl($"https://secure.runescape.com/m=avatar-rs/{urlPlayerName}/chat.png");
+
+            builder.WithAuthor(authorBuilder);
+            builder.Url = thePantry._itemDatabase[entry._dropName.ToLower()]._wikiLink;
             builder.Timestamp = utcTimeStamp;
 #if FRUITWARSMODE
             builder.AddField("Points", entry._pointValue, true);
 #endif
             builder.AddField("Boss", entry._bossName, true);
-            builder.AddField("Dropped At", entry._timestamp, true);
+            //builder.AddField("\u200B", "\u200B", true);
+            
+            // If user not signed up for fruit wars, that's fine, just don't add the field
+            try
+            {
+                string discordMention = $"<@{thePantry._runescapePlayers[entry._playerName.ToLower()][1]}>";
+                builder.AddField("Discord", discordMention, true);
+            }
+            catch (Exception e)
+            {
+
+            }
 #if FRUITWARSMODE
             builder.AddField("Team", entry.GetFruitMention(discordClient.GetGuild(guild)) ?? "Fruitless Heathens", true);
 #endif
