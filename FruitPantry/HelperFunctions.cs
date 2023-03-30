@@ -7,6 +7,7 @@ using RS3APIDropLog;
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -72,6 +73,12 @@ namespace FruitPantry
             emoji = FruitResources.Emojis.Get(fruit);
             color = FruitResources.Colors.Get(fruit);
             thumbnail = FruitResources.Logos.Get(fruit);
+            DateTime parsedTime;
+
+            // Runemetrics times are in Europe/London time zone
+            var englandTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Europe/London");
+            DateTime.TryParseExact(s: entry._timestamp, format: "MM'-'dd'-'yyyy HH:mm", style: System.Globalization.DateTimeStyles.None, result: out parsedTime, provider: null);
+            var utcTimeStamp = TimeZoneInfo.ConvertTimeToUtc(parsedTime, englandTimeZone);
 
             EmbedBuilder builder;
 
@@ -93,9 +100,11 @@ namespace FruitPantry
                     .WithUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._wikiLink)
                     .WithTitle(entry._dropName ?? "null")
                     .WithColor(thePantry._classificationColorList[entry._bossName])
-                    .AddField("RSN", entry._playerName ?? "null", true)
+                    .AddField("RSN", entry._playerName ?? "null", true)                    
                     ;
+
             }
+            builder.Timestamp = utcTimeStamp;
 #if FRUITWARSMODE
             builder.AddField("Points", entry._pointValue, true);
 #endif
