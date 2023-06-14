@@ -35,7 +35,6 @@
 		<ProjectReference Include="..\FruitPantry\FruitPantry.csproj" />
 	</ItemGroup>
 
-	
 	<ItemGroup>
 		<None Update="appsettings.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
