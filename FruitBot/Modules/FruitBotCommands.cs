@@ -295,7 +295,7 @@ namespace FruitBot.Modules
 #if FRUITWARSMODE
                 await client.SetGameAsync($"Fruit Wars!! | @FruitBot help", null, ActivityType.Playing);
 #else
-            await _client.SetGameAsync($"@FruitBot help", null, ActivityType.Listening);
+                await client.SetGameAsync($"@FruitBot help", null, ActivityType.Listening);
 #endif
 
                 await ReplyAsync($"Scrape was successful. There are now `{numEntries}` entries in the drop log.", messageReference: new(Context.Message.Id));

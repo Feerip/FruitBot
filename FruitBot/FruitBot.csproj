@@ -1,57 +1,57 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <DefineConstants>FRUITWARSMODE</DefineConstants>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <ApplicationIcon>Assets/grapist2_square_smaller.ico</ApplicationIcon>
-    <DebugType>portable</DebugType>
-    <Nullable>disable</Nullable>
-    <PackageIcon>grapist2_square_smaller.ico</PackageIcon>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Platforms>AnyCPU;ARM64</Platforms>
-  </PropertyGroup>
+	<PropertyGroup>
+		<!--<DefineConstants>FRUITWARSMODE</DefineConstants>-->
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<ApplicationIcon>Assets/grapist2_square_smaller.ico</ApplicationIcon>
+		<DebugType>portable</DebugType>
+		<Nullable>disable</Nullable>
+		<PackageIcon>grapist2_square_smaller.ico</PackageIcon>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<Platforms>AnyCPU;ARM64</Platforms>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <PlatformTarget>anycpu</PlatformTarget>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<PlatformTarget>anycpu</PlatformTarget>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <PlatformTarget>anycpu</PlatformTarget>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<PlatformTarget>anycpu</PlatformTarget>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Discord.Addons.Hosting" Version="5.2.0" />
-    <PackageReference Include="Discord.Net" Version="3.10.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
-    <PackageReference Include="TaskTimer" Version="1.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Discord.Addons.Hosting" Version="5.2.0" />
+		<PackageReference Include="Discord.Net" Version="3.10.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+		<PackageReference Include="TaskTimer" Version="1.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DataTypes\DataTypes.csproj" />
-    <ProjectReference Include="..\FruitPantry\FruitPantry.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\DataTypes\DataTypes.csproj" />
+		<ProjectReference Include="..\FruitPantry\FruitPantry.csproj" />
+	</ItemGroup>
 
 
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\grapist2_square_smaller.ico">
-      <Pack>True</Pack>
-    </None>
-    <None Update="Config\appsettings.debug.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Config\appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Config\credentials.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Assets\grapist2_square_smaller.ico">
+			<Pack>True</Pack>
+		</None>
+		<None Update="Config\appsettings.debug.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Config\appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Config\credentials.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>
