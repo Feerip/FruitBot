@@ -19,7 +19,7 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<PlatformTarget>anycpu</PlatformTarget>
 	</PropertyGroup>
-   
+    
 	<ItemGroup>
 		<PackageReference Include="Discord.Addons.Hosting" Version="5.2.0" />
 		<PackageReference Include="Discord.Net" Version="3.10.0" />
