@@ -4,6 +4,7 @@
     <!--<DefineConstants>FRUITWARSMODE</DefineConstants>-->
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
+	<GenerateRuntimeConfigDevFile>false</GenerateRuntimeConfigDevFile>
   </PropertyGroup>
 
   <ItemGroup>
