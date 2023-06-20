@@ -11,7 +11,7 @@
 		<Nullable>disable</Nullable>
 		<PackageIcon>grapist2_square_smaller.ico</PackageIcon>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-		<Platforms>AnyCPU;ARM64</Platforms>
+		<Platforms>AnyCPU</Platforms>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
