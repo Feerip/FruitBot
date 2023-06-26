@@ -270,7 +270,7 @@ namespace FruitBot.Services
                     {
                         await context.User.SendMessageAsync($"Sorry, 💩fruitless heathens💩 are not eligible to participate in Fruit Wars. Please join a team before registering with {_client.CurrentUser.Mention}.");
                         await context.User.SendMessageAsync($"If this is not correct, please let an admin know so we can fix the issue.");
-                        //return;
+                        return;
                     }
 
                     if (thePantry._discordUsers.ContainsKey(userID.ToString()))
