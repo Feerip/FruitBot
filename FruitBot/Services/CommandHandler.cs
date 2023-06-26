@@ -302,8 +302,8 @@ namespace FruitBot.Services
                     }
                     else
                     {
-                        await context.User.SendMessageAsync($"{context.User.Mention}: RSN `{RSNInput}` not found in clan. No changes to Fruit Wars were made.");
-                        await context.User.SendMessageAsync("Please check to make sure you've spelled your RSN correctly. " +
+                        await context.User.SendMessageAsync($"{context.User.Mention}: RSN `{RSNInput}` not found in clan. Fruit Wars database unchanged.");
+                        await context.User.SendMessageAsync("Please check to make sure you've spelled your RSN correctly (capitalization does matter). " +
                             "If this was a mistake, please ask your friendly neighborhood clan Admin or Bot Herder for help.");
                     }
                 }
