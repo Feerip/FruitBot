@@ -3,10 +3,15 @@ using Discord;
 using Discord.Addons.Hosting;
 using Discord.Commands;
 using Discord.WebSocket;
+
 using FruitBot.Modules;
+
 using FruitPantry;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
+using RS3APIDropLog;
 
 using System;
 using System.Collections.Generic;
@@ -265,7 +270,7 @@ namespace FruitBot.Services
                     {
                         await context.User.SendMessageAsync($"Sorry, 💩fruitless heathens💩 are not eligible to participate in Fruit Wars. Please join a team before registering with {_client.CurrentUser.Mention}.");
                         await context.User.SendMessageAsync($"If this is not correct, please let an admin know so we can fix the issue.");
-                        return;
+                        //return;
                     }
 
                     if (thePantry._discordUsers.ContainsKey(userID.ToString()))
@@ -284,11 +289,23 @@ namespace FruitBot.Services
                         return;
                     }
 
-                    thePantry.RegisterPlayer(RSNInput, userTeam, userID.ToString());
-                    await context.User.SendMessageAsync($"{userTeamIcon}Signup confirmed. " +
-                        $"{context.Message.Author.Mention} added to database with RSN `{RSNInput}` for team {userTeam}.{userTeamIcon}");
-                    await context.User.SendMessageAsync($"{userTeamIcon}If this is not correct, please let an admin know so we can fix the issue.{userTeamIcon}");
-                    await context.User.SendMessageAsync(kiwiJob[rand.Next() % kiwiJob.Count]);
+                    List<string> allClanPlayerNames = await RSDropLog.GetAllVoughtPlayerNames();
+
+                    if (allClanPlayerNames.Contains(RSNInput))
+                    {
+
+                        thePantry.RegisterPlayer(RSNInput, userTeam, userID.ToString());
+                        await context.User.SendMessageAsync($"{userTeamIcon}Signup confirmed. " +
+                            $"{context.Message.Author.Mention} added to database with RSN `{RSNInput}` for team {userTeam}.{userTeamIcon}");
+                        await context.User.SendMessageAsync($"{userTeamIcon}If this is not correct, please let an admin know so we can fix the issue.{userTeamIcon}");
+                        await context.User.SendMessageAsync(kiwiJob[rand.Next() % kiwiJob.Count]);
+                    }
+                    else
+                    {
+                        await context.User.SendMessageAsync($"{context.User.Mention}: RSN `{RSNInput}` not found in clan. No changes to Fruit Wars were made.");
+                        await context.User.SendMessageAsync("Please check to make sure you've spelled your RSN correctly. " +
+                            "If this was a mistake, please ask your friendly neighborhood clan Admin or Bot Herder for help.");
+                    }
                 }
 
             }
