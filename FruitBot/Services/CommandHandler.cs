@@ -291,7 +291,7 @@ namespace FruitBot.Services
 
                     List<string> allClanPlayerNames = await RSDropLog.GetAllVoughtPlayerNames();
 
-                    if (allClanPlayerNames.Contains(RSNInput))
+                    if (allClanPlayerNames.Contains(RSNInput) || allClanPlayerNames.Contains(RSNInput.Replace(" ", " ")) || allClanPlayerNames.Contains(RSNInput.Replace(" ", "_")))
                     {
 
                         thePantry.RegisterPlayer(RSNInput, userTeam, userID.ToString());
