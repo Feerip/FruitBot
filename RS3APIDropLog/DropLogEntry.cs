@@ -5,13 +5,30 @@ using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace RS3APIDropLog
 {
     public class DropLogEntry
     {
+        private static MD5 md5 = MD5.Create();
+        private string calculateHash()
+        {
+            // Calculate unique ID to ensure no duplicates
+            // playerName + timestamp is an easy way to get a unique ID for each drop
+            // hash it to prevent truncation duplicate issues
+            // Now that we don't have the ability to manually input entries, verifying
+            // to prevent hash corruption is no longer necessary
+            byte[] buffer = Encoding.UTF8.GetBytes(_timestamp + " " + _playerName + " " + _dropName);
+            byte[] hash = md5.ComputeHash(buffer);
 
+            StringBuilder sb = new StringBuilder();
+            foreach (var a in hash)
+                sb.Append(a.ToString("X2"));
+            return sb.ToString();
+        }
 
 
 
@@ -66,7 +83,6 @@ namespace RS3APIDropLog
 
 
         public string _entryKey { get; }
-
 
 
         // Standard ctor
@@ -137,23 +153,21 @@ namespace RS3APIDropLog
                 _pointValue = null;
             }
 
-            // Calculate unique ID to ensure no duplicates
-            // playerName + timestamp is an easy way to get a unique ID for each drop
-            _entryKey = _timestamp + " " + _playerName + " " + _dropName;
 
 
-            if (entryKey != null)
-            {
-                if (!string.Equals((_timestamp + " " + _playerName + " " + _dropName), _entryKey))
-                {
-                    throw new DataException("DropLogEntry data corrupted: entry key verification error while downloading entry");
-                }
-            }
 
-            if (EntryKeyCorrupted)
-            {
-                throw new DataException("DropLogEntry data corrupted: Entry key does not match expected result.");
-            }
+            //if (entryKey != null)
+            //{
+            //    if (!string.Equals((_timestamp + " " + _playerName + " " + _dropName), _entryKey))
+            //    {
+            //        throw new DataException("DropLogEntry data corrupted: entry key verification error while downloading entry");
+            //    }
+            //}
+
+            //if (EntryKeyCorrupted)
+            //{
+            //    throw new DataException("DropLogEntry data corrupted: Entry key does not match expected result.");
+            //}
         }
 
 
@@ -188,14 +202,12 @@ namespace RS3APIDropLog
             _dropName = input._dropname;
             _timestamp = input._timestamp.ToString("MM-dd-yyyy HH:mm"); //FIX THIS LATER FOR THE LOVE OF GOD
 
-            // Calculate unique ID to ensure no duplicates
-            // playerName + timestamp is an easy way to get a unique ID for each drop
-            _entryKey = _timestamp + " " + _playerName + " " + _dropName;
+            _entryKey = calculateHash();
 
-            if (EntryKeyCorrupted)
-            {
-                throw new DataException("DropLogEntry data corrupted: Entry key does not match expected result.");
-            }
+            //if (EntryKeyCorrupted)
+            //{
+            //    throw new DataException("DropLogEntry data corrupted: Entry key does not match expected result.");
+            //}
         }
 
         // Automatically generates a full list of the last 50 drops in the clan.
@@ -215,7 +227,7 @@ namespace RS3APIDropLog
             return output;
         }
 
-        public bool EntryKeyCorrupted => !string.Equals((_timestamp + " " + _playerName + " " + _dropName), _entryKey);
+        //public bool EntryKeyCorrupted => !string.Equals((_timestamp + " " + _playerName + " " + _dropName), _entryKey);
 
         // sanitization taken care of internally, pass DropLogEntry the drop name as is. 
         private string SanitizeDropName(string dropName)
