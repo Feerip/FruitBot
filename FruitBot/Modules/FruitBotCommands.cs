@@ -162,7 +162,10 @@ namespace FruitBot.Modules
 
                 int idx = 0;
 
-                foreach (DropLogEntry entry in thePantry.GetDropLog())
+                var pantryLastDropsFirst = thePantry.GetDropLog();
+                pantryLastDropsFirst.Reverse();
+
+                foreach (DropLogEntry entry in pantryLastDropsFirst)
                 {
 
 

@@ -170,7 +170,11 @@ namespace FruitPantry
             // Headers
             int idx = 0;
             int linesAdded = 0;
-            foreach (DropLogEntry entry in _thePantry.GetDropLog())
+
+            var dropLogReversed = _thePantry.GetDropLog();
+            dropLogReversed.Reverse();
+
+            foreach (DropLogEntry entry in dropLogReversed)
             {
                 bool addLine = true;
                 if (idx % 22 == 0)
@@ -212,6 +216,7 @@ namespace FruitPantry
 
                 if (lines.Count == 22)
                 {
+                    lines.Reverse();
                     foreach (string line in lines)
                     {
                         message += line;
@@ -227,6 +232,7 @@ namespace FruitPantry
                 {
                     if (!message.Equals(""))
                     {
+                        lines.Reverse();
                         foreach (string line in lines)
                         {
                             message += line;
@@ -236,8 +242,9 @@ namespace FruitPantry
                     }
                     break;
                 }
-
             }
+
+            messages.Reverse();
             return messages;
         }
 
