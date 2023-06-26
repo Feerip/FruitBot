@@ -162,7 +162,7 @@ namespace FruitBot.Modules
 
                 int idx = 0;
 
-                foreach (KeyValuePair<string, DropLogEntry> entryPair in thePantry.GetDropLog())
+                foreach (DropLogEntry entry in thePantry.GetDropLog())
                 {
 
 
@@ -171,50 +171,50 @@ namespace FruitBot.Modules
                         break;
                     }
 
-                    DropLogEntry entry = entryPair.Value;
+                    DropLogEntry newEntry = entry;
                     if (rsn != null)
                     {
-                        if (!entry._playerName.ToLower().Equals(rsn.ToLower()))
+                        if (!newEntry._playerName.ToLower().Equals(rsn.ToLower()))
                         {
                             continue;
                         }
                     }
                     if (fruit != null)
                     {
-                        if (!entry._fruit.Equals(fruit, StringComparison.OrdinalIgnoreCase))
+                        if (!newEntry._fruit.Equals(fruit, StringComparison.OrdinalIgnoreCase))
                         {
                             continue;
                         }
                     }
                     //quick and dirty fix, remove later
                     string dropIconURL;
-                    if (entry._dropIconWEBP == null)
+                    if (newEntry._dropIconWEBP == null)
                     {
                         dropIconURL = "";
                     }
-                    else if (entry._dropIconWEBP.Equals("https://runepixels.com/assets/images/runescape/activities/drop.webp"))
+                    else if (newEntry._dropIconWEBP.Equals("https://runepixels.com/assets/images/runescape/activities/drop.webp"))
                     {
                         dropIconURL = "";
                     }
                     else
                     {
-                        dropIconURL = entry._dropIconWEBP;
+                        dropIconURL = newEntry._dropIconWEBP;
                     }
 
                     EmbedBuilder builder = new EmbedBuilder()
-                        .WithThumbnailUrl(thePantry._itemDatabase[entry._dropName.ToLower()]._imageURL)
-                        .WithTitle(entry._dropName ?? "null")
-                        .WithColor(thePantry._classificationColorList[entry._bossName])
-                        .AddField("Player Name", entry._playerName ?? "null", true)
+                        .WithThumbnailUrl(thePantry._itemDatabase[newEntry._dropName.ToLower()]._imageURL)
+                        .WithTitle(newEntry._dropName ?? "null")
+                        .WithColor(thePantry._classificationColorList[newEntry._bossName])
+                        .AddField("Player Name", newEntry._playerName ?? "null", true)
                         .WithCurrentTimestamp()
                         ;
 
 
 #if FRUITWARSMODE
-                    builder.AddField("Points", entry._pointValue, true);
+                    builder.AddField("Points", newEntry._pointValue, true);
 #endif
-                    builder.AddField("Boss", entry._bossName, true );
-                    builder.AddField("Dropped At", entry._timestamp, true);
+                    builder.AddField("Boss", newEntry._bossName, true );
+                    builder.AddField("Dropped At", newEntry._timestamp, true);
 
                     Embed embed = builder.Build();
 
@@ -353,7 +353,7 @@ namespace FruitBot.Modules
                 FruitPantry.FruitPantry thePantry = FruitPantry.FruitPantry.GetFruitPantry();
 
                 // Build points values
-                foreach (DropLogEntry entry in thePantry.GetDropLog().Values)
+                foreach (DropLogEntry entry in thePantry.GetDropLog())
                 {
                     if (entry._fruit.Equals(FruitResources.Text.kiwi))
                     {

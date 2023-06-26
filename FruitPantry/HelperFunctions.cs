@@ -17,25 +17,25 @@ namespace FruitPantry
     {
         private static readonly FruitPantry _thePantry = FruitPantry.GetFruitPantry();
 
-        public static async Task LastHelper(int numDrops, DiscordSocketClient discordClient)
-        {
-            FruitPantry thePantry = FruitPantry.GetFruitPantry();
+        //public static async Task LastHelper(int numDrops, DiscordSocketClient discordClient)
+        //{
+        //    FruitPantry thePantry = FruitPantry.GetFruitPantry();
 
 
-            int idx = 0;
+        //    int idx = 0;
 
-            foreach (KeyValuePair<string, DropLogEntry> entryPair in thePantry.GetDropLog())
-            {
-                if (idx == numDrops)
-                {
-                    break;
-                }
-                await DropAnnouncementAsync(entryPair, discordClient);
+        //    foreach (KeyValuePair<string, DropLogEntry> entryPair in thePantry.GetDropLog())
+        //    {
+        //        if (idx == numDrops)
+        //        {
+        //            break;
+        //        }
+        //        await DropAnnouncementAsync(entryPair, discordClient);
 
 
-                idx++;
-            }
-        }
+        //        idx++;
+        //    }
+        //}
         public static async Task DropAnnouncementAsync(KeyValuePair<string, DropLogEntry> entryPair, DiscordSocketClient discordClient)
         {
 #if DEBUG
@@ -170,7 +170,7 @@ namespace FruitPantry
             // Headers
             int idx = 0;
             int linesAdded = 0;
-            foreach (KeyValuePair<string, DropLogEntry> entryPair in _thePantry.GetDropLog())
+            foreach (DropLogEntry entry in _thePantry.GetDropLog())
             {
                 bool addLine = true;
                 if (idx % 22 == 0)
@@ -179,17 +179,17 @@ namespace FruitPantry
                     message += "-------------------------------------------------------------------------" + "\n";
                     message += $"| {FruitResources.Emojis.fruitlessHeathen}Name         | Drop            | Boss   |  Pts   |    Timestamp     |" + "\n";
                 }
-                DropLogEntry entry = entryPair.Value;
+                DropLogEntry newEntry = entry;
                 if ((playerName != null))
                 {
-                    if (!entry._playerName.ToLower().Equals(playerName.ToLower()))
+                    if (!newEntry._playerName.ToLower().Equals(playerName.ToLower()))
                     {
                         addLine = false;
                     }
                 }
                 if (fruit != null)
                 {
-                    if (!entry._fruit.ToLower().Equals(fruit.ToLower()))
+                    if (!newEntry._fruit.ToLower().Equals(fruit.ToLower()))
                     {
                         addLine = false;
                     }
@@ -199,11 +199,11 @@ namespace FruitPantry
                 {
                     lines.Add(string.Format(
                         "| {0,-14} | {1,-15} | {2,-6} | {3,6} | {4,16} |",
-                        FruitResources.Emojis.Get(entry._fruit) + entry._playerName,
-                        entry._dropName.Substring(0, Math.Min(entry._dropName.Length, 15)),
-                        entry._bossName.Substring(0, Math.Min(entry._bossName.Length, 6)),
-                        float.Parse(entry._pointValue).ToString("0.00"),
-                        entry._timestamp
+                        FruitResources.Emojis.Get(newEntry._fruit) + newEntry._playerName,
+                        newEntry._dropName.Substring(0, Math.Min(newEntry._dropName.Length, 15)),
+                        newEntry._bossName.Substring(0, Math.Min(newEntry._bossName.Length, 6)),
+                        float.Parse(newEntry._pointValue).ToString("0.00"),
+                        newEntry._timestamp
                         ) + "\n");
 
                     linesAdded++;
@@ -212,7 +212,6 @@ namespace FruitPantry
 
                 if (lines.Count == 22)
                 {
-                    lines.Reverse();
                     foreach (string line in lines)
                     {
                         message += line;
@@ -224,11 +223,10 @@ namespace FruitPantry
                     message = "";
                 }
 
-                if ((linesAdded == numDrops) || (entryPair.Key == _thePantry.GetDropLog().Last().Key))
+                if ((linesAdded == numDrops) || (entry == _thePantry.GetDropLog().Last()))
                 {
                     if (!message.Equals(""))
                     {
-                        lines.Reverse();
                         foreach (string line in lines)
                         {
                             message += line;
@@ -240,10 +238,6 @@ namespace FruitPantry
                 }
 
             }
-
-
-
-            messages.Reverse();
             return messages;
         }
 

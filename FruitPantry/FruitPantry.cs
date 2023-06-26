@@ -40,7 +40,7 @@ namespace FruitPantry
 
 
 
-        private Dictionary<string, DropLogEntry> _dropLog;
+        private List<DropLogEntry> _dropLog;
         public Dictionary<string, ItemDatabaseEntry> _itemDatabase { get; private set; }
         public Dictionary<string, float> _classificationList { get; set; }
         public Dictionary<string, Discord.Color> _classificationColorList { get; set; }
@@ -144,16 +144,16 @@ namespace FruitPantry
             {
                 List<DropLogEntry> playerLog = new();
 
-                foreach (KeyValuePair<string, DropLogEntry> entry in _thePantry._dropLog)
+                foreach (DropLogEntry entry in _thePantry._dropLog)
                 {
-                    if (entry.Value._playerName.ToLower().Equals(playerName.ToLower()))
+                    if (entry._playerName.ToLower().Equals(playerName.ToLower()))
                     {
-                        if ((_thePantry._runescapePlayers.ContainsKey(playerName)) && (!entry.Value._fruit.Equals(_thePantry._runescapePlayers[entry.Value._playerName.ToLower()][0])))
+                        if ((_thePantry._runescapePlayers.ContainsKey(playerName)) && (!entry._fruit.Equals(_thePantry._runescapePlayers[entry._playerName.ToLower()][0])))
                         {
                             continue;
                         }
 
-                        playerLog.Add(entry.Value);
+                        playerLog.Add(entry);
                     }
                 }
                 return playerLog;
@@ -258,7 +258,7 @@ namespace FruitPantry
             RefreshEverything();
         }
 
-        public Dictionary<string, DropLogEntry> RefreshEverything()
+        public List <DropLogEntry> RefreshEverything()
         {
             Parallel.For(0, 5, idx =>
             {
@@ -404,9 +404,9 @@ namespace FruitPantry
         }
 
         // Refreshes and returns the current drop log as per google sheets.
-        public Dictionary<string, DropLogEntry> RefreshDropLog()
+        public List<DropLogEntry> RefreshDropLog()
         {
-            Dictionary<string, DropLogEntry> output = new();
+            List<DropLogEntry> output = new();
 
             SpreadsheetsResource.ValuesResource.GetRequest request = _service.Spreadsheets.Values.Get(_spreadsheetId, _dropLogRange);
 
@@ -420,7 +420,7 @@ namespace FruitPantry
             {
                 foreach (IList<object> row in values)
                 {
-                    output.Add(row[EntryKey].ToString(), new(
+                    output.Add( new(
                                                 playerName: row[RSN],
                                                 fruit: row[Fruit],
                                                 dropName: row[Drop],
@@ -439,7 +439,7 @@ namespace FruitPantry
             return _dropLog;
         }
 
-        public Dictionary<string, DropLogEntry> PurgeThePantry()
+        public List <DropLogEntry> PurgeThePantry()
         {
             Data.ClearValuesRequest requestBody = new Data.ClearValuesRequest();
             SpreadsheetsResource.ValuesResource.ClearRequest request = _service.Spreadsheets.Values.Clear(requestBody, _spreadsheetId, _dropLogRange);
@@ -452,7 +452,10 @@ namespace FruitPantry
         // Theoretically should be a very fast way to check uniqueness
         public bool AlreadyExists(DropLogEntry entry)
         {
-            return _dropLog.ContainsKey(entry._entryKey);
+            var found = _dropLog.Find(existingEntry => existingEntry._entryKey.Equals(entry._entryKey));
+            if (found is not null)
+                return true;
+            else return false;
         }
 
         public bool IsBeingMonitored(DropLogEntry entry)
@@ -481,7 +484,7 @@ namespace FruitPantry
 
 
         // Adds an entry to the drop log, sending it to google sheets. Refreshes _masterList and returns it. 
-        public async Task<Dictionary<string, DropLogEntry>> Add(List<IList<object>> newEntries)
+        public async Task<List<DropLogEntry>> Add(List<IList<object>> newEntries)
         {
 
             ValueRange requestBody = new();
@@ -602,7 +605,7 @@ namespace FruitPantry
             //return _dropLog;
         }
 
-        public Dictionary<string, DropLogEntry> GetDropLog()
+        public List<DropLogEntry> GetDropLog()
         {
             return _dropLog;
         }

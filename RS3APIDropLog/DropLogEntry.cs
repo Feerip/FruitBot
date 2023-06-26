@@ -153,6 +153,8 @@ namespace RS3APIDropLog
                 _pointValue = null;
             }
 
+            _entryKey = entryKey.ToString();
+
 
 
 

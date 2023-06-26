@@ -98,7 +98,7 @@ namespace FruitPantry
                 FruitPantry thePantry = FruitPantry.GetFruitPantry();
 
                 // Build points values
-                foreach (DropLogEntry entry in thePantry.GetDropLog().Values)
+                foreach (DropLogEntry entry in thePantry.GetDropLog())
                 {
                     if (entry._fruit.Equals("Kiwi"))
                     {
