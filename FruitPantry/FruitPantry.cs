@@ -40,7 +40,7 @@ namespace FruitPantry
 
 
 
-        private SortedDictionary<string, DropLogEntry> _dropLog;
+        private Dictionary<string, DropLogEntry> _dropLog;
         public Dictionary<string, ItemDatabaseEntry> _itemDatabase { get; private set; }
         public Dictionary<string, float> _classificationList { get; set; }
         public Dictionary<string, Discord.Color> _classificationColorList { get; set; }
@@ -242,7 +242,7 @@ namespace FruitPantry
             _bugReportRange = $"Bug Reports!A2:D";
             _suggestionRange = $"Suggestions!A2:D";
 
-            _dropLog = new(comparer: new LogEntryKeyComparer());
+            _dropLog = new();
 
 
             _credentials = GoogleCredential.FromFile(_credentialsFile).CreateScoped(_scopes);
@@ -258,7 +258,7 @@ namespace FruitPantry
             RefreshEverything();
         }
 
-        public SortedDictionary<string, DropLogEntry> RefreshEverything()
+        public Dictionary<string, DropLogEntry> RefreshEverything()
         {
             Parallel.For(0, 5, idx =>
             {
@@ -404,9 +404,9 @@ namespace FruitPantry
         }
 
         // Refreshes and returns the current drop log as per google sheets.
-        public SortedDictionary<string, DropLogEntry> RefreshDropLog()
+        public Dictionary<string, DropLogEntry> RefreshDropLog()
         {
-            SortedDictionary<string, DropLogEntry> output = new(new LogEntryKeyComparer());
+            Dictionary<string, DropLogEntry> output = new();
 
             SpreadsheetsResource.ValuesResource.GetRequest request = _service.Spreadsheets.Values.Get(_spreadsheetId, _dropLogRange);
 
@@ -439,7 +439,7 @@ namespace FruitPantry
             return _dropLog;
         }
 
-        public SortedDictionary<string, DropLogEntry> PurgeThePantry()
+        public Dictionary<string, DropLogEntry> PurgeThePantry()
         {
             Data.ClearValuesRequest requestBody = new Data.ClearValuesRequest();
             SpreadsheetsResource.ValuesResource.ClearRequest request = _service.Spreadsheets.Values.Clear(requestBody, _spreadsheetId, _dropLogRange);
@@ -481,7 +481,7 @@ namespace FruitPantry
 
 
         // Adds an entry to the drop log, sending it to google sheets. Refreshes _masterList and returns it. 
-        public async Task<SortedDictionary<string, DropLogEntry>> Add(List<IList<object>> newEntries)
+        public async Task<Dictionary<string, DropLogEntry>> Add(List<IList<object>> newEntries)
         {
 
             ValueRange requestBody = new();
@@ -602,7 +602,7 @@ namespace FruitPantry
             //return _dropLog;
         }
 
-        public SortedDictionary<string, DropLogEntry> GetDropLog()
+        public Dictionary<string, DropLogEntry> GetDropLog()
         {
             return _dropLog;
         }

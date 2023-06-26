@@ -19,17 +19,18 @@ namespace DataTypes
             int result = DateTime.Compare(dateValueRHS, dateValueLHS);
             //int result = DateTime.Compare(dateValueLHS, dateValueRHS); <-- WHY IS THIS WRONG???
 
-            // On the off chance that the drops were at exactly the same time, the order is decided based on username. 
-            // On the infinitely miniscule chance that both drops are from the same person, string's compare will
-            // return the zero needed.
-            if (result == 0)
-            {
-                return string.Compare(lhsbuffer[2], rhsbuffer[2]);
-            }
-            else
-            {
-                return result;
-            }
+            // On the off chance that the drops were at exactly the same time, the order is decided by "me first"
+            //// On the infinitely miniscule chance that both drops are from the same person, string's compare will
+            //// return the zero needed.
+            //if (result == 0)
+            //{
+            //    return string.Compare(lhsbuffer[2], rhsbuffer[2]);
+            //}
+            //else
+            //{
+            //    return result;
+            //}
+            return result;
         }
     }
 }
