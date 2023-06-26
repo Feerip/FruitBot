@@ -337,7 +337,7 @@ namespace FruitBot.Modules
             {
                 _thePantry.RefreshEverything();
 
-                float grapePoints = 0;
+                float kiwiPoints = 0;
                 float bananaPoints = 0;
                 float applePoints = 0;
                 float peachPoints = 0;
@@ -355,9 +355,9 @@ namespace FruitBot.Modules
                 // Build points values
                 foreach (DropLogEntry entry in thePantry.GetDropLog().Values)
                 {
-                    if (entry._fruit.Equals(FruitResources.Text.grape))
+                    if (entry._fruit.Equals(FruitResources.Text.kiwi))
                     {
-                        grapePoints += float.Parse(entry._pointValue);
+                        kiwiPoints += float.Parse(entry._pointValue);
                     }
                     else if (entry._fruit.Equals(FruitResources.Text.banana))
                     {
@@ -377,11 +377,11 @@ namespace FruitBot.Modules
                     }
                 }
                 // Now find the largest one
-                if (grapePoints > largestNumber)
+                if (kiwiPoints > largestNumber)
                 {
-                    largestNumber = grapePoints;
-                    leadingColor = FruitResources.Colors.grape;
-                    leadingTeamPictureURL = FruitResources.Logos.grape;
+                    largestNumber = kiwiPoints;
+                    leadingColor = FruitResources.Colors.kiwi;
+                    leadingTeamPictureURL = FruitResources.Logos.kiwi;
                 }
                 if (bananaPoints > largestNumber)
                 {
@@ -418,7 +418,7 @@ namespace FruitBot.Modules
                             .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                             .WithColor(leadingColor)
                             .WithThumbnailUrl(leadingTeamPictureURL)
-                            .AddField("🍇Grapes🍇", $"`{Math.Round(grapePoints)}`", true)
+                            .AddField("🥝Kiwis🥝", $"`{Math.Round(kiwiPoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
                             .AddField("🍌Bananas🍌", $"`{Math.Round(bananaPoints)}`", true)
                             .AddField("🍎Apples🍎", $"`{Math.Round(applePoints)}`", true)
@@ -434,7 +434,7 @@ namespace FruitBot.Modules
 
                 await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
             }
-            //🍇🍌🍎🍑💩
+            //🥝🍌🍎🍑💩
 
         }
 
@@ -689,7 +689,7 @@ namespace FruitBot.Modules
         [Command("betasignup", RunMode = RunMode.Async)]
         public async Task BetaSignup([Remainder] string playerName = null)
         {
-            IEmote[] fruits = { new Emoji("🍎"), new Emoji("🍌"), new Emoji("🍇"), new Emoji("🍑") };
+            IEmote[] fruits = { new Emoji("🍎"), new Emoji("🍌"), new Emoji("🥝"), new Emoji("🍑") };
 
             await Context.Message.AddReactionsAsync(fruits, new());
         }

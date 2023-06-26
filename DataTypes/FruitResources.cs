@@ -32,9 +32,9 @@ namespace DataTypes
                 {
                     return fruitlessHeathen;
                 }
-                if (fruit.Equals(Text.grape))
+                if (fruit.Equals(Text.kiwi))
                 {
-                    return grape;
+                    return kiwi;
                 }
 
                 if (fruit.Equals(Text.banana))
@@ -56,7 +56,7 @@ namespace DataTypes
                     return fruitlessHeathen;
                 }
             }
-            public static Discord.Color grape = new(128, 00, 128);
+            public static Discord.Color kiwi = new(128, 00, 128);
             public static Discord.Color banana = new(255, 255, 0);
             public static Discord.Color apple = new(255, 0, 0);
             public static Discord.Color peach = new(255, 192, 203);
@@ -70,9 +70,9 @@ namespace DataTypes
                 {
                     return fruitlessHeathen;
                 }
-                if (fruit.Equals(grape))
+                if (fruit.Equals(kiwi))
                 {
-                    return grape;
+                    return kiwi;
                 }
 
                 if (fruit.Equals(banana))
@@ -94,7 +94,7 @@ namespace DataTypes
                     return fruitlessHeathen;
                 }
             }
-            public static string grape { get; } = "Grape";
+            public static string kiwi { get; } = "Kiwi";
             public static string banana { get; } = "Banana";
             public static string apple { get; } = "Apple";
             public static string peach { get; } = "Peach";
@@ -113,9 +113,9 @@ namespace DataTypes
                     fruit = fruitlessHeathen;
                     return true;
                 }
-                else if (input.Equals(Text.grape, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.grape, StringComparison.OrdinalIgnoreCase))
+                else if (input.Equals(Text.kiwi, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.kiwi, StringComparison.OrdinalIgnoreCase))
                 {
-                    fruit = grape;
+                    fruit = kiwi;
                     return true;
                 }
                 else if (input.Equals(Text.banana, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.banana, StringComparison.OrdinalIgnoreCase))
@@ -149,9 +149,9 @@ namespace DataTypes
                 {
                     return fruitlessHeathen;
                 }
-                if (fruit.Equals(Text.grape))
+                if (fruit.Equals(Text.kiwi))
                 {
-                    return grape;
+                    return kiwi;
                 }
 
                 if (fruit.Equals(Text.banana))
@@ -173,7 +173,7 @@ namespace DataTypes
                     return fruitlessHeathen;
                 }
             }
-            public static string grape { get; } = "Grapes";
+            public static string kiwi { get; } = "Kiwis";
             public static string banana { get; } = "Bananas";
             public static string apple { get; } = "Apples";
             public static string peach { get; } = "Peaches";
@@ -190,9 +190,9 @@ namespace DataTypes
                 {
                     return fruitlessHeathen;
                 }
-                if (fruit.Equals(Text.grape))
+                if (fruit.Equals(Text.kiwi))
                 {
-                    return grape;
+                    return kiwi;
                 }
 
                 if (fruit.Equals(Text.banana))
@@ -214,8 +214,8 @@ namespace DataTypes
                     return fruitlessHeathen;
                 }
             }
-            public static string grape { get; }
-                = "https://cdn.discordapp.com/attachments/856679881547186196/859869023607717898/GrapeThing.png";
+            public static string kiwi { get; }
+                = "https://cdn.discordapp.com/attachments/856679881547186196/859869023607717898/KiwiThing.png";
 
             public static string banana { get; }
                 = "https://cdn.discordapp.com/attachments/856679881547186196/859869014507257896/BananaThing.png";
@@ -237,9 +237,9 @@ namespace DataTypes
                 {
                     return fruitlessHeathen;
                 }
-                else if (fruit.Equals(Text.grape))
+                else if (fruit.Equals(Text.kiwi))
                 {
-                    return grape;
+                    return kiwi;
                 }
 
                 else if (fruit.Equals(Text.banana))
@@ -262,7 +262,7 @@ namespace DataTypes
                 }
 
             }
-            public static string grape { get; } = "🍇";
+            public static string kiwi { get; } = "🥝";
 
             public static string banana { get; } = "🍌";
 
@@ -273,6 +273,6 @@ namespace DataTypes
 
 
         }
-        //🍇🍌🍎🍑💩
+        //🥝🍌🍎🍑💩
     }
 }

@@ -77,13 +77,13 @@ namespace FruitPantry
             {
 
 
-                float grapePoints = 0;
+                float kiwiPoints = 0;
                 float bananaPoints = 0;
                 float applePoints = 0;
                 float peachPoints = 0;
                 float fruitlessHeathenPoints = 0;
 
-                Color grape = new(128, 00, 128);
+                Color kiwi = new(128, 00, 128);
                 Color banana = new(255, 255, 0);
                 Color apple = new(255, 0, 0);
                 Color peach = new(255, 192, 203);
@@ -100,9 +100,9 @@ namespace FruitPantry
                 // Build points values
                 foreach (DropLogEntry entry in thePantry.GetDropLog().Values)
                 {
-                    if (entry._fruit.Equals("Grape"))
+                    if (entry._fruit.Equals("Kiwi"))
                     {
-                        grapePoints += float.Parse(entry._pointValue);
+                        kiwiPoints += float.Parse(entry._pointValue);
                     }
                     else if (entry._fruit.Equals("Banana"))
                     {
@@ -122,11 +122,11 @@ namespace FruitPantry
                     }
                 }
                 // Now find the largest one
-                if (grapePoints > largestNumber)
+                if (kiwiPoints > largestNumber)
                 {
-                    largestNumber = grapePoints;
-                    leadingColor = grape;
-                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.grape;
+                    largestNumber = kiwiPoints;
+                    leadingColor = kiwi;
+                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.kiwi;
                 }
                 if (bananaPoints > largestNumber)
                 {
@@ -163,7 +163,7 @@ namespace FruitPantry
                             .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                             .WithColor(leadingColor)
                             .WithThumbnailUrl(leadingTeamPictureURL)
-                            .AddField("🍇Grapes🍇", $"`{Math.Round(grapePoints)}`", true)
+                            .AddField("🥝Kiwis🥝", $"`{Math.Round(kiwiPoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
                             .AddField("🍌Bananas🍌", $"`{Math.Round(bananaPoints)}`", true)
                             .AddField("🍎Apples🍎", $"`{Math.Round(applePoints)}`", true)
@@ -181,7 +181,7 @@ namespace FruitPantry
                 _client.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(null, false, embed);
 #endif
 
-                //🍇🍌🍎🍑💩
+                //🥝🍌🍎🍑💩
 
             }
             return;
