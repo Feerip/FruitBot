@@ -272,6 +272,7 @@ namespace RS3APIDropLog
                         .Replace("Challenged By ", "")
                         .Replace(".", ""));
                 }
+                output.Reverse();
                 return output;
             }
         }
