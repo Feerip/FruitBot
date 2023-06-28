@@ -69,12 +69,16 @@ namespace FruitBot.Services
 
         private Task RegisterPosixSignalsAsync()
         {
+            Console.WriteLine("Entered Registration");
             PosixSignalRegistration.Create(PosixSignal.SIGTERM, async (context) =>
             {
+                Console.WriteLine("Entered posix registration");
                 context.Cancel = false;
                 await _client.SetGameAsync($"Restarting... Be right back!", null, ActivityType.Playing);
                 await _client.SetStatusAsync(UserStatus.DoNotDisturb);
+                Console.WriteLine("Finished posix registration");
             });
+            Console.WriteLine("Finished registration");
             return Task.CompletedTask;
         }
 
