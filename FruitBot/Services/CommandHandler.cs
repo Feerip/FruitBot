@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -49,6 +50,7 @@ namespace FruitBot.Services
             _service.CommandExecuted += OnCommandExecuted;
             _client.Ready += SetStatusAsync;
             _client.Ready += _client_Ready;
+            _client.Ready += RegisterPosixSignalsAsync;
 
 
             await _service.AddModulesAsync(Assembly.GetEntryAssembly(), _provider);
@@ -65,7 +67,18 @@ namespace FruitBot.Services
 #endif
         }
 
-        private async Task _client_Ready()
+        private Task RegisterPosixSignalsAsync()
+        {
+            PosixSignalRegistration.Create(PosixSignal.SIGTERM, async (context) =>
+            {
+                context.Cancel = false;
+                await _client.SetGameAsync($"Restarting... Be right back!", null, ActivityType.Playing);
+                await _client.SetStatusAsync(UserStatus.DoNotDisturb);
+            });
+            return Task.CompletedTask;
+        }
+
+        private Task _client_Ready()
         {
             TimedHostedService service = new(_client);
             Task backgroundScraper = service.StartAsync(new CancellationToken());
@@ -86,6 +99,7 @@ namespace FruitBot.Services
 
             Parallel.ForEach(intlist, (i) => service.LeaderboardAtResetStartAsync(new CancellationToken(), i, 02));
 #endif
+            return Task.CompletedTask;
 
         }
 
