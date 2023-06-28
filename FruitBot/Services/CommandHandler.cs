@@ -50,7 +50,7 @@ namespace FruitBot.Services
             _service.CommandExecuted += OnCommandExecuted;
             _client.Ready += SetStatusAsync;
             _client.Ready += _client_Ready;
-            _client.Ready += RegisterPosixSignalsAsync;
+            //_client.Ready += RegisterPosixSignalsAsync;
 
 
             await _service.AddModulesAsync(Assembly.GetEntryAssembly(), _provider);
