@@ -1,10 +1,15 @@
 ﻿using DataTypes;
+
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+
 using Microsoft.Extensions.Logging;
+
 using Newtonsoft.Json.Linq;
+
 using RS3APIDropLog;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -216,7 +221,7 @@ namespace FruitBot.Modules
 #if FRUITWARSMODE
                     builder.AddField("Points", newEntry._pointValue, true);
 #endif
-                    builder.AddField("Boss", newEntry._bossName, true );
+                    builder.AddField("Boss", newEntry._bossName, true);
                     builder.AddField("Dropped At", newEntry._timestamp, true);
 
                     Embed embed = builder.Build();
@@ -282,21 +287,23 @@ namespace FruitBot.Modules
         [Alias("pull")]
         public async Task Scrape(SocketGuildUser user = null)
         {
-
-            await ReplyAsync($"Starting pull from Runemetrics for drop log data. This may take a few minutes.", messageReference: new(Context.Message.Id));
-
-            _logger.LogInformation($"{Context.User.Username} invoked the scrape command. This may take a few minutes.");
-
             using (Context.Channel.EnterTypingState())
             {
                 FruitPantry.FruitPantry thePantry = FruitPantry.FruitPantry.GetFruitPantry();
+                int numEntries;
+                if (FruitPantry.FruitPantry._scrapingSem.CurrentCount > 0)
+                {
+                    await ReplyAsync($"Starting pull from Runemetrics for drop log data. This may take a few minutes.", messageReference: new(Context.Message.Id));
+                    _logger.LogInformation($"{Context.User.Username} invoked the scrape command. This may take a few minutes.");
 
-                int numEntries = thePantry.ScrapeGameData((DiscordSocketClient)Context.Client).Result;
+                    numEntries = thePantry.ScrapeGameData((DiscordSocketClient)Context.Client).Result;
+                    await ReplyAsync($"Scrape was successful. There are now `{numEntries}` entries in the drop log.", messageReference: new(Context.Message.Id));
 
-
-                DiscordSocketClient client = (DiscordSocketClient)Context.Client;
-
-                await ReplyAsync($"Scrape was successful. There are now `{numEntries}` entries in the drop log.", messageReference: new(Context.Message.Id));
+                }
+                else
+                {
+                    await ReplyAsync($"Already scraping. Wait your damn turn.", messageReference: new(Context.Message.Id));
+                }
             }
 
 
@@ -440,7 +447,7 @@ namespace FruitBot.Modules
         public async Task Signup([Remainder] string throwaway = null)
         {
             await Context.Channel.TriggerTypingAsync();
-            await Context.Message.ReplyAsync(text: "Check your DMs <:doge:774545768564391947>"); 
+            await Context.Message.ReplyAsync(text: "Check your DMs <:doge:774545768564391947>");
 
             await Context.User.SendMessageAsync($"Hello {Context.User.Mention}, you've requested to sign up for Fruit Wars. " +
                 $"Please confirm by responding with your Runescape Player Name below in this format (with exact capitalization and any spaces): {Context.Client.CurrentUser.Mention} RSN");

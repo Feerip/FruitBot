@@ -197,9 +197,14 @@ namespace FruitPantry
             {
                 FruitPantry thePantry = FruitPantry.GetFruitPantry();
 
-
-                int numTotalEntries = await thePantry.ScrapeGameData(_client);
-
+                if (FruitPantry._scrapingSem.CurrentCount > 0)
+                {
+                    int numTotalEntries = await thePantry.ScrapeGameData(_client);
+                }
+                else
+                {
+                    Console.WriteLine("Scraper busy. Skipping timed interval scrape.");
+                }
                 //await HelperFunctions.LastHelper(FruitPantry.NumNewEntries, _client);
 
                 //FruitPantry.NumNewEntries = 0;

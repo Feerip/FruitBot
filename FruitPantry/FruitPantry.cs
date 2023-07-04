@@ -26,6 +26,7 @@ namespace FruitPantry
 
         private static readonly FruitPantry _instance = new();
         public static string LastScrapeTimeTaken { get; private set; }
+        public static SemaphoreSlim _scrapingSem = new(1, 1);
 
         private readonly string[] _scopes = { SheetsService.Scope.Spreadsheets };
         private readonly string _applicationName;
@@ -296,43 +297,55 @@ namespace FruitPantry
 
         public async Task<int> ScrapeGameData(DiscordSocketClient discordClient)
         {
-            string discordStatusNewLine = // don't judge me
-                $" \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B" +
-                $" \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B" +
-                $" \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B";
-            string scrapingNewLineAdd = // just don't
-                $" \u200B \u200B \u200B \u200B";
-            string lastDiagnosticString = "Last Diagnostic: ";
-            string statusElapsedTime = discordStatusNewLine + lastDiagnosticString + LastScrapeTimeTaken;
-            await discordClient.SetGameAsync($"Scraping Runemetrics..." + scrapingNewLineAdd + statusElapsedTime,null, ActivityType.Playing);
+            int count = -1;
+            _scrapingSem.Wait();
+            try
+            {
+                string discordStatusNewLine = // don't judge me
+                    $" \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B" +
+                    $" \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B" +
+                    $" \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B";
+                string scrapingNewLineAdd = // just don't
+                    $" \u200B \u200B \u200B \u200B";
+                string lastDiagnosticString = "Last Diagnostic: ";
+                string statusElapsedTime = discordStatusNewLine + lastDiagnosticString + LastScrapeTimeTaken;
+                await discordClient.SetGameAsync($"Scraping Runemetrics..." + scrapingNewLineAdd + statusElapsedTime, null, ActivityType.Playing);
 
-            RefreshEverything();
+                RefreshEverything();
 
-            Stopwatch stopWatch = new();
-            stopWatch.Start();
-            var newEntries = await Add(DropLogEntry.CreateListFullAuto().Result, discordClient);
-            stopWatch.Stop();
-            TimeSpan ts = stopWatch.Elapsed;
-            string elapsedTime = String.Format("{0:00}:{1:00}.{2:00}",
-                ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-            LastScrapeTimeTaken = elapsedTime;
+                Stopwatch stopWatch = new();
+                stopWatch.Start();
+                var newEntries = await Add(DropLogEntry.CreateListFullAuto().Result, discordClient);
+                stopWatch.Stop();
+                TimeSpan ts = stopWatch.Elapsed;
+                string elapsedTime = String.Format("{0:00}:{1:00}.{2:00}",
+                    ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+                LastScrapeTimeTaken = elapsedTime;
 
-            Console.WriteLine("ScrapeTime " + LastScrapeTimeTaken);
+                Console.WriteLine("ScrapeTime " + LastScrapeTimeTaken);
 
-            statusElapsedTime = discordStatusNewLine + lastDiagnosticString + LastScrapeTimeTaken;
+                statusElapsedTime = discordStatusNewLine + lastDiagnosticString + LastScrapeTimeTaken;
 #if FRUITWARSMODE
-            await discordClient.SetGameAsync($"Fruit Wars!! | @FruitBot help" + statusElapsedTime, null,ActivityType.Playing);
-#else
-            await discordClient.SetGameAsync($"@FruitBot help" + statusElapsedTime, null, ActivityType.Listening);
+                await discordClient.SetGameAsync($"Fruit Wars!! | @FruitBot help" + statusElapsedTime, null, ActivityType.Playing);
+# else
+                await discordClient.SetGameAsync($"@FruitBot help" + statusElapsedTime, null, ActivityType.Listening);
 #endif
 
-            foreach (var entry in newEntries)
-            {
-                await HelperFunctions.DropAnnouncementAsync(new KeyValuePair<string, DropLogEntry>(entry._entryKey, entry), discordClient);
+                foreach (var entry in newEntries)
+                {
+                    await HelperFunctions.DropAnnouncementAsync(new KeyValuePair<string, DropLogEntry>(entry._entryKey, entry), discordClient);
+                }
+
+                count = RefreshEverything().Count;
             }
-
-            int count = RefreshEverything().Count;
-
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _scrapingSem.Release();
+            }
             return count;
         }
 
