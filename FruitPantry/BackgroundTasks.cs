@@ -199,12 +199,6 @@ namespace FruitPantry
 
 
                 int numTotalEntries = await thePantry.ScrapeGameData(_client);
-                
-#if FRUITWARSMODE
-                await _client.SetGameAsync($"Fruit Wars!! | @FruitBot help", null, ActivityType.Playing);
-#else
-            await _client.SetGameAsync($"@FruitBot help", null, ActivityType.Listening);
-#endif
 
                 //await HelperFunctions.LastHelper(FruitPantry.NumNewEntries, _client);
 
