@@ -25,6 +25,7 @@ namespace FruitPantry
         public static string _version = "1.7";
 
         private static readonly FruitPantry _instance = new();
+        public static string LastScrapeTimeTaken { get; private set; }
 
         private readonly string[] _scopes = { SheetsService.Scope.Spreadsheets };
         private readonly string _applicationName;
@@ -295,9 +296,17 @@ namespace FruitPantry
 
         public async Task<int> ScrapeGameData(DiscordSocketClient discordClient)
         {
-            await discordClient.SetGameAsync($"Scraping Runemetrics...", type: ActivityType.Playing);
-            RefreshEverything();
+            string discordStatusNewLine = // don't judge me
+                $" \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B" +
+                $" \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B" +
+                $" \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B";
+            string scrapingNewLineAdd = // just don't
+                $" \u200B \u200B \u200B \u200B";
+            string lastDiagnosticString = "Last Diagnostic: ";
+            string statusElapsedTime = discordStatusNewLine + lastDiagnosticString + LastScrapeTimeTaken;
+            await discordClient.SetGameAsync($"Scraping Runemetrics..." + scrapingNewLineAdd + statusElapsedTime,null, ActivityType.Playing);
 
+            RefreshEverything();
 
             Stopwatch stopWatch = new();
             stopWatch.Start();
@@ -306,15 +315,13 @@ namespace FruitPantry
             TimeSpan ts = stopWatch.Elapsed;
             string elapsedTime = String.Format("{0:00}:{1:00}.{2:00}",
                 ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-            Console.WriteLine("ScrapeTime " + elapsedTime);
+            LastScrapeTimeTaken = elapsedTime;
 
-            string statusElapsedTime = // don't judge me
-                $" \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B" +
-                $" \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B" +
-                $" \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B" +
-                $"Last Diagnostic: {elapsedTime}";
+            Console.WriteLine("ScrapeTime " + LastScrapeTimeTaken);
+
+            statusElapsedTime = discordStatusNewLine + lastDiagnosticString + LastScrapeTimeTaken;
 #if FRUITWARSMODE
-            await discordClient.SetGameAsync($"Fruit Wars!! | @FruitBot help" + statusElapsedTime, null, ActivityType.Playing);
+            await discordClient.SetGameAsync($"Fruit Wars!! | @FruitBot help" + statusElapsedTime, null,ActivityType.Playing);
 #else
             await discordClient.SetGameAsync($"@FruitBot help" + statusElapsedTime, null, ActivityType.Listening);
 #endif
