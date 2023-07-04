@@ -299,7 +299,7 @@ namespace FruitPantry
 
             RefreshEverything();
 
-            // To track how long scrapes take
+           
             Stopwatch stopWatch = new();
             stopWatch.Start();
             var newEntries = await Add(DropLogEntry.CreateListFullAuto().Result, discordClient);

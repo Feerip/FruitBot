@@ -1,10 +1,13 @@
-﻿using Microsoft.VisualBasic.FileIO;
+﻿using Discord;
+
+using Microsoft.VisualBasic.FileIO;
 
 using Newtonsoft.Json;
 
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -29,19 +32,22 @@ namespace RS3APIDropLog
 
             ConcurrentQueue<string> jsonStrings = new();
 
-            try
+            Stopwatch JAGXStopwatch = new();
+            JAGXStopwatch.Start();
+            Parallel.ForEach(playerNames, new ParallelOptions() { MaxDegreeOfParallelism = 50 }, playerName =>
             {
-                Parallel.ForEach(playerNames, new ParallelOptions() { MaxDegreeOfParallelism = 50 }, playerName =>
-                {
-                    GetALog(playerName, jsonStrings);
-                });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            Console.Out.WriteLineAsync($"All ALogs pulled. Starting json deserialization...");
+                GetALog(playerName, jsonStrings);
+            });
+            JAGXStopwatch.Stop();
+            TimeSpan JAGXts = JAGXStopwatch.Elapsed;
+            string JAGXElapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                JAGXts.Hours, JAGXts.Minutes, JAGXts.Seconds, JAGXts.Milliseconds / 10);
+            Console.WriteLine("JAGX time " + JAGXElapsedTime);
 
+            Console.WriteLine($"All ALogs pulled. Starting json deserialization...");
+
+            Stopwatch JSONStopwatch = new();
+            JSONStopwatch.Start();
             foreach (string json in jsonStrings)
             {
                 try
@@ -52,13 +58,18 @@ namespace RS3APIDropLog
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    Console.Out.WriteLineAsync(e.Message);
                 }
 
             }
-            Console.Out.WriteLineAsync($"Json deserialized, objects back to FruitPantry for processing...");
+            JSONStopwatch.Stop();
+            TimeSpan JSONts = JSONStopwatch.Elapsed;
+            string JSONElapsedTime = string.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                JSONts.Hours, JSONts.Minutes, JSONts.Seconds, JSONts.Milliseconds / 10);
+            Console.WriteLine("JSON time " + JSONElapsedTime);
 
-            
+            Console.WriteLine($"Json deserialized, objects back to FruitPantry for processing...");
+
             return output;
         }
         public static void GetALog(string playerName, ConcurrentQueue<string> jsonStrings)
@@ -71,23 +82,27 @@ namespace RS3APIDropLog
                 do
                 {
                     if (response is not null)
+                    {
                         Console.Out.WriteLineAsync($"Error 503 for {playerName}. Retrying...");
+                    }
                     response = httpClient.GetAsync($"https://apps.runescape.com/runemetrics/profile/profile?user={RSN}&activities=20").Result;
 
                 }
                 while (response.StatusCode == HttpStatusCode.ServiceUnavailable);
                 string json = response.Content.ReadAsStringAsync().Result;
                 if (json.Contains("PROFILE_PRIVATE"))
+                {
                     Console.Out.WriteLineAsync($"FAILURE: ALog set to private for {playerName}.");
+                }
                 else
                 {
-                    Console.Out.WriteLineAsync($"SUCCESS: Pulled ALog json for {playerName}.");
+                    //Console.Out.WriteLineAsync($"SUCCESS: Pulled ALog json for {playerName}.");
                     jsonStrings.Enqueue(json);
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine($"HttpClient failed to pull ALog for RSN {playerName}. Message: {e.Message}\n");
+                Console.Out.WriteLineAsync($"HttpClient failed to pull ALog for RSN {playerName}. Message: {e.Message}\n");
             }
         }
         public static async Task GetALogAsync(string playerName, ConcurrentQueue<string> jsonStrings)
