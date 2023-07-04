@@ -31,7 +31,7 @@ namespace RS3APIDropLog
 
             try
             {
-                Parallel.ForEach(playerNames, new ParallelOptions() { MaxDegreeOfParallelism = 100 }, playerName =>
+                Parallel.ForEach(playerNames, new ParallelOptions() { MaxDegreeOfParallelism = 50 }, playerName =>
                 {
                     GetALog(playerName, jsonStrings);
                 });
