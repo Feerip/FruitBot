@@ -23,7 +23,7 @@ namespace FruitPantry
 
         public Task StartAsync(CancellationToken stoppingToken)
         {
-            _timer2 = new(300000);
+            _timer2 = new(150000);
             _timer2.Elapsed += DoWork;
             _timer2.AutoReset = true;
             _timer2.Enabled = true;
