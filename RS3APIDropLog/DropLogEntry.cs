@@ -217,7 +217,7 @@ namespace RS3APIDropLog
         {
             List<DropLogEntry> output = new();
 
-            List<RSDropLog> dropLogs = await RSDropLog.PullParallelFromJagexAPI(RSDropLog.GetAllVoughtPlayerNames().Result);
+            List<RSDropLog> dropLogs = RSDropLog.PullParallelFromJagexAPI(RSDropLog.GetAllVoughtPlayerNames().Result);
 
             foreach (RSDropLog playerLog in dropLogs)
             {

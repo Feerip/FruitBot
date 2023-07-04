@@ -23,47 +23,24 @@ namespace RS3APIDropLog
 
         public static HttpClient httpClient = new();
 
-        public static async Task<List<RSDropLog>> PullParallelFromJagexAPI(List<string> playerNames)
+        public static List<RSDropLog> PullParallelFromJagexAPI(List<string> playerNames)
         {
             List<RSDropLog> output = new();
-            //ConcurrentQueue<RSDropLog> fastContainer = new();
 
-
-            //@Parallel.ForEach(parallelOptions: new ParallelOptions { MaxDegreeOfParallelism = 4 }, source: playerNames, body: (playerName) => FastConstructor(playerName, fastContainer));
-
-            //output = fastContainer.ToList();
             ConcurrentQueue<string> jsonStrings = new();
-            //ConcurrentQueue<RSDropLog> allClanLogs = new();
-            var taskList = new List<Task>();
-            foreach (string playerName in playerNames)
-            {
-                //string RSN = playerName.Replace(" ", "%20");
-                //try
-                //{
-                //    Console.WriteLine($"Pulling ALog for {playerName}...");
-                //    var json = httpClient.GetStringAsync($"https://apps.runescape.com/runemetrics/profile/profile?user={RSN}&activities=20").Result;
-                //    RSProfile aDropLog = JsonConvert.DeserializeObject<RSProfile>(json);
-                //    allClanLogs.Enqueue(new(RSN, aDropLog));
 
-                //}
-
-                //catch (Exception e)
-                //{
-                //    Console.WriteLine($"Failed to pull ALog for RSN {playerName}.");
-                //    Console.WriteLine(e.Message + "\n");
-                //}
-                taskList.Add(GetALogAsync(playerName, jsonStrings));
-
-            }
             try
             {
-                await Task.WhenAll(taskList.ToArray());
+                Parallel.ForEach(playerNames, new ParallelOptions() { MaxDegreeOfParallelism = 100 }, playerName =>
+                {
+                    GetALog(playerName, jsonStrings);
+                });
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
-            await Console.Out.WriteLineAsync($"All ALogs pulled. Starting json deserialization...");
+            Console.Out.WriteLineAsync($"All ALogs pulled. Starting json deserialization...");
 
             foreach (string json in jsonStrings)
             {
@@ -77,11 +54,41 @@ namespace RS3APIDropLog
                 {
                     Console.WriteLine(e.Message);
                 }
-                
-            }
-            await Console.Out.WriteLineAsync($"Json deserialized, objects back to FruitPantry for processing...");
 
+            }
+            Console.Out.WriteLineAsync($"Json deserialized, objects back to FruitPantry for processing...");
+
+            
             return output;
+        }
+        public static void GetALog(string playerName, ConcurrentQueue<string> jsonStrings)
+        {
+            string RSN = playerName.Replace(" ", "%20");
+            try
+            {
+                //Console.WriteLine($"Pulling ALog for {playerName}...");
+                HttpResponseMessage response = null;
+                do
+                {
+                    if (response is not null)
+                        Console.Out.WriteLineAsync($"Error 503 for {playerName}. Retrying...");
+                    response = httpClient.GetAsync($"https://apps.runescape.com/runemetrics/profile/profile?user={RSN}&activities=20").Result;
+
+                }
+                while (response.StatusCode == HttpStatusCode.ServiceUnavailable);
+                string json = response.Content.ReadAsStringAsync().Result;
+                if (json.Contains("PROFILE_PRIVATE"))
+                    Console.Out.WriteLineAsync($"FAILURE: ALog set to private for {playerName}.");
+                else
+                {
+                    Console.Out.WriteLineAsync($"SUCCESS: Pulled ALog json for {playerName}.");
+                    jsonStrings.Enqueue(json);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"HttpClient failed to pull ALog for RSN {playerName}. Message: {e.Message}\n");
+            }
         }
         public static async Task GetALogAsync(string playerName, ConcurrentQueue<string> jsonStrings)
         {
@@ -124,21 +131,23 @@ namespace RS3APIDropLog
             {
             }
         }
+
         [Obsolete]
         public RSDropLog(string playerName)
         {
-            string test = playerName.Replace(" ", "%20");
+            string sanitezedPlayerName = playerName.Replace(" ", "%20");
+            string url = $"https://apps.runescape.com/runemetrics/profile/profile?user={sanitezedPlayerName}&activities=20";
 
             using (WebClient wc = new WebClient())
             {
 
-                string json = wc.DownloadString($"https://apps.runescape.com/runemetrics/profile/profile?user={test}&activities=20");
+                string json = wc.DownloadString(url);
 
 
                 RSProfile aDropLog = JsonConvert.DeserializeObject<RSProfile>(json);
                 if (aDropLog.name == null)
                 {
-                    throw new WebException($"Jagex API returned null: player \"{test}\" not found.");
+                    throw new WebException($"Jagex API returned null: player \"{sanitezedPlayerName}\" not found.");
                 }
                 else
                 {
@@ -166,6 +175,8 @@ namespace RS3APIDropLog
             List<string> playerNames = new();
 
             string url = "http://services.runescape.com/m=clan-hiscores/members_lite.ws?clanName=Vought";
+
+
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.AutomaticDecompression = DecompressionMethods.GZip;
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();

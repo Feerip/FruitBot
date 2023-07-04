@@ -1,15 +1,21 @@
 ﻿using DataTypes;
+
 using Discord;
 using Discord.WebSocket;
+
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
+
 using RS3APIDropLog;
+
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Data = Google.Apis.Sheets.v4.Data;
 
 namespace FruitPantry
@@ -258,7 +264,7 @@ namespace FruitPantry
             RefreshEverything();
         }
 
-        public List <DropLogEntry> RefreshEverything()
+        public List<DropLogEntry> RefreshEverything()
         {
             Parallel.For(0, 5, idx =>
             {
@@ -293,11 +299,19 @@ namespace FruitPantry
 
             RefreshEverything();
 
+            // To track how long scrapes take
+            Stopwatch stopWatch = new();
+            stopWatch.Start();
             var newEntries = await Add(DropLogEntry.CreateListFullAuto().Result, discordClient);
+            stopWatch.Stop();
+            TimeSpan ts = stopWatch.Elapsed;
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+                ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+            Console.WriteLine("ScrapeTime " + elapsedTime);
 
             foreach (var entry in newEntries)
             {
-                await HelperFunctions.DropAnnouncementAsync(new KeyValuePair<string, DropLogEntry>(entry._entryKey,  entry), discordClient);
+                await HelperFunctions.DropAnnouncementAsync(new KeyValuePair<string, DropLogEntry>(entry._entryKey, entry), discordClient);
             }
 
             int count = RefreshEverything().Count;
@@ -420,7 +434,7 @@ namespace FruitPantry
             {
                 foreach (IList<object> row in values)
                 {
-                    output.Add( new(
+                    output.Add(new(
                                                 playerName: row[RSN],
                                                 fruit: row[Fruit],
                                                 dropName: row[Drop],
@@ -439,7 +453,7 @@ namespace FruitPantry
             return _dropLog;
         }
 
-        public List <DropLogEntry> PurgeThePantry()
+        public List<DropLogEntry> PurgeThePantry()
         {
             Data.ClearValuesRequest requestBody = new Data.ClearValuesRequest();
             SpreadsheetsResource.ValuesResource.ClearRequest request = _service.Spreadsheets.Values.Clear(requestBody, _spreadsheetId, _dropLogRange);
@@ -575,7 +589,7 @@ namespace FruitPantry
 #if FRUITWARSMODE
                         //Console.WriteLine(e.Message);
                         //await discordClient.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(
-                            //$"Warning: Found a fruitless heathen ({entry._playerName}) in scraped Runepixels data. This drop will not be added to the drop log.");
+                        //$"Warning: Found a fruitless heathen ({entry._playerName}) in scraped Runepixels data. This drop will not be added to the drop log.");
                         //continue;
 #endif
                     }
