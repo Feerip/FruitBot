@@ -34,7 +34,7 @@ namespace RS3APIDropLog
 
             Stopwatch JAGXStopwatch = new();
             JAGXStopwatch.Start();
-            Parallel.ForEach(playerNames, new ParallelOptions() { MaxDegreeOfParallelism = 50 }, playerName =>
+            Parallel.ForEach(playerNames, new ParallelOptions() { MaxDegreeOfParallelism = 10 }, playerName =>
             {
                 GetALog(playerName, jsonStrings);
             });
@@ -46,8 +46,6 @@ namespace RS3APIDropLog
 
             Console.WriteLine($"All ALogs pulled. Starting json deserialization...");
 
-            Stopwatch JSONStopwatch = new();
-            JSONStopwatch.Start();
             foreach (string json in jsonStrings)
             {
                 try
@@ -60,13 +58,7 @@ namespace RS3APIDropLog
                 {
                     Console.Out.WriteLineAsync(e.Message);
                 }
-
             }
-            JSONStopwatch.Stop();
-            TimeSpan JSONts = JSONStopwatch.Elapsed;
-            string JSONElapsedTime = string.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                JSONts.Hours, JSONts.Minutes, JSONts.Seconds, JSONts.Milliseconds / 10);
-            Console.WriteLine("JSON time " + JSONElapsedTime);
 
             Console.WriteLine($"Json deserialized, objects back to FruitPantry for processing...");
 
