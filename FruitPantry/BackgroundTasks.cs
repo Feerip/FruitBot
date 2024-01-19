@@ -77,13 +77,13 @@ namespace FruitPantry
             {
 
 
-                float kiwiPoints = 0;
+                float pineapplePoints = 0;
                 float bananaPoints = 0;
                 float applePoints = 0;
                 float peachPoints = 0;
                 float fruitlessHeathenPoints = 0;
 
-                Color kiwi = new(128, 00, 128);
+                Color pineapple = new(128, 00, 128);
                 Color banana = new(255, 255, 0);
                 Color apple = new(255, 0, 0);
                 Color peach = new(255, 192, 203);
@@ -100,9 +100,9 @@ namespace FruitPantry
                 // Build points values
                 foreach (DropLogEntry entry in thePantry.GetDropLog())
                 {
-                    if (entry._fruit.Equals("Kiwi"))
+                    if (entry._fruit.Equals("Pineapple"))
                     {
-                        kiwiPoints += float.Parse(entry._pointValue);
+                        pineapplePoints += float.Parse(entry._pointValue);
                     }
                     else if (entry._fruit.Equals("Banana"))
                     {
@@ -122,11 +122,11 @@ namespace FruitPantry
                     }
                 }
                 // Now find the largest one
-                if (kiwiPoints > largestNumber)
+                if (pineapplePoints > largestNumber)
                 {
-                    largestNumber = kiwiPoints;
-                    leadingColor = kiwi;
-                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.kiwi;
+                    largestNumber = pineapplePoints;
+                    leadingColor = pineapple;
+                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.pineapple;
                 }
                 if (bananaPoints > largestNumber)
                 {
@@ -163,7 +163,7 @@ namespace FruitPantry
                             .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                             .WithColor(leadingColor)
                             .WithThumbnailUrl(leadingTeamPictureURL)
-                            .AddField("🥝Kiwis🥝", $"`{Math.Round(kiwiPoints)}`", true)
+                            .AddField("🥝Pineapples🥝", $"`{Math.Round(pineapplePoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
                             .AddField("🍌Bananas🍌", $"`{Math.Round(bananaPoints)}`", true)
                             .AddField("🍎Apples🍎", $"`{Math.Round(applePoints)}`", true)

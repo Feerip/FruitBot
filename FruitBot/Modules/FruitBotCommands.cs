@@ -342,7 +342,7 @@ namespace FruitBot.Modules
             {
                 _thePantry.RefreshEverything();
 
-                float kiwiPoints = 0;
+                float pineapplePoints = 0;
                 float bananaPoints = 0;
                 float applePoints = 0;
                 float peachPoints = 0;
@@ -360,9 +360,9 @@ namespace FruitBot.Modules
                 // Build points values
                 foreach (DropLogEntry entry in thePantry.GetDropLog())
                 {
-                    if (entry._fruit.Equals(FruitResources.Text.kiwi))
+                    if (entry._fruit.Equals(FruitResources.Text.pineapple))
                     {
-                        kiwiPoints += float.Parse(entry._pointValue);
+                        pineapplePoints += float.Parse(entry._pointValue);
                     }
                     else if (entry._fruit.Equals(FruitResources.Text.banana))
                     {
@@ -382,11 +382,11 @@ namespace FruitBot.Modules
                     }
                 }
                 // Now find the largest one
-                if (kiwiPoints > largestNumber)
+                if (pineapplePoints > largestNumber)
                 {
-                    largestNumber = kiwiPoints;
-                    leadingColor = FruitResources.Colors.kiwi;
-                    leadingTeamPictureURL = FruitResources.Logos.kiwi;
+                    largestNumber = pineapplePoints;
+                    leadingColor = FruitResources.Colors.pineapple;
+                    leadingTeamPictureURL = FruitResources.Logos.pineapple;
                 }
                 if (bananaPoints > largestNumber)
                 {
@@ -423,7 +423,7 @@ namespace FruitBot.Modules
                             .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                             .WithColor(leadingColor)
                             .WithThumbnailUrl(leadingTeamPictureURL)
-                            .AddField("🥝Kiwis🥝", $"`{Math.Round(kiwiPoints)}`", true)
+                            .AddField("🥝Pineapples🥝", $"`{Math.Round(pineapplePoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
                             .AddField("🍌Bananas🍌", $"`{Math.Round(bananaPoints)}`", true)
                             .AddField("🍎Apples🍎", $"`{Math.Round(applePoints)}`", true)

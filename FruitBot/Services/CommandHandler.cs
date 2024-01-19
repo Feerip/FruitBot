@@ -217,12 +217,12 @@ namespace FruitBot.Services
         {
             _thePantry.RefreshEverything();
             Random rand = new(DateTime.Now.Millisecond);
-            List<string> kiwiJob = new();
-            kiwiJob.Add("Also, 🥝Kiwi🥝 is the superior fruit.");
-            kiwiJob.Add("Also, 🥝Kiwi🥝#1");
-            kiwiJob.Add("Also, if 🥝Kiwis🥝 don't win it's rigged.");
-            kiwiJob.Add("Also, 🥝Kiwis🥝 control the bot, just sayin.");
-            kiwiJob.Add("Also, 🥝Kiwis🥝 shall inherit the earth.");
+            List<string> pineappleJob = new();
+            pineappleJob.Add("Also, 🥝Pineapple🥝 is the superior fruit.");
+            pineappleJob.Add("Also, 🥝Pineapple🥝#1");
+            pineappleJob.Add("Also, if 🥝Pineapples🥝 don't win it's rigged.");
+            pineappleJob.Add("Also, 🥝Pineapples🥝 control the bot, just sayin.");
+            pineappleJob.Add("Also, 🥝Pineapples🥝 shall inherit the earth.");
 
 
             if (!message.HasMentionPrefix(_client.CurrentUser, ref argPos))
@@ -252,15 +252,15 @@ namespace FruitBot.Services
                     ulong userID = context.Message.Author.Id;
                     IReadOnlyCollection<SocketRole> userRoles = _client.GetGuild(769476224363397140).GetUser(userID).Roles;
 
-                    SocketRole kiwiRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Kiwis");
+                    SocketRole pineappleRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Pineapples");
                     SocketRole appleRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Apples");
                     SocketRole peachRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Peaches");
                     SocketRole bananaRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Bananas");
                     string userTeam;
                     string userTeamIcon;
-                    if (userRoles.Contains(kiwiRole))
+                    if (userRoles.Contains(pineappleRole))
                     {
-                        userTeam = "Kiwi";
+                        userTeam = "Pineapple";
                         userTeamIcon = "🥝";
                     }
                     else if (userRoles.Contains(appleRole))
@@ -316,7 +316,7 @@ namespace FruitBot.Services
                         await context.User.SendMessageAsync($"{userTeamIcon}Signup confirmed. " +
                             $"{context.Message.Author.Mention} added to database with RSN `{RSNInput}` for team {userTeam}.{userTeamIcon}");
                         await context.User.SendMessageAsync($"{userTeamIcon}If this is not correct, please let an admin know so we can fix the issue.{userTeamIcon}");
-                        await context.User.SendMessageAsync(kiwiJob[rand.Next() % kiwiJob.Count]);
+                        await context.User.SendMessageAsync(pineappleJob[rand.Next() % pineappleJob.Count]);
                     }
                     else
                     {
