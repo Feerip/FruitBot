@@ -423,7 +423,7 @@ namespace FruitBot.Modules
                             .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                             .WithColor(leadingColor)
                             .WithThumbnailUrl(leadingTeamPictureURL)
-                            .AddField("🥝Pineapples🥝", $"`{Math.Round(pineapplePoints)}`", true)
+                            .AddField("🍍Pineapples🍍", $"`{Math.Round(pineapplePoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
                             .AddField("🍌Bananas🍌", $"`{Math.Round(bananaPoints)}`", true)
                             .AddField("🍎Apples🍎", $"`{Math.Round(applePoints)}`", true)
@@ -439,7 +439,7 @@ namespace FruitBot.Modules
 
                 await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
             }
-            //🥝🍌🍎🍑💩
+            //🍍🍌🍎🍑💩
 
         }
 
@@ -694,7 +694,7 @@ namespace FruitBot.Modules
         [Command("betasignup", RunMode = RunMode.Async)]
         public async Task BetaSignup([Remainder] string playerName = null)
         {
-            IEmote[] fruits = { new Emoji("🍎"), new Emoji("🍌"), new Emoji("🥝"), new Emoji("🍑") };
+            IEmote[] fruits = { new Emoji("🍎"), new Emoji("🍌"), new Emoji("🍍"), new Emoji("🍑") };
 
             await Context.Message.AddReactionsAsync(fruits, new());
         }

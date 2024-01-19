@@ -163,7 +163,7 @@ namespace FruitPantry
                             .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
                             .WithColor(leadingColor)
                             .WithThumbnailUrl(leadingTeamPictureURL)
-                            .AddField("🥝Pineapples🥝", $"`{Math.Round(pineapplePoints)}`", true)
+                            .AddField("🍍Pineapples🍍", $"`{Math.Round(pineapplePoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
                             .AddField("🍌Bananas🍌", $"`{Math.Round(bananaPoints)}`", true)
                             .AddField("🍎Apples🍎", $"`{Math.Round(applePoints)}`", true)
@@ -181,7 +181,7 @@ namespace FruitPantry
                 _client.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(null, false, embed);
 #endif
 
-                //🥝🍌🍎🍑💩
+                //🍍🍌🍎🍑💩
 
             }
             return;

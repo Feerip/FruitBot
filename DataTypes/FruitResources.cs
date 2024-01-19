@@ -262,7 +262,7 @@ namespace DataTypes
                 }
 
             }
-            public static string pineapple { get; } = "🥝";
+            public static string pineapple { get; } = "🍍";
 
             public static string banana { get; } = "🍌";
 
@@ -273,6 +273,6 @@ namespace DataTypes
 
 
         }
-        //🥝🍌🍎🍑💩
+        //🍍🍌🍎🍑💩
     }
 }

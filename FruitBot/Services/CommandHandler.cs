@@ -218,11 +218,11 @@ namespace FruitBot.Services
             _thePantry.RefreshEverything();
             Random rand = new(DateTime.Now.Millisecond);
             List<string> pineappleJob = new();
-            pineappleJob.Add("Also, 🥝Pineapple🥝 is the superior fruit.");
-            pineappleJob.Add("Also, 🥝Pineapple🥝#1");
-            pineappleJob.Add("Also, if 🥝Pineapples🥝 don't win it's rigged.");
-            pineappleJob.Add("Also, 🥝Pineapples🥝 control the bot, just sayin.");
-            pineappleJob.Add("Also, 🥝Pineapples🥝 shall inherit the earth.");
+            pineappleJob.Add("Also, 🍍Pineapple🍍 is the superior fruit.");
+            pineappleJob.Add("Also, 🍍Pineapple🍍#1");
+            pineappleJob.Add("Also, if 🍍Pineapples🍍 don't win it's rigged.");
+            pineappleJob.Add("Also, 🍍Pineapples🍍 control the bot, just sayin.");
+            pineappleJob.Add("Also, 🍍Pineapples🍍 shall inherit the earth.");
 
 
             if (!message.HasMentionPrefix(_client.CurrentUser, ref argPos))
@@ -283,7 +283,7 @@ namespace FruitBot.Services
                     if (userRoles.Contains(pineappleRole))
                     {
                         userTeam = "Pineapple";
-                        userTeamIcon = "🥝";
+                        userTeamIcon = "🍍";
                     }
                     else if (userRoles.Contains(appleRole))
                     {
@@ -350,7 +350,7 @@ namespace FruitBot.Services
 
             }
             return;
-        }//🥝🍌🍎🍑💩
+        }//🍍🍌🍎🍑💩
 
         private async Task OnCommandExecuted(Optional<Discord.Commands.CommandInfo> command, ICommandContext context, IResult result)
         {
