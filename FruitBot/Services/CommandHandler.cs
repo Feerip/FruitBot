@@ -252,10 +252,32 @@ namespace FruitBot.Services
                     ulong userID = context.Message.Author.Id;
                     IReadOnlyCollection<SocketRole> userRoles = _client.GetGuild(769476224363397140).GetUser(userID).Roles;
 
-                    SocketRole pineappleRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Pineapples");
-                    SocketRole appleRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Apples");
-                    SocketRole peachRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Peaches");
-                    SocketRole bananaRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Bananas");
+
+                    SocketRole pineappleRole = null;
+                    SocketRole appleRole = null;
+                    SocketRole peachRole = null;
+                    SocketRole bananaRole = null;
+                    try
+                    {
+                        pineappleRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Pineapples");
+                    }
+                    catch { await Console.Out.WriteLineAsync("Pineapples role not found in guild"); }
+                    try
+                    {
+                        appleRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Apples");
+                    }
+                    catch { await Console.Out.WriteLineAsync("Apples role not found in guild"); }
+                    try
+                    {
+                        peachRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Peaches");
+                    }
+                    catch { await Console.Out.WriteLineAsync("Peaches role not found in guild"); }
+                    try
+                    {
+                        bananaRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Bananas");
+                    }
+                    catch { await Console.Out.WriteLineAsync("Bananas role not found in guild"); }
+
                     string userTeam;
                     string userTeamIcon;
                     if (userRoles.Contains(pineappleRole))
