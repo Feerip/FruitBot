@@ -174,7 +174,9 @@ namespace FruitBot.Services
                 return;
             }
 
-            if (message.Content.ToLower().Equals("good bot"))
+            string votingMessageDetectionString = message.Content.ToLower().Replace(_client.CurrentUser.Mention, "").Trim();
+
+            if (votingMessageDetectionString.Equals("good bot"))
             {
                 FruitPantry.FruitPantry.VoteResponse response = _thePantry.QueryGoodBot();
 
@@ -183,21 +185,21 @@ namespace FruitBot.Services
                 // This is on purpose, only send the upvote/downvote tally if the user is not being abusive to my poor baby
             }
 
-            if (message.Content.ToLower().Equals("bad bot"))
+            if (votingMessageDetectionString.Equals("bad bot"))
             {
                 FruitPantry.FruitPantry.VoteResponse response = _thePantry.QueryBadBot();
 
                 await context.Channel.SendMessageAsync(response.message, messageReference: new(context.Message.Id));
             }
 
-            if (message.Content.ToLower().Equals("good gob"))
+            if (votingMessageDetectionString.Equals("good gob"))
             {
                 FruitPantry.FruitPantry.VoteResponse response = _thePantry.QueryGoodGob();
 
                 await context.Channel.SendMessageAsync($"Upvotes: `{response.goodBot}`, Downvotes: `{response.badBot}`", messageReference: new(context.Message.Id));
                 // This is on purpose, only send the upvote/downvote tally if the user is not being abusive to my poor baby
             }
-            if (message.Content.ToLower().Equals("bad gob"))
+            if (votingMessageDetectionString.Equals("bad gob"))
             {
                 FruitPantry.FruitPantry.VoteResponse response = _thePantry.QueryBadGob();
                 await context.Channel.SendMessageAsync($"Upvotes: `{response.goodBot}`, Downvotes: `{response.badBot}`", messageReference: new(context.Message.Id));
