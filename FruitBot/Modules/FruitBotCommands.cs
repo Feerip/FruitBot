@@ -343,9 +343,9 @@ namespace FruitBot.Modules
                 _thePantry.RefreshEverything();
 
                 float pineapplePoints = 0;
-                float bananaPoints = 0;
+                float kiwiPoints = 0;
                 float applePoints = 0;
-                float peachPoints = 0;
+                float beanPoints = 0;
                 float fruitlessHeathenPoints = 0;
 
 
@@ -364,17 +364,17 @@ namespace FruitBot.Modules
                     {
                         pineapplePoints += float.Parse(entry._pointValue);
                     }
-                    else if (entry._fruit.Equals(FruitResources.Text.banana))
+                    else if (entry._fruit.Equals(FruitResources.Text.kiwi))
                     {
-                        bananaPoints += float.Parse(entry._pointValue);
+                        kiwiPoints += float.Parse(entry._pointValue);
                     }
                     else if (entry._fruit.Equals(FruitResources.Text.apple))
                     {
                         applePoints += float.Parse(entry._pointValue);
                     }
-                    else if (entry._fruit.Equals(FruitResources.Text.peach))
+                    else if (entry._fruit.Equals(FruitResources.Text.bean))
                     {
-                        peachPoints += float.Parse(entry._pointValue);
+                        beanPoints += float.Parse(entry._pointValue);
                     }
                     else
                     {
@@ -388,11 +388,11 @@ namespace FruitBot.Modules
                     leadingColor = FruitResources.Colors.pineapple;
                     leadingTeamPictureURL = FruitResources.Logos.pineapple;
                 }
-                if (bananaPoints > largestNumber)
+                if (kiwiPoints > largestNumber)
                 {
-                    largestNumber = bananaPoints;
-                    leadingColor = FruitResources.Colors.banana;
-                    leadingTeamPictureURL = FruitResources.Logos.banana;
+                    largestNumber = kiwiPoints;
+                    leadingColor = FruitResources.Colors.kiwi;
+                    leadingTeamPictureURL = FruitResources.Logos.kiwi;
                 }
                 if (applePoints > largestNumber)
                 {
@@ -400,11 +400,11 @@ namespace FruitBot.Modules
                     leadingColor = FruitResources.Colors.apple;
                     leadingTeamPictureURL = FruitResources.Logos.apple;
                 }
-                if (peachPoints > largestNumber)
+                if (beanPoints > largestNumber)
                 {
-                    largestNumber = peachPoints;
-                    leadingColor = FruitResources.Colors.peach;
-                    leadingTeamPictureURL = FruitResources.Logos.peach;
+                    largestNumber = beanPoints;
+                    leadingColor = FruitResources.Colors.bean;
+                    leadingTeamPictureURL = FruitResources.Logos.bean;
                 }
                 if (fruitlessHeathenPoints > largestNumber)
                 {
@@ -425,10 +425,10 @@ namespace FruitBot.Modules
                             .WithThumbnailUrl(leadingTeamPictureURL)
                             .AddField("🍍Pineapples🍍", $"`{Math.Round(pineapplePoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
-                            .AddField("🍌Bananas🍌", $"`{Math.Round(bananaPoints)}`", true)
+                            .AddField("🥝Kiwis🥝", $"`{Math.Round(kiwiPoints)}`", true)
                             .AddField("🍎Apples🍎", $"`{Math.Round(applePoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
-                            .AddField("🍑Peaches🍑", $"`{Math.Round(peachPoints)}`", true)
+                            .AddField("🫘Beans🫘", $"`{Math.Round(beanPoints)}`", true)
                             .AddField("\u200B", '\u200B', false)
                             .AddField("💩Fruitless Heathens💩", $"`{Math.Round(fruitlessHeathenPoints)}`", false)
                             .WithCurrentTimestamp()
@@ -439,7 +439,7 @@ namespace FruitBot.Modules
 
                 await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
             }
-            //🍍🍌🍎🍑💩
+            //🍍🥝🍎🫘💩
 
         }
 
@@ -694,7 +694,7 @@ namespace FruitBot.Modules
         [Command("betasignup", RunMode = RunMode.Async)]
         public async Task BetaSignup([Remainder] string playerName = null)
         {
-            IEmote[] fruits = { new Emoji("🍎"), new Emoji("🍌"), new Emoji("🍍"), new Emoji("🍑") };
+            IEmote[] fruits = { new Emoji("🍎"), new Emoji("🥝"), new Emoji("🍍"), new Emoji("🫘") };
 
             await Context.Message.AddReactionsAsync(fruits, new());
         }

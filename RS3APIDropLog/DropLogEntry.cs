@@ -52,9 +52,9 @@ namespace RS3APIDropLog
                     return FruitResources.Logos.pineapple;
                 }
 
-                if (_fruit.Equals(FruitResources.Text.banana))
+                if (_fruit.Equals(FruitResources.Text.kiwi))
                 {
-                    return FruitResources.Logos.banana;
+                    return FruitResources.Logos.kiwi;
                 }
 
                 if (_fruit.Equals(FruitResources.Text.apple))
@@ -62,9 +62,9 @@ namespace RS3APIDropLog
                     return FruitResources.Logos.apple;
                 }
 
-                if (_fruit.Equals(FruitResources.Text.peach))
+                if (_fruit.Equals(FruitResources.Text.bean))
                 {
-                    return FruitResources.Logos.peach;
+                    return FruitResources.Logos.bean;
                 }
                 else
                 {

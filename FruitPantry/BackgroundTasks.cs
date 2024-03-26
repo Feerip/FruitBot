@@ -78,15 +78,15 @@ namespace FruitPantry
 
 
                 float pineapplePoints = 0;
-                float bananaPoints = 0;
+                float kiwiPoints = 0;
                 float applePoints = 0;
-                float peachPoints = 0;
+                float beanPoints = 0;
                 float fruitlessHeathenPoints = 0;
 
                 Color pineapple = new(128, 00, 128);
-                Color banana = new(255, 255, 0);
+                Color kiwi = new(255, 255, 0);
                 Color apple = new(255, 0, 0);
-                Color peach = new(255, 192, 203);
+                Color bean = new(255, 192, 203);
                 Color fruitlessHeathen = new(150, 75, 0);
 
                 float largestNumber = 0;
@@ -104,17 +104,17 @@ namespace FruitPantry
                     {
                         pineapplePoints += float.Parse(entry._pointValue);
                     }
-                    else if (entry._fruit.Equals("Banana"))
+                    else if (entry._fruit.Equals("Kiwi"))
                     {
-                        bananaPoints += float.Parse(entry._pointValue);
+                        kiwiPoints += float.Parse(entry._pointValue);
                     }
                     else if (entry._fruit.Equals("Apple"))
                     {
                         applePoints += float.Parse(entry._pointValue);
                     }
-                    else if (entry._fruit.Equals("Peach"))
+                    else if (entry._fruit.Equals("Bean"))
                     {
-                        peachPoints += float.Parse(entry._pointValue);
+                        beanPoints += float.Parse(entry._pointValue);
                     }
                     else
                     {
@@ -128,11 +128,11 @@ namespace FruitPantry
                     leadingColor = pineapple;
                     leadingTeamPictureURL = DataTypes.FruitResources.Logos.pineapple;
                 }
-                if (bananaPoints > largestNumber)
+                if (kiwiPoints > largestNumber)
                 {
-                    largestNumber = bananaPoints;
-                    leadingColor = banana;
-                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.banana;
+                    largestNumber = kiwiPoints;
+                    leadingColor = kiwi;
+                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.kiwi;
                 }
                 if (applePoints > largestNumber)
                 {
@@ -140,11 +140,11 @@ namespace FruitPantry
                     leadingColor = apple;
                     leadingTeamPictureURL = DataTypes.FruitResources.Logos.apple;
                 }
-                if (peachPoints > largestNumber)
+                if (beanPoints > largestNumber)
                 {
-                    largestNumber = peachPoints;
-                    leadingColor = peach;
-                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.peach;
+                    largestNumber = beanPoints;
+                    leadingColor = bean;
+                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.bean;
                 }
                 if (fruitlessHeathenPoints > largestNumber)
                 {
@@ -165,10 +165,10 @@ namespace FruitPantry
                             .WithThumbnailUrl(leadingTeamPictureURL)
                             .AddField("🍍Pineapples🍍", $"`{Math.Round(pineapplePoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
-                            .AddField("🍌Bananas🍌", $"`{Math.Round(bananaPoints)}`", true)
+                            .AddField("🥝Kiwis🥝", $"`{Math.Round(kiwiPoints)}`", true)
                             .AddField("🍎Apples🍎", $"`{Math.Round(applePoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
-                            .AddField("🍑Peaches🍑", $"`{Math.Round(peachPoints)}`", true)
+                            .AddField("🫘Beans🫘", $"`{Math.Round(beanPoints)}`", true)
                             .AddField("\u200B", '\u200B', false)
                             .AddField("💩Fruitless Heathens💩", $"`{Math.Round(fruitlessHeathenPoints)}`", false)
                             .WithCurrentTimestamp()
@@ -181,7 +181,7 @@ namespace FruitPantry
                 _client.GetGuild(769476224363397140).GetTextChannel(862385904719364096).SendMessageAsync(null, false, embed);
 #endif
 
-                //🍍🍌🍎🍑💩
+                //🍍🥝🍎🫘💩
 
             }
             return;
