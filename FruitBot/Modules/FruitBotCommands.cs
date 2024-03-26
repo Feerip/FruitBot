@@ -703,7 +703,8 @@ namespace FruitBot.Modules
         public async Task Bosses([Remainder] string input = null)
         {
             SortedDictionary<string, float> classifications = _thePantry.GetClassifications();
-
+            int thresholdValue = _thePantry._universalThresholdValue;
+            float thresholdMultiplier = _thePantry._thresholdMultiplier;
 
             decimal totalClassifications = classifications.Count;
             decimal fieldsPerEmbed = 24;
@@ -720,6 +721,9 @@ namespace FruitBot.Modules
             builders[0].Title = "Points per drop:";
             builders[0].Description = "[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)";
             builders[0].ThumbnailUrl = "https://runescape.wiki/images/7/74/Zero_weakness_icon.png?acad6";
+            EmbedFooterBuilder footerBuilder = new EmbedFooterBuilder()
+                .WithText($"Threshold (# of drops): {thresholdValue}, Threshold Multiplier: {thresholdMultiplier}.");
+            builders[numEmbedsNeeded].Footer = footerBuilder;
 
             int currentClassificationNumber = 1;
             int currentEmbed = 0;
