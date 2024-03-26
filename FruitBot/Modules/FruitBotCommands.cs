@@ -723,7 +723,7 @@ namespace FruitBot.Modules
             builders[0].ThumbnailUrl = "https://runescape.wiki/images/7/74/Zero_weakness_icon.png?acad6";
             EmbedFooterBuilder footerBuilder = new EmbedFooterBuilder()
                 .WithText($"Threshold (# of drops): {thresholdValue}, Threshold Multiplier: {thresholdMultiplier}.");
-            builders[numEmbedsNeeded].Footer = footerBuilder;
+            builders[numEmbedsNeeded-1].Footer = footerBuilder;
 
             int currentClassificationNumber = 1;
             int currentEmbed = 0;
