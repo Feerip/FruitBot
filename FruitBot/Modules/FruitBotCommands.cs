@@ -704,21 +704,40 @@ namespace FruitBot.Modules
         {
             SortedDictionary<string, float> classifications = _thePantry.GetClassifications();
 
-            EmbedBuilder builder = new EmbedBuilder()
-                .WithTitle("Points per boss drop:")
-                .WithDescription("[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)")
-                .WithColor(new(0, 255, 0))
-                .WithThumbnailUrl("https://runescape.wiki/images/7/74/Zero_weakness_icon.png?acad6");
-            ;
+
+            decimal totalClassifications = classifications.Count;
+            decimal fieldsPerEmbed = 24;
+            int numEmbedsNeeded = (int)Math.Ceiling(totalClassifications / fieldsPerEmbed);
+            Embed[] embeds = new Embed[numEmbedsNeeded];
+            EmbedBuilder[] builders = new EmbedBuilder[numEmbedsNeeded];
+
+            for (int idx = 0; idx < numEmbedsNeeded; idx++)
+            {
+                builders[idx] = new EmbedBuilder()
+                    .WithColor(new(0, 255, 0))
+                ;
+            }
+            builders[0].Title = "Points per drop:";
+            builders[0].Description = "[Spreadsheet Link](https://docs.google.com/spreadsheets/d/1iCJHsiC4nEjjFz1Gmw4aTldnMFR5ZAlGSuJfHbP262s/edit?usp=sharing)";
+            builders[0].ThumbnailUrl = "https://runescape.wiki/images/7/74/Zero_weakness_icon.png?acad6";
+
+            int currentClassificationNumber = 1;
+            int currentEmbed = 0;
             foreach (KeyValuePair<string, float> classification in classifications)
             {
-                builder.AddField(classification.Key, classification.Value, inline: true);
+                builders[currentEmbed].AddField(classification.Key, classification.Value, inline: true);
+                if (currentClassificationNumber++%fieldsPerEmbed == 0) 
+                {
+                    currentEmbed++;
+                }
             }
 
+            for (int idx = 0; idx < numEmbedsNeeded; idx++)
+            {
+                embeds[idx] = builders[idx].Build();
+            }
 
-            Embed embed = builder.Build();
-
-            await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
+            await Context.Channel.SendMessageAsync(null, false, embeds: embeds, messageReference: new(Context.Message.Id));
 
         }
 
