@@ -137,7 +137,16 @@ namespace FruitPantry
 
                 foreach (DropLogEntry entry in playerLog)
                 {
+                    /* changed 03-26-2024:
+                     * Old method of preventing non-eligible drops from counting towards threshold was to 
+                     * check to see if their assigned point value was 0. This was a hack job and is now being removed.
+                     * Proper method is to verify that a fruit team was assigned to the drop.
+                     * Note: Drops without an assigned fruit will have their fruit set to "" (empty string)
+                     * rather than null or fruitless heathen
+                     * WARNING: WILL NOT UPDATE THRESHOLD VALUE FOR PRIOR DROPS IF ADMINS CHANGE ELIGIBILITY OF A DROP.
                     if (entry._bossName.Equals(bossName) && (float.Parse(entry._pointValue) > 0))
+                    */
+                    if (entry._bossName.Equals(bossName) && (!entry._fruit.Equals("")))
                     {
                         dropsFromThisBoss++;
                     }
@@ -603,7 +612,13 @@ namespace FruitPantry
                     }
                     entry._bossName = _itemDatabase[entry._dropName.ToLower()]._classification;
                     // Drops gotten by people who haven't signed up yet must not be assigned a point value
+                    /* REVERSED 03-26-2024:
+                     * Old method was a hack job to prevent non-eligible drops from counting towards threshold.
+                     * Proper way to do it is for the threshold function to only count drops with an assigned team towards their threshold result.
+                     * -feerip
                     entry._pointValue = fruitlessHeathen ? "0" : PointsCalculator.CalculatePoints(entry).ToString();
+                    */
+                    entry._pointValue = PointsCalculator.CalculatePoints(entry).ToString();
 
                 }
                 //If unknown item
