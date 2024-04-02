@@ -514,7 +514,7 @@ namespace FruitBot.Modules
                         players = null;
                     }
 
-                    List<string> output = await FruitPantry.HelperFunctions.BuildPointsList(players);
+                    List<string> output = await FruitPantry.HelperFunctions.BuildPointsList(players, args.Fruit);
 
                     int numMessages = output.Count;
 

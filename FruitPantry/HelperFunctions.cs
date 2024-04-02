@@ -263,7 +263,7 @@ namespace FruitPantry
             }
         }
 
-        public static async Task<List<string>> BuildPointsList(SortedDictionary<string, float> teamMembers)
+        public static async Task<List<string>> BuildPointsList(SortedDictionary<string, float> teamMembers, string fruit)
         {
             List<string> messages = new();
             List<string> lines = new();
@@ -276,10 +276,11 @@ namespace FruitPantry
 
             int idx = 0;
             int linesAdded = 0;
-
+            float totalPointsInList = 0;
 
             foreach (KeyValuePair<string, float> player in query)
             {
+                totalPointsInList += player.Value;
                 string playerName = player.Key;
                 float playerPoints = player.Value;
 
@@ -316,6 +317,8 @@ namespace FruitPantry
                         {
                             message += line;
                         }
+                        message += "----------------------------\n";
+                        message += string.Format("| {0,-14} | {1,7} |", FruitResources.Emojis.Get(fruit) + "Total: ", totalPointsInList.ToString("0.00")) + "\n";
                         message += "----------------------------```";
                         messages.Add(message);
                     }
