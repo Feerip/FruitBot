@@ -219,12 +219,12 @@ namespace FruitBot.Services
         {
             _thePantry.RefreshEverything();
             Random rand = new(DateTime.Now.Millisecond);
-            List<string> pineappleJob = new();
-            pineappleJob.Add("Also, 🍍Pineapple🍍 is the superior fruit.");
-            pineappleJob.Add("Also, 🍍Pineapple🍍#1");
-            pineappleJob.Add("Also, if 🍍Pineapples🍍 don't win it's rigged.");
-            pineappleJob.Add("Also, 🍍Pineapples🍍 control the bot, just sayin.");
-            pineappleJob.Add("Also, 🍍Pineapples🍍 shall inherit the earth.");
+            List<string> bananaJob = new();
+            bananaJob.Add("Also, 🍌Banana🍌 is the superior fruit.");
+            bananaJob.Add("Also, 🍌Banana🍌#1");
+            bananaJob.Add("Also, if 🍌Bananas🍌 don't win it's rigged.");
+            bananaJob.Add("Also, 🍌Bananas🍌 control the bot, just sayin.");
+            bananaJob.Add("Also, 🍌Bananas🍌 shall inherit the earth.");
 
 
             if (!message.HasMentionPrefix(_client.CurrentUser, ref argPos))
@@ -255,20 +255,20 @@ namespace FruitBot.Services
                     IReadOnlyCollection<SocketRole> userRoles = _client.GetGuild(769476224363397140).GetUser(userID).Roles;
 
 
-                    SocketRole pineappleRole = null;
-                    SocketRole appleRole = null;
+                    SocketRole bananaRole = null;
+                    SocketRole mangoRole = null;
                     SocketRole beanRole = null;
                     SocketRole kiwiRole = null;
                     try
                     {
-                        pineappleRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Pineapples");
+                        bananaRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Bananas");
                     }
-                    catch { await Console.Out.WriteLineAsync("Pineapples role not found in guild"); }
+                    catch { await Console.Out.WriteLineAsync("Bananas role not found in guild"); }
                     try
                     {
-                        appleRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Apples");
+                        mangoRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Mangoes");
                     }
-                    catch { await Console.Out.WriteLineAsync("Apples role not found in guild"); }
+                    catch { await Console.Out.WriteLineAsync("Mangoes role not found in guild"); }
                     try
                     {
                         beanRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Beans");
@@ -282,15 +282,15 @@ namespace FruitBot.Services
 
                     string userTeam;
                     string userTeamIcon;
-                    if (userRoles.Contains(pineappleRole))
+                    if (userRoles.Contains(bananaRole))
                     {
-                        userTeam = "Pineapple";
-                        userTeamIcon = "🍍";
+                        userTeam = "Banana";
+                        userTeamIcon = "🍌";
                     }
-                    else if (userRoles.Contains(appleRole))
+                    else if (userRoles.Contains(mangoRole))
                     {
-                        userTeam = "Apple";
-                        userTeamIcon = "🍎";
+                        userTeam = "Mango";
+                        userTeamIcon = "🥭";
                     }
                     else if (userRoles.Contains(beanRole))
                     {
@@ -340,7 +340,7 @@ namespace FruitBot.Services
                         await context.User.SendMessageAsync($"{userTeamIcon}Signup confirmed. " +
                             $"{context.Message.Author.Mention} added to database with RSN `{RSNInput}` for team {userTeam}.{userTeamIcon}");
                         await context.User.SendMessageAsync($"{userTeamIcon}If this is not correct, please let an admin know so we can fix the issue.{userTeamIcon}");
-                        await context.User.SendMessageAsync(pineappleJob[rand.Next() % pineappleJob.Count]);
+                        await context.User.SendMessageAsync(bananaJob[rand.Next() % bananaJob.Count]);
                     }
                     else
                     {
@@ -352,7 +352,7 @@ namespace FruitBot.Services
 
             }
             return;
-        }//🍍🥝🍎🫘💩
+        }//🍌🥝🥭🫘💩
 
         private async Task OnCommandExecuted(Optional<Discord.Commands.CommandInfo> command, ICommandContext context, IResult result)
         {

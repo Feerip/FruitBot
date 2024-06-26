@@ -32,9 +32,9 @@ namespace DataTypes
                 {
                     return fruitlessHeathen;
                 }
-                if (fruit.Equals(Text.pineapple))
+                if (fruit.Equals(Text.banana))
                 {
-                    return pineapple;
+                    return banana;
                 }
 
                 if (fruit.Equals(Text.kiwi))
@@ -42,9 +42,9 @@ namespace DataTypes
                     return kiwi;
                 }
 
-                if (fruit.Equals(Text.apple))
+                if (fruit.Equals(Text.mango))
                 {
-                    return apple;
+                    return mango;
                 }
 
                 if (fruit.Equals(Text.bean))
@@ -56,9 +56,9 @@ namespace DataTypes
                     return fruitlessHeathen;
                 }
             }
-            public static Discord.Color pineapple = new(128, 00, 128);
+            public static Discord.Color banana = new(128, 00, 128);
             public static Discord.Color kiwi = new(255, 255, 0);
-            public static Discord.Color apple = new(255, 0, 0);
+            public static Discord.Color mango = new(255, 0, 0);
             public static Discord.Color bean = new(255, 192, 203);
             public static Discord.Color fruitlessHeathen = new(150, 75, 0);
         }
@@ -70,9 +70,9 @@ namespace DataTypes
                 {
                     return fruitlessHeathen;
                 }
-                if (fruit.Equals(pineapple))
+                if (fruit.Equals(banana))
                 {
-                    return pineapple;
+                    return banana;
                 }
 
                 if (fruit.Equals(kiwi))
@@ -80,9 +80,9 @@ namespace DataTypes
                     return kiwi;
                 }
 
-                if (fruit.Equals(apple))
+                if (fruit.Equals(mango))
                 {
-                    return apple;
+                    return mango;
                 }
 
                 if (fruit.Equals(bean))
@@ -94,9 +94,9 @@ namespace DataTypes
                     return fruitlessHeathen;
                 }
             }
-            public static string pineapple { get; } = "Pineapple";
+            public static string banana { get; } = "Banana";
             public static string kiwi { get; } = "Kiwi";
-            public static string apple { get; } = "Apple";
+            public static string mango { get; } = "Mango";
             public static string bean { get; } = "Bean";
             public static string fruitlessHeathen { get; } = "Fruitless Heathen";
 
@@ -113,9 +113,9 @@ namespace DataTypes
                     fruit = fruitlessHeathen;
                     return true;
                 }
-                else if (input.Equals(Text.pineapple, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.pineapple, StringComparison.OrdinalIgnoreCase))
+                else if (input.Equals(Text.banana, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.banana, StringComparison.OrdinalIgnoreCase))
                 {
-                    fruit = pineapple;
+                    fruit = banana;
                     return true;
                 }
                 else if (input.Equals(Text.kiwi, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.kiwi, StringComparison.OrdinalIgnoreCase))
@@ -123,9 +123,9 @@ namespace DataTypes
                     fruit = kiwi;
                     return true;
                 }
-                else if (input.Equals(Text.apple, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.apple, StringComparison.OrdinalIgnoreCase))
+                else if (input.Equals(Text.mango, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.mango, StringComparison.OrdinalIgnoreCase))
                 {
-                    fruit = apple;
+                    fruit = mango;
                     return true;
                 }
                 else if (input.Equals(Text.bean, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.bean, StringComparison.OrdinalIgnoreCase))
@@ -149,9 +149,9 @@ namespace DataTypes
                 {
                     return fruitlessHeathen;
                 }
-                if (fruit.Equals(Text.pineapple))
+                if (fruit.Equals(Text.banana))
                 {
-                    return pineapple;
+                    return banana;
                 }
 
                 if (fruit.Equals(Text.kiwi))
@@ -159,9 +159,9 @@ namespace DataTypes
                     return kiwi;
                 }
 
-                if (fruit.Equals(Text.apple))
+                if (fruit.Equals(Text.mango))
                 {
-                    return apple;
+                    return mango;
                 }
 
                 if (fruit.Equals(Text.bean))
@@ -173,9 +173,9 @@ namespace DataTypes
                     return fruitlessHeathen;
                 }
             }
-            public static string pineapple { get; } = "Pineapples";
+            public static string banana { get; } = "Bananas";
             public static string kiwi { get; } = "Kiwis";
-            public static string apple { get; } = "Apples";
+            public static string mango { get; } = "Mangoes";
             public static string bean { get; } = "Beans";
             public static string fruitlessHeathen { get; } = "Fruitless Heathens";
 
@@ -190,9 +190,9 @@ namespace DataTypes
                 {
                     return fruitlessHeathen;
                 }
-                if (fruit.Equals(Text.pineapple))
+                if (fruit.Equals(Text.banana))
                 {
-                    return pineapple;
+                    return banana;
                 }
 
                 if (fruit.Equals(Text.kiwi))
@@ -200,9 +200,9 @@ namespace DataTypes
                     return kiwi;
                 }
 
-                if (fruit.Equals(Text.apple))
+                if (fruit.Equals(Text.mango))
                 {
-                    return apple;
+                    return mango;
                 }
 
                 if (fruit.Equals(Text.bean))
@@ -214,14 +214,14 @@ namespace DataTypes
                     return fruitlessHeathen;
                 }
             }
-            public static string pineapple { get; }
-                = "https://cdn.discordapp.com/attachments/856679881547186196/859869023607717898/PineappleThing.png";
+            public static string banana { get; }
+                = "https://cdn.discordapp.com/attachments/856679881547186196/859869023607717898/BananaThing.png";
 
             public static string kiwi { get; }
                 = "https://cdn.discordapp.com/attachments/856679881547186196/859869014507257896/KiwiThing.png";
 
-            public static string apple { get; }
-                = "https://cdn.discordapp.com/attachments/856679881547186196/859869003572838420/AppleThing.png";
+            public static string mango { get; }
+                = "https://cdn.discordapp.com/attachments/856679881547186196/859869003572838420/MangoThing.png";
 
             public static string bean { get; }
                 = "https://cdn.discordapp.com/attachments/856679881547186196/859868992339968050/BeanThing.png";
@@ -237,9 +237,9 @@ namespace DataTypes
                 {
                     return fruitlessHeathen;
                 }
-                else if (fruit.Equals(Text.pineapple))
+                else if (fruit.Equals(Text.banana))
                 {
-                    return pineapple;
+                    return banana;
                 }
 
                 else if (fruit.Equals(Text.kiwi))
@@ -247,9 +247,9 @@ namespace DataTypes
                     return kiwi;
                 }
 
-                else if (fruit.Equals(Text.apple))
+                else if (fruit.Equals(Text.mango))
                 {
-                    return apple;
+                    return mango;
                 }
 
                 else if (fruit.Equals(Text.bean))
@@ -262,17 +262,17 @@ namespace DataTypes
                 }
 
             }
-            public static string pineapple { get; } = "🍍";
+            public static string banana { get; } = "🍌";
 
             public static string kiwi { get; } = "🥝";
 
-            public static string apple { get; } = "🍎";
+            public static string mango { get; } = "🥭";
 
             public static string bean { get; } = "🫘";
             public static string fruitlessHeathen { get; } = "💩";
 
 
         }
-        //🍍🥝🍎🫘💩
+        //🍌🥝🥭🫘💩
     }
 }
