@@ -346,6 +346,7 @@ namespace FruitBot.Modules
                 float kiwiPoints = 0;
                 float watermelonPoints = 0;
                 float beanPoints = 0;
+                float peachPoints = 0;
                 float fruitlessHeathenPoints = 0;
 
 
@@ -375,6 +376,10 @@ namespace FruitBot.Modules
                     else if (entry._fruit.Equals(FruitResources.Text.bean))
                     {
                         beanPoints += float.Parse(entry._pointValue);
+                    }
+                    else if (entry._fruit.Equals(FruitResources.Text.peach))
+                    {
+                        peachPoints += float.Parse(entry._pointValue);
                     }
                     else
                     {
@@ -406,6 +411,12 @@ namespace FruitBot.Modules
                     leadingColor = FruitResources.Colors.bean;
                     leadingTeamPictureURL = FruitResources.Logos.bean;
                 }
+                if (peachPoints > largestNumber)
+                {
+                    largestNumber = peachPoints;
+                    leadingColor = FruitResources.Colors.peach;
+                    leadingTeamPictureURL = FruitResources.Logos.peach;
+                }
                 if (fruitlessHeathenPoints > largestNumber)
                 {
                     largestNumber = fruitlessHeathenPoints;
@@ -429,6 +440,7 @@ namespace FruitBot.Modules
                             .AddField("🍉Watermelons🍉", $"`{Math.Round(watermelonPoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
                             .AddField("🫘Beans🫘", $"`{Math.Round(beanPoints)}`", true)
+                            .AddField("🍑Peaches🍑", $"`{Math.Round(peachPoints)}`", true)
                             .AddField("\u200B", '\u200B', false)
                             .AddField("💩Fruitless Heathens💩", $"`{Math.Round(fruitlessHeathenPoints)}`", false)
                             .WithCurrentTimestamp()

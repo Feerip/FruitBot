@@ -51,15 +51,20 @@ namespace DataTypes
                 {
                     return bean;
                 }
-                else
+
+                if (fruit.Equals(Text.peach))
                 {
-                    return fruitlessHeathen;
+                    return peach;
                 }
+
+                return fruitlessHeathen;
+                
             }
             public static Discord.Color banana = new(128, 00, 128);
             public static Discord.Color kiwi = new(255, 255, 0);
             public static Discord.Color watermelon = new(255, 0, 0);
             public static Discord.Color bean = new(255, 192, 203);
+            public static Discord.Color peach = new(255, 229, 180);
             public static Discord.Color fruitlessHeathen = new(150, 75, 0);
         }
         public static class Text
@@ -89,15 +94,25 @@ namespace DataTypes
                 {
                     return bean;
                 }
-                else
+
+                if (fruit.Equals(peach))
                 {
-                    return fruitlessHeathen;
+                    return peach;
                 }
+
+                if (fruit.Equals(Text.peach))
+                {
+                    return peach;
+                }
+
+                return fruitlessHeathen;
+ 
             }
             public static string banana { get; } = "Banana";
             public static string kiwi { get; } = "Kiwi";
             public static string watermelon { get; } = "Watermelon";
             public static string bean { get; } = "Bean";
+            public static string peach { get; } = "Peach";
             public static string fruitlessHeathen { get; } = "Fruitless Heathen";
 
 
@@ -131,6 +146,11 @@ namespace DataTypes
                 else if (input.Equals(Text.bean, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.bean, StringComparison.OrdinalIgnoreCase))
                 {
                     fruit = bean;
+                    return true;
+                }
+                else if (input.Equals(Text.peach, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.peach, StringComparison.OrdinalIgnoreCase))
+                {
+                    fruit = peach;
                     return true;
                 }
                 else
@@ -168,15 +188,19 @@ namespace DataTypes
                 {
                     return bean;
                 }
-                else
+                
+                if (fruit.Equals(Text.peach))
                 {
-                    return fruitlessHeathen;
+                    return peach;
                 }
+                
+                return fruitlessHeathen;
             }
             public static string banana { get; } = "Bananas";
             public static string kiwi { get; } = "Kiwis";
             public static string watermelon { get; } = "Watermelons";
             public static string bean { get; } = "Beans";
+            public static string peach { get; } = "Peaches";
             public static string fruitlessHeathen { get; } = "Fruitless Heathens";
 
 
@@ -209,10 +233,13 @@ namespace DataTypes
                 {
                     return bean;
                 }
-                else
+
+                if (fruit.Equals(Text.peach))
                 {
-                    return fruitlessHeathen;
+                    return peach;
                 }
+
+                return fruitlessHeathen;
             }
             public static string banana { get; }
                 = "https://cdn.discordapp.com/attachments/856679881547186196/859869023607717898/BananaThing.png";
@@ -225,6 +252,10 @@ namespace DataTypes
 
             public static string bean { get; }
                 = "https://cdn.discordapp.com/attachments/856679881547186196/859868992339968050/BeanThing.png";
+
+            public static string peach { get; }
+                = "https://cdn.discordapp.com/attachments/856679881547186196/859868992339968050/PeachThing.png";
+
             public static string fruitlessHeathen { get; }
                 = "https://runescape.wiki/images/b/b8/Ugthanki_dung_detail.png";
 
@@ -256,23 +287,30 @@ namespace DataTypes
                 {
                     return bean;
                 }
-                else
+                
+                if (fruit.Equals(Text.peach))
                 {
-                    return fruitlessHeathen;
+                    return peach;
                 }
+
+                return fruitlessHeathen;
+                
 
             }
             public static string banana { get; } = "🍌";
 
             public static string kiwi { get; } = "🥝";
 
-            public static string watermelon { get; } = "🥭";
+            public static string watermelon { get; } = "🍉";
 
             public static string bean { get; } = "🫘";
+
+            public static string peach { get; } = "🍑";
+
             public static string fruitlessHeathen { get; } = "💩";
 
 
         }
-        //🍌🥝🥭🫘💩
+        //🍌🥝🍉🫘🍑💩
     }
 }

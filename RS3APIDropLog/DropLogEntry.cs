@@ -66,11 +66,15 @@ namespace RS3APIDropLog
                 {
                     return FruitResources.Logos.bean;
                 }
-                else
+
+                if (_fruit.Equals(FruitResources.Text.peach))
                 {
-                    return FruitResources.Logos.fruitlessHeathen;
+                    return FruitResources.Logos.peach;
                 }
+                                
+                return FruitResources.Logos.fruitlessHeathen;
                 //placeholder for "fruitless heathen"
+
             }
         }
         public string GetFruitMention(SocketGuild guild)

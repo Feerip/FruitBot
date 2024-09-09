@@ -81,12 +81,14 @@ namespace FruitPantry
                 float kiwiPoints = 0;
                 float watermelonPoints = 0;
                 float beanPoints = 0;
+                float peachPoints = 0;
                 float fruitlessHeathenPoints = 0;
 
                 Color banana = new(128, 00, 128);
                 Color kiwi = new(255, 255, 0);
                 Color watermelon = new(255, 0, 0);
                 Color bean = new(255, 192, 203);
+                Color peach = new Color(255, 229, 180);
                 Color fruitlessHeathen = new(150, 75, 0);
 
                 float largestNumber = 0;
@@ -115,6 +117,10 @@ namespace FruitPantry
                     else if (entry._fruit.Equals("Bean"))
                     {
                         beanPoints += float.Parse(entry._pointValue);
+                    }
+                    else if (entry._fruit.Equals("Peach"))
+                    {
+                        peachPoints += float.Parse(entry._pointValue);
                     }
                     else
                     {
@@ -146,6 +152,12 @@ namespace FruitPantry
                     leadingColor = bean;
                     leadingTeamPictureURL = DataTypes.FruitResources.Logos.bean;
                 }
+                if (peachPoints > largestNumber)
+                {
+                    largestNumber = peachPoints;
+                    leadingColor = peach;
+                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.peach;
+                }
                 if (fruitlessHeathenPoints > largestNumber)
                 {
                     largestNumber = fruitlessHeathenPoints;
@@ -169,6 +181,7 @@ namespace FruitPantry
                             .AddField("🥭Watermelons🥭", $"`{Math.Round(watermelonPoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
                             .AddField("🫘Beans🫘", $"`{Math.Round(beanPoints)}`", true)
+                            .AddField("🍑Peaches🍑", $"`{Math.Round(peachPoints)}`", true)
                             .AddField("\u200B", '\u200B', false)
                             .AddField("💩Fruitless Heathens💩", $"`{Math.Round(fruitlessHeathenPoints)}`", false)
                             .WithCurrentTimestamp()
