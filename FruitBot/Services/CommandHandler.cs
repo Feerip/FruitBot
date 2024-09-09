@@ -256,7 +256,7 @@ namespace FruitBot.Services
 
 
                     SocketRole bananaRole = null;
-                    SocketRole mangoRole = null;
+                    SocketRole watermelonRole = null;
                     SocketRole beanRole = null;
                     SocketRole kiwiRole = null;
                     try
@@ -266,9 +266,9 @@ namespace FruitBot.Services
                     catch { await Console.Out.WriteLineAsync("Bananas role not found in guild"); }
                     try
                     {
-                        mangoRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Mangoes");
+                        watermelonRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Watermelons");
                     }
-                    catch { await Console.Out.WriteLineAsync("Mangoes role not found in guild"); }
+                    catch { await Console.Out.WriteLineAsync("Watermelons role not found in guild"); }
                     try
                     {
                         beanRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Beans");
@@ -287,9 +287,9 @@ namespace FruitBot.Services
                         userTeam = "Banana";
                         userTeamIcon = "🍌";
                     }
-                    else if (userRoles.Contains(mangoRole))
+                    else if (userRoles.Contains(watermelonRole))
                     {
-                        userTeam = "Mango";
+                        userTeam = "Watermelon";
                         userTeamIcon = "🥭";
                     }
                     else if (userRoles.Contains(beanRole))

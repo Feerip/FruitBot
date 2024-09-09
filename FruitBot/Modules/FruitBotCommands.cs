@@ -344,7 +344,7 @@ namespace FruitBot.Modules
 
                 float bananaPoints = 0;
                 float kiwiPoints = 0;
-                float mangoPoints = 0;
+                float watermelonPoints = 0;
                 float beanPoints = 0;
                 float fruitlessHeathenPoints = 0;
 
@@ -368,9 +368,9 @@ namespace FruitBot.Modules
                     {
                         kiwiPoints += float.Parse(entry._pointValue);
                     }
-                    else if (entry._fruit.Equals(FruitResources.Text.mango))
+                    else if (entry._fruit.Equals(FruitResources.Text.watermelon))
                     {
-                        mangoPoints += float.Parse(entry._pointValue);
+                        watermelonPoints += float.Parse(entry._pointValue);
                     }
                     else if (entry._fruit.Equals(FruitResources.Text.bean))
                     {
@@ -394,11 +394,11 @@ namespace FruitBot.Modules
                     leadingColor = FruitResources.Colors.kiwi;
                     leadingTeamPictureURL = FruitResources.Logos.kiwi;
                 }
-                if (mangoPoints > largestNumber)
+                if (watermelonPoints > largestNumber)
                 {
-                    largestNumber = mangoPoints;
-                    leadingColor = FruitResources.Colors.mango;
-                    leadingTeamPictureURL = FruitResources.Logos.mango;
+                    largestNumber = watermelonPoints;
+                    leadingColor = FruitResources.Colors.watermelon;
+                    leadingTeamPictureURL = FruitResources.Logos.watermelon;
                 }
                 if (beanPoints > largestNumber)
                 {
@@ -426,7 +426,7 @@ namespace FruitBot.Modules
                             .AddField("🍌Bananas🍌", $"`{Math.Round(bananaPoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
                             .AddField("🥝Kiwis🥝", $"`{Math.Round(kiwiPoints)}`", true)
-                            .AddField("🥭Mangoes🥭", $"`{Math.Round(mangoPoints)}`", true)
+                            .AddField("🍉Watermelons🍉", $"`{Math.Round(watermelonPoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
                             .AddField("🫘Beans🫘", $"`{Math.Round(beanPoints)}`", true)
                             .AddField("\u200B", '\u200B', false)
@@ -439,7 +439,7 @@ namespace FruitBot.Modules
 
                 await Context.Channel.SendMessageAsync(null, false, embed, messageReference: new(Context.Message.Id));
             }
-            //🍌🥝🥭🫘💩
+            //🍌🥝🍉🫘💩
 
         }
 
@@ -694,7 +694,7 @@ namespace FruitBot.Modules
         [Command("betasignup", RunMode = RunMode.Async)]
         public async Task BetaSignup([Remainder] string playerName = null)
         {
-            IEmote[] fruits = { new Emoji("🥭"), new Emoji("🥝"), new Emoji("🍌"), new Emoji("🫘") };
+            IEmote[] fruits = { new Emoji("🍉"), new Emoji("🥝"), new Emoji("🍌"), new Emoji("🫘") };
 
             await Context.Message.AddReactionsAsync(fruits, new());
         }

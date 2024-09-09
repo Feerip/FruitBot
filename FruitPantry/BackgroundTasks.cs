@@ -79,13 +79,13 @@ namespace FruitPantry
 
                 float bananaPoints = 0;
                 float kiwiPoints = 0;
-                float mangoPoints = 0;
+                float watermelonPoints = 0;
                 float beanPoints = 0;
                 float fruitlessHeathenPoints = 0;
 
                 Color banana = new(128, 00, 128);
                 Color kiwi = new(255, 255, 0);
-                Color mango = new(255, 0, 0);
+                Color watermelon = new(255, 0, 0);
                 Color bean = new(255, 192, 203);
                 Color fruitlessHeathen = new(150, 75, 0);
 
@@ -108,9 +108,9 @@ namespace FruitPantry
                     {
                         kiwiPoints += float.Parse(entry._pointValue);
                     }
-                    else if (entry._fruit.Equals("Mango"))
+                    else if (entry._fruit.Equals("Watermelon"))
                     {
-                        mangoPoints += float.Parse(entry._pointValue);
+                        watermelonPoints += float.Parse(entry._pointValue);
                     }
                     else if (entry._fruit.Equals("Bean"))
                     {
@@ -134,11 +134,11 @@ namespace FruitPantry
                     leadingColor = kiwi;
                     leadingTeamPictureURL = DataTypes.FruitResources.Logos.kiwi;
                 }
-                if (mangoPoints > largestNumber)
+                if (watermelonPoints > largestNumber)
                 {
-                    largestNumber = mangoPoints;
-                    leadingColor = mango;
-                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.mango;
+                    largestNumber = watermelonPoints;
+                    leadingColor = watermelon;
+                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.watermelon;
                 }
                 if (beanPoints > largestNumber)
                 {
@@ -166,7 +166,7 @@ namespace FruitPantry
                             .AddField("🍌Bananas🍌", $"`{Math.Round(bananaPoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
                             .AddField("🥝Kiwis🥝", $"`{Math.Round(kiwiPoints)}`", true)
-                            .AddField("🥭Mangoes🥭", $"`{Math.Round(mangoPoints)}`", true)
+                            .AddField("🥭Watermelons🥭", $"`{Math.Round(watermelonPoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
                             .AddField("🫘Beans🫘", $"`{Math.Round(beanPoints)}`", true)
                             .AddField("\u200B", '\u200B', false)
