@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<DefineConstants>FRUITWARSMODE</DefineConstants>
+		<!--<DefineConstants>FRUITWARSMODE</DefineConstants>-->
 		<!--placeholder-->
 		<OutputType>Exe</OutputType>
 		<TargetFramework>net7.0</TargetFramework>
