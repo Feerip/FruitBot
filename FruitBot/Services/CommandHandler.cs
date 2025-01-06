@@ -256,7 +256,7 @@ namespace FruitBot.Services
 
 
                     SocketRole bananaRole = null;
-                    SocketRole watermelonRole = null;
+                    SocketRole cherryRole = null;
                     SocketRole beanRole = null;
                     SocketRole peachRole = null;
                     SocketRole kiwiRole = null;
@@ -267,14 +267,14 @@ namespace FruitBot.Services
                     catch { await Console.Out.WriteLineAsync("Bananas role not found in guild"); }
                     try
                     {
-                        watermelonRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Watermelons");
+                        cherryRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Cherries");
                     }
-                    catch { await Console.Out.WriteLineAsync("Watermelons role not found in guild"); }
+                    catch { await Console.Out.WriteLineAsync("Cherries role not found in guild"); }
                     try
                     {
-                        beanRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Beans");
+                        beanRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Apples");
                     }
-                    catch { await Console.Out.WriteLineAsync("Beans role not found in guild"); }
+                    catch { await Console.Out.WriteLineAsync("Apples role not found in guild"); }
                     try
                     {
                         peachRole = _client.GetGuild(769476224363397140).Roles.First(x => x.Name == "Peaches");
@@ -293,15 +293,15 @@ namespace FruitBot.Services
                         userTeam = "Banana";
                         userTeamIcon = "🍌";
                     }
-                    else if (userRoles.Contains(watermelonRole))
+                    else if (userRoles.Contains(cherryRole))
                     {
-                        userTeam = "Watermelon";
+                        userTeam = "Cherry";
                         userTeamIcon = "🥭";
                     }
                     else if (userRoles.Contains(beanRole))
                     {
                         userTeam = "Bean";
-                        userTeamIcon = "🫘";
+                        userTeamIcon = "🍎";
                     }
                     else if (userRoles.Contains(peachRole))
                     {
@@ -363,7 +363,7 @@ namespace FruitBot.Services
 
             }
             return;
-        }//🍌🥝🥭🫘💩
+        }//🍌🥝🥭🍎💩
 
         private async Task OnCommandExecuted(Optional<Discord.Commands.CommandInfo> command, ICommandContext context, IResult result)
         {

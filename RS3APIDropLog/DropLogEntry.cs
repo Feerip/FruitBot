@@ -57,9 +57,9 @@ namespace RS3APIDropLog
                     return FruitResources.Logos.kiwi;
                 }
 
-                if (_fruit.Equals(FruitResources.Text.watermelon))
+                if (_fruit.Equals(FruitResources.Text.cherry))
                 {
-                    return FruitResources.Logos.watermelon;
+                    return FruitResources.Logos.cherry;
                 }
 
                 if (_fruit.Equals(FruitResources.Text.bean))
