@@ -80,14 +80,14 @@ namespace FruitPantry
                 float bananaPoints = 0;
                 float kiwiPoints = 0;
                 float cherryPoints = 0;
-                float beanPoints = 0;
+                float applePoints = 0;
                 float peachPoints = 0;
                 float fruitlessHeathenPoints = 0;
 
                 Color banana = new(128, 00, 128);
                 Color kiwi = new(255, 255, 0);
                 Color cherry = new(255, 0, 0);
-                Color bean = new(255, 192, 203);
+                Color apple = new(255, 192, 203);
                 Color peach = new Color(255, 229, 180);
                 Color fruitlessHeathen = new(150, 75, 0);
 
@@ -114,9 +114,9 @@ namespace FruitPantry
                     {
                         cherryPoints += float.Parse(entry._pointValue);
                     }
-                    else if (entry._fruit.Equals("Bean"))
+                    else if (entry._fruit.Equals("Apple"))
                     {
-                        beanPoints += float.Parse(entry._pointValue);
+                        applePoints += float.Parse(entry._pointValue);
                     }
                     else if (entry._fruit.Equals("Peach"))
                     {
@@ -146,11 +146,11 @@ namespace FruitPantry
                     leadingColor = cherry;
                     leadingTeamPictureURL = DataTypes.FruitResources.Logos.cherry;
                 }
-                if (beanPoints > largestNumber)
+                if (applePoints > largestNumber)
                 {
-                    largestNumber = beanPoints;
-                    leadingColor = bean;
-                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.bean;
+                    largestNumber = applePoints;
+                    leadingColor = apple;
+                    leadingTeamPictureURL = DataTypes.FruitResources.Logos.apple;
                 }
                 if (peachPoints > largestNumber)
                 {
@@ -180,7 +180,7 @@ namespace FruitPantry
                             .AddField("🥝Kiwis🥝", $"`{Math.Round(kiwiPoints)}`", true)
                             .AddField("🥭Cherries🥭", $"`{Math.Round(cherryPoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
-                            .AddField("🍎Apples🍎", $"`{Math.Round(beanPoints)}`", true)
+                            .AddField("🍎Apples🍎", $"`{Math.Round(applePoints)}`", true)
                             .AddField("🍑Peaches🍑", $"`{Math.Round(peachPoints)}`", true)
                             .AddField("\u200B", '\u200B', false)
                             .AddField("💩Fruitless Heathens💩", $"`{Math.Round(fruitlessHeathenPoints)}`", false)

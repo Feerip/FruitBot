@@ -47,9 +47,9 @@ namespace DataTypes
                     return cherry;
                 }
 
-                if (fruit.Equals(Text.bean))
+                if (fruit.Equals(Text.apple))
                 {
-                    return bean;
+                    return apple;
                 }
 
                 if (fruit.Equals(Text.peach))
@@ -63,7 +63,7 @@ namespace DataTypes
             public static Discord.Color banana = new(128, 00, 128);
             public static Discord.Color kiwi = new(255, 255, 0);
             public static Discord.Color cherry = new(255, 0, 0);
-            public static Discord.Color bean = new(255, 192, 203);
+            public static Discord.Color apple = new(255, 192, 203);
             public static Discord.Color peach = new(255, 229, 180);
             public static Discord.Color fruitlessHeathen = new(150, 75, 0);
         }
@@ -90,9 +90,9 @@ namespace DataTypes
                     return cherry;
                 }
 
-                if (fruit.Equals(bean))
+                if (fruit.Equals(apple))
                 {
-                    return bean;
+                    return apple;
                 }
 
                 if (fruit.Equals(peach))
@@ -111,7 +111,7 @@ namespace DataTypes
             public static string banana { get; } = "Banana";
             public static string kiwi { get; } = "Kiwi";
             public static string cherry { get; } = "Cherry";
-            public static string bean { get; } = "Bean";
+            public static string apple { get; } = "Apple";
             public static string peach { get; } = "Peach";
             public static string fruitlessHeathen { get; } = "Fruitless Heathen";
 
@@ -143,9 +143,9 @@ namespace DataTypes
                     fruit = cherry;
                     return true;
                 }
-                else if (input.Equals(Text.bean, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.bean, StringComparison.OrdinalIgnoreCase))
+                else if (input.Equals(Text.apple, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.apple, StringComparison.OrdinalIgnoreCase))
                 {
-                    fruit = bean;
+                    fruit = apple;
                     return true;
                 }
                 else if (input.Equals(Text.peach, StringComparison.OrdinalIgnoreCase) || input.Equals(TextPlural.peach, StringComparison.OrdinalIgnoreCase))
@@ -184,9 +184,9 @@ namespace DataTypes
                     return cherry;
                 }
 
-                if (fruit.Equals(Text.bean))
+                if (fruit.Equals(Text.apple))
                 {
-                    return bean;
+                    return apple;
                 }
                 
                 if (fruit.Equals(Text.peach))
@@ -199,7 +199,7 @@ namespace DataTypes
             public static string banana { get; } = "Bananas";
             public static string kiwi { get; } = "Kiwis";
             public static string cherry { get; } = "Cherries";
-            public static string bean { get; } = "Apples";
+            public static string apple { get; } = "Apples";
             public static string peach { get; } = "Peaches";
             public static string fruitlessHeathen { get; } = "Fruitless Heathens";
 
@@ -229,9 +229,9 @@ namespace DataTypes
                     return cherry;
                 }
 
-                if (fruit.Equals(Text.bean))
+                if (fruit.Equals(Text.apple))
                 {
-                    return bean;
+                    return apple;
                 }
 
                 if (fruit.Equals(Text.peach))
@@ -250,8 +250,8 @@ namespace DataTypes
             public static string cherry { get; }
                 = "https://cdn.discordapp.com/attachments/856679881547186196/859869003572838420/CherryThing.png";
 
-            public static string bean { get; }
-                = "https://cdn.discordapp.com/attachments/856679881547186196/859868992339968050/BeanThing.png";
+            public static string apple { get; }
+                = "https://cdn.discordapp.com/attachments/856679881547186196/859868992339968050/AppleThing.png";
 
             public static string peach { get; }
                 = "https://cdn.discordapp.com/attachments/856679881547186196/859868992339968050/PeachThing.png";
@@ -283,9 +283,9 @@ namespace DataTypes
                     return cherry;
                 }
 
-                else if (fruit.Equals(Text.bean))
+                else if (fruit.Equals(Text.apple))
                 {
-                    return bean;
+                    return apple;
                 }
                 
                 if (fruit.Equals(Text.peach))
@@ -303,7 +303,7 @@ namespace DataTypes
 
             public static string cherry { get; } = "🍒";
 
-            public static string bean { get; } = "🍎";
+            public static string apple { get; } = "🍎";
 
             public static string peach { get; } = "🍑";
 

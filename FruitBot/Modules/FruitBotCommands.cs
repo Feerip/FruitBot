@@ -345,7 +345,7 @@ namespace FruitBot.Modules
                 float bananaPoints = 0;
                 float kiwiPoints = 0;
                 float cherryPoints = 0;
-                float beanPoints = 0;
+                float applePoints = 0;
                 float peachPoints = 0;
                 float fruitlessHeathenPoints = 0;
 
@@ -373,9 +373,9 @@ namespace FruitBot.Modules
                     {
                         cherryPoints += float.Parse(entry._pointValue);
                     }
-                    else if (entry._fruit.Equals(FruitResources.Text.bean))
+                    else if (entry._fruit.Equals(FruitResources.Text.apple))
                     {
-                        beanPoints += float.Parse(entry._pointValue);
+                        applePoints += float.Parse(entry._pointValue);
                     }
                     else if (entry._fruit.Equals(FruitResources.Text.peach))
                     {
@@ -405,11 +405,11 @@ namespace FruitBot.Modules
                     leadingColor = FruitResources.Colors.cherry;
                     leadingTeamPictureURL = FruitResources.Logos.cherry;
                 }
-                if (beanPoints > largestNumber)
+                if (applePoints > largestNumber)
                 {
-                    largestNumber = beanPoints;
-                    leadingColor = FruitResources.Colors.bean;
-                    leadingTeamPictureURL = FruitResources.Logos.bean;
+                    largestNumber = applePoints;
+                    leadingColor = FruitResources.Colors.apple;
+                    leadingTeamPictureURL = FruitResources.Logos.apple;
                 }
                 if (peachPoints > largestNumber)
                 {
@@ -439,7 +439,7 @@ namespace FruitBot.Modules
                             .AddField("🥝Kiwis🥝", $"`{Math.Round(kiwiPoints)}`", true)
                             .AddField("🍒Cherries🍒", $"`{Math.Round(cherryPoints)}`", true)
                             .AddField("\u200B", '\u200B', true)
-                            .AddField("🍎Apples🍎", $"`{Math.Round(beanPoints)}`", true)
+                            .AddField("🍎Apples🍎", $"`{Math.Round(applePoints)}`", true)
                             .AddField("🍑Peaches🍑", $"`{Math.Round(peachPoints)}`", true)
                             .AddField("\u200B", '\u200B', false)
                             .AddField("💩Fruitless Heathens💩", $"`{Math.Round(fruitlessHeathenPoints)}`", false)
