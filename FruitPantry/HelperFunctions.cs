@@ -38,7 +38,7 @@ namespace FruitPantry
         //}
         public static async Task DropAnnouncementAsync(KeyValuePair<string, DropLogEntry> entryPair, DiscordSocketClient discordClient)
         {
-#if DEBUG
+#if DEBUGa
             ulong guild = 1088977050750173207;
             ulong dropsChannel = 1088984348549713961;
             ulong generalChannel = 1088977051945545770;

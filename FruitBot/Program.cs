@@ -24,7 +24,7 @@ namespace FruitBot
                 {
                     IConfigurationRoot configuration = new ConfigurationBuilder()
                         .SetBasePath(Directory.GetCurrentDirectory())
-#if DEBUG
+#if DEBUGa
                         .AddJsonFile("Config/appsettings.debug.json", false, true)
 #else
                         .AddJsonFile("Config/appsettings.json", false, true)

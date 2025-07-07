@@ -25,6 +25,10 @@ namespace RS3APIDropLog
     {
 
         public static HttpClient httpClient = new();
+        public static int timeout = 10;
+        public static int numSuccessfulPulls = 0;
+        public static int secondsBetweenPulls = 2;
+        public static Stopwatch RateLimitStopwatch = new();
 
         public static List<RSDropLog> PullParallelFromJagexAPI(List<string> playerNames)
         {
@@ -34,7 +38,8 @@ namespace RS3APIDropLog
 
             Stopwatch JAGXStopwatch = new();
             JAGXStopwatch.Start();
-            Parallel.ForEach(playerNames, new ParallelOptions() { MaxDegreeOfParallelism = 10 }, playerName =>
+            RateLimitStopwatch.Start();
+            Parallel.ForEach(playerNames, new ParallelOptions() { MaxDegreeOfParallelism = 1 }, playerName =>
             {
                 GetALog(playerName, jsonStrings);
             });
@@ -66,21 +71,38 @@ namespace RS3APIDropLog
         }
         public static void GetALog(string playerName, ConcurrentQueue<string> jsonStrings)
         {
+            ConsoleColor[] colors = (ConsoleColor[])ConsoleColor.GetValues(typeof(ConsoleColor));
             string RSN = playerName.Replace(" ", "%20");
             try
             {
-                //Console.WriteLine($"Pulling ALog for {playerName}...");
+                Console.WriteLine($"Pulling ALog for {playerName}...");
                 HttpResponseMessage response = null;
                 do
                 {
                     if (response is not null)
                     {
-                        Console.Out.WriteLineAsync($"Error 503 for {playerName}. Retrying...");
+                        if (response.Content.ReadAsStringAsync().Result.Contains("error code: 1015"))
+                        {
+                            RateLimitStopwatch.Stop();
+                            float rateLimitStopwatchSeconds = (float)RateLimitStopwatch.ElapsedMilliseconds / 1000;
+                            RateLimitStopwatch.Restart();
+                            Console.BackgroundColor = ConsoleColor.Yellow;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Out.WriteAsync($"Pulls: {numSuccessfulPulls}, Time: {rateLimitStopwatchSeconds} Rate: {rateLimitStopwatchSeconds/(float)numSuccessfulPulls}s/p \nError 1015 for {playerName}. Waiting {timeout} seconds and increasing by 1.");
+                            Console.ResetColor();
+                            Console.Out.WriteLineAsync();
+                            Thread.Sleep(timeout * 1000);
+                            timeout += 1;
+                            numSuccessfulPulls = 0;
+                        }
+                        else
+                            Console.Out.WriteLineAsync($"Error 503 for {playerName}. Retrying...");
                     }
                     response = httpClient.GetAsync($"https://apps.runescape.com/runemetrics/profile/profile?user={RSN}&activities=20").Result;
 
                 }
-                while (response.StatusCode == HttpStatusCode.ServiceUnavailable);
+                while (response.StatusCode == HttpStatusCode.ServiceUnavailable || response.Content.ReadAsStringAsync().Result.Contains("error code: 1015"));
+                numSuccessfulPulls += 1;
                 string json = response.Content.ReadAsStringAsync().Result;
                 if (json.Contains("PROFILE_PRIVATE"))
                 {
@@ -91,6 +113,7 @@ namespace RS3APIDropLog
                     //Console.Out.WriteLineAsync($"SUCCESS: Pulled ALog json for {playerName}.");
                     jsonStrings.Enqueue(json);
                 }
+                Thread.Sleep(secondsBetweenPulls*1000);
             }
             catch (Exception e)
             {
@@ -200,13 +223,13 @@ namespace RS3APIDropLog
             while (!parser.EndOfData)
             {
                 string[] fields = parser.ReadFields();
-#if DEBUG
+#if DEBUGa
                 //if (!fields[0].ToLower().Equals("tygogo"))
                 //continue;
 #endif
                 playerNames.Add(fields[0]);
                 numPlayers++;
-#if DEBUG
+#if DEBUGa
                 //if (numPlayers > 20) break;
 #endif
             }
