@@ -69,6 +69,7 @@ namespace FruitPantry
         public readonly int BossName = 7;
         public readonly int PointValue = 8;
         public readonly int EntryKey = 9;
+        public readonly int NumDropLogKeys = 10;
 
         public readonly int Classification = 0;
         public readonly int PointsPerDrop = 1;
@@ -473,6 +474,12 @@ namespace FruitPantry
             {
                 foreach (IList<object> row in values)
                 {
+                    // If there are any empty rows between populated rows this will be 0
+                    if (row.Count < NumDropLogKeys)
+                    {
+                        continue;
+                    }
+
                     output.Add(new(
                                                 playerName: row[RSN],
                                                 fruit: row[Fruit],
